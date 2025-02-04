@@ -8,6 +8,7 @@
 
 import UIKit
 import SendbirdChatSDK
+import SendbirdUIKit
 
 // This function handles alertController to be used in the sample app.
 class AlertManager: NSObject {
@@ -41,7 +42,7 @@ class ChannelManager: NSObject {
         let channelListQuery = GroupChannel.createMyGroupChannelListQuery(params: params)
         channelListQuery.loadNextPage { channels, error in
             guard error == nil else {
-                SBULog.error(error?.localizedDescription)
+                print(error?.localizedDescription)
                 return
             }
             
@@ -62,7 +63,7 @@ class ChannelManager: NSObject {
         let channelListQuery = OpenChannel.createOpenChannelListQuery(params: params)
         channelListQuery.loadNextPage { openChannels, error in
             guard error == nil else {
-                SBULog.error(error?.localizedDescription)
+                print(error?.localizedDescription)
                 return
             }
             

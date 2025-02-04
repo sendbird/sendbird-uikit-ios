@@ -65,6 +65,7 @@ extension SBUCreateOpenChannelModule {
     
     /// A module component that represent the header of `SBUCreateOpenChannelModule`.
     /// This class consists of titleView, leftBarButton, and rightBarButton.
+    @objc(SBUCreateOpenChannelModuleHeader)
     @objcMembers
     open class Header: UIView {
         

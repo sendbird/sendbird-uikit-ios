@@ -113,10 +113,10 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
         self.theme = SBUTheme.channelSettingsTheme
         
         self.navigationController?.navigationBar.setBackgroundImage(
-            UIImage.from(color: theme.navigationBarTintColor),
+            UIImage.sbu_from(color: theme.navigationBarTintColor),
             for: .default
         )
-        self.navigationController?.navigationBar.shadowImage = UIImage.from(
+        self.navigationController?.navigationBar.shadowImage = UIImage.sbu_from(
             color: theme.navigationShadowColor
         )
         self.navigationController?.sbu_setupNavigationBarAppearance(
@@ -237,7 +237,7 @@ open class MySettingsViewController: UIViewController, UINavigationControllerDel
                 guard let self = self else { return }
                 
                 guard error == nil else {
-                    SBULog.error(error?.localizedDescription)
+                    print(error?.localizedDescription)
                     return
                 }
                 guard let user = SBUGlobals.currentUser else { return }
@@ -422,7 +422,7 @@ extension MySettingsViewController: UIImagePickerControllerDelegate {
                 profileImage: originalImage.jpegData(compressionQuality: 0.5)
             ) { error in
                 guard error == nil else {
-                    SBULog.error(error?.localizedDescription)
+                    print(error?.localizedDescription)
                     return
                 }
                 guard let user = SBUGlobals.currentUser else { return }

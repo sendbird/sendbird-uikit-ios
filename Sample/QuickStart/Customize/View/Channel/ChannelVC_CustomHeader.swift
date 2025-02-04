@@ -8,6 +8,7 @@
 
 import UIKit
 import SendbirdChatSDK
+import SendbirdUIKit
 
 // MARK: - Module
 class CustomChannelModule { }
@@ -27,14 +28,14 @@ extension CustomChannelModule {
         override func setupViews() {
             // "X" mark button
             self.leftBarButton = UIBarButtonItem(
-                image: SBUIconSet.iconClose.resize(with: CGSize(value: 24)),
+                image: SBUIconSet.iconClose.sbu_resize(with: CGSize(width: 24, height: 24)),
                 style: .plain,
                 target: self,
                 action: #selector(onTapLeftBarButton)
             )
             // Search button
             self.rightBarButton = UIBarButtonItem(
-                image: SBUIconSet.iconSearch.resize(with: CGSize(value: 24)),
+                image: SBUIconSet.iconSearch.sbu_resize(with: CGSize(width: 24, height: 24)),
                 style: .plain,
                 target: self,
                 action: #selector(onTapRightBarButton)

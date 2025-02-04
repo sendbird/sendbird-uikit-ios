@@ -107,6 +107,7 @@ public protocol SBUBaseChannelModuleInputDataSource: AnyObject {
 
 extension SBUBaseChannelModule {
     /// The `SBUBaseChannelModule`'s component class that represents input
+    @objc(SBUBaseChannelModuleInput)
     @objcMembers
     open class Input: UIView, SBUMessageInputViewDelegate, SBUMessageInputViewDataSource {
         

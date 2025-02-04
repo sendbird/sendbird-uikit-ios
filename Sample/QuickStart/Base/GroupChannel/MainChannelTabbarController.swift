@@ -119,8 +119,8 @@ class MainChannelTabbarController: UITabBarController {
         let iconSize = CGSize(width: 24, height: 24)
         let title = type == .channels ? "Channels" : "My settings"
         let icon = type == .channels
-            ? UIImage(named: "iconChatFilled")?.resize(with: iconSize)
-            : UIImage(named: "iconSettingsFilled")?.resize(with: iconSize)
+            ? UIImage(named: "iconChatFilled")?.sbu_resize(with: iconSize)
+            : UIImage(named: "iconSettingsFilled")?.sbu_resize(with: iconSize)
         let tag = type == .channels ? 0 : 1
         
         let item = UITabBarItem(title: title, image: icon, tag: tag)

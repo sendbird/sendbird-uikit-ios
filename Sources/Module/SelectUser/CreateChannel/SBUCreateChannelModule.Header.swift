@@ -69,6 +69,7 @@ extension SBUCreateChannelModule {
     
     /// A module component that represent the header of `SBUCreateChannelModule`.
     /// This class consists of titleView, leftBarButton, and rightBarButton.
+    @objc(SBUCreateChannelModuleHeader)
     @objcMembers
     open class Header: SBUBaseSelectUserModule.Header {
         

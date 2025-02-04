@@ -71,6 +71,7 @@ extension SBUBaseChannelModuleHeaderDelegate {
 extension SBUBaseChannelModule {
     
     /// A module component that represent the header of `SBUBaseChannelModule`.
+    @objc(SBUBaseChannelModuleHeader)
     @objcMembers
     open class Header: UIView {
         // MARK: - UI properties (Public)

@@ -72,6 +72,7 @@ extension SBUChatNotificationChannelModule {
     
     /// A module component that represent the header of `SBUChatNotificationChannelModule`.
     /// - Since: 3.5.0
+    @objc(SBUChatNotificationChannelModuleHeader)
     @objcMembers
     public class Header: UIView {
         

@@ -25,6 +25,7 @@ public protocol SBUOpenChannelModuleInputDataSource: SBUBaseChannelModuleInputDa
 
 extension SBUOpenChannelModule {
     /// The `SBUOpenChannelModule`'s component class that represents input.
+    @objc(SBUOpenChannelModuleInput)
     @objcMembers
     open class Input: SBUBaseChannelModule.Input {
         

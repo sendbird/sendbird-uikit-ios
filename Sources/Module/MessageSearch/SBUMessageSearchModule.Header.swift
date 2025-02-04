@@ -45,6 +45,7 @@ extension SBUMessageSearchModule {
     
     /// A module component that represent the header of `SBUMessageSearchModule`.
     /// - This class consists of titleView, leftBarButton, and rightBarButton.
+    @objc(SBUMessageSearchModuleHeader)
     @objcMembers
     open class Header: UIView {
         

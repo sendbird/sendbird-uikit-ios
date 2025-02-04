@@ -64,6 +64,7 @@ extension SBUBaseChannelListModuleHeaderDelegate {
 
 extension SBUBaseChannelListModule {
     /// A module component that represents the header of `SBUBaseChannelListModule`.
+    @objc(SBUBaseChannelListModuleHeader)
     @objcMembers
     open class Header: UIView {
         

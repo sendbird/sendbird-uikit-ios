@@ -22,6 +22,7 @@ public protocol SBUBaseSelectUserModuleHeaderDataSource: AnyObject {
 extension SBUBaseSelectUserModule {
     
     /// A module component that represent the header of `SBUBaseSelectUserModule`.
+    @objc(SBUBaseSelectUserModuleHeader)
     @objcMembers
     open class Header: UIView {
         

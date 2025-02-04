@@ -25,9 +25,9 @@ class LiveStreamChannelListViewModel: SBUOpenChannelListViewModel {
         super.init(delegate: delegate, channelListQuery: channelListQuery)
     }
     
-    override func upsertChannels(_ channels: [OpenChannel]?, needReload: Bool) {
-        // Pass only the live stream channels
-        let channels = channels?.filter { $0.customType == Self.customType }
-        super.upsertChannels(channels, needReload: needReload)
-    }
+//    override func upsertChannels(_ channels: [OpenChannel]?, needReload: Bool) {
+//        // Pass only the live stream channels
+//        let channels = channels?.filter { $0.customType == Self.customType }
+//        super.upsertChannels(channels, needReload: needReload)
+//    }
 }

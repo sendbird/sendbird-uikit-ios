@@ -118,15 +118,15 @@ class BusinessMessagingTabBarController: UITabBarController {
         switch type {
         case .channels:
             title = "Channels"
-            icon = UIImage(named: "iconChatFilled")?.resize(with: iconSize)
+            icon = UIImage(named: "iconChatFilled")?.sbu_resize(with: iconSize)
             tag = 0
         case .feedChannels:
             title = "Feed Channels"
-            icon = UIImage(named: "iconNotificationsFilled")?.resize(with: iconSize)
+            icon = UIImage(named: "iconNotificationsFilled")?.sbu_resize(with: iconSize)
             tag = 1
         case .settings:
             title = "Settings"
-            icon = UIImage(named: "iconSettingsFilled")?.resize(with: iconSize)
+            icon = UIImage(named: "iconSettingsFilled")?.sbu_resize(with: iconSize)
             tag = 2
         }
 

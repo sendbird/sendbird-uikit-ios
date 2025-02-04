@@ -25,6 +25,7 @@ protocol SBUFeedNotificationChannelModuleCategoryFilterDataSource: AnyObject {
 // swiftlint:enable type_name
 
 extension SBUFeedNotificationChannelModule {
+    @objc(SBUFeedNotificationChannelModuleCategoryFilter)
     @objcMembers
     public class CategoryFilter: UIView {
         struct Constants {
