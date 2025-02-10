@@ -90,7 +90,10 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
         self.initializeAndLoad(channelListQuery: channelListQuery)
     }
     
-    func initializeAndLoad(channelListQuery: GroupChannelListQuery? = nil) {
+    /// This function resets the `groupChannelListQuery` and reloads the channel list.
+    /// - Parameter channelListQuery: New `GroupChannelListQuery` to be used to load channel list.
+    /// - Since: 3.29.2
+    public func initializeAndLoad(channelListQuery: GroupChannelListQuery? = nil) {
         if let channelListQuery { self.customizedChannelListQuery = channelListQuery }
         self.initChannelList()
     }
