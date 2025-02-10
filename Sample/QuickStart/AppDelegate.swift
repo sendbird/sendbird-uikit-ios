@@ -9,6 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 @_exported import SendbirdUIKit
+@_exported import SendbirdUIMessageTemplate
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {

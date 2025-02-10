@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,7 +19,6 @@
 		22D4EA3A00FBF521FE3D1624 /* BusinessMessagingTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748F2518BAA37399D41DD3CC /* BusinessMessagingTabBarController.swift */; };
 		24B9B0D5DB8619080A104320 /* CustomEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE6549CE553EFCA6E649E6F /* CustomEmptyView.swift */; };
 		29F21CACC3E083C248649E81 /* GeneralSignInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A8BCEC00EED3979EA4524D08 /* GeneralSignInViewController.xib */; };
-		2EFA5D762D548A4600C1261E /* SendbirdUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 2EFA5D752D548A4600C1261E /* SendbirdUIKit */; };
 		30D6FD3C65C007D6F59D3B51 /* ConnectBusinessMessagingView.xib in Resources */ = {isa = PBXBuildFile; fileRef = E00D6DB472E2D89F05B58CFD /* ConnectBusinessMessagingView.xib */; };
 		33C9D1883866C8184AE70AEF /* CustomChannelListModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4099E93E16C27E5CEB12785B /* CustomChannelListModule.swift */; };
 		3546B8997F37360ACD9B296D /* BusinessMessagingSignInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F6412A0B94483A3C585B666 /* BusinessMessagingSignInViewController.xib */; };
@@ -64,10 +63,12 @@
 		9A8D758220E732AE969929D5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21E496B5D944391AA42862B4 /* LaunchScreen.storyboard */; };
 		9C1A59941D2B1C7180BE67F1 /* ChannelListVC_Overriding.swift in Sources */ = {isa = PBXBuildFile; fileRef = A955962B69D2F809DEE4655F /* ChannelListVC_Overriding.swift */; };
 		9D3DBE68062216DF2B1D2493 /* BasicUsagesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8400C45D0E11FBE37587B089 /* BasicUsagesViewController.xib */; };
+		9D89ABC8DB85D4C3F426E347 /* SendbirdUIMessageTemplate in Frameworks */ = {isa = PBXBuildFile; productRef = 1A9837068C5F36FF6F7E3E7C /* SendbirdUIMessageTemplate */; };
 		9E7F67BE1D168D0FE1D423E6 /* BusinessMessagingSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA3AA66634C2E531849F9A /* BusinessMessagingSelectionViewController.swift */; };
 		9EAF7E11B3B47D9E2F46EC85 /* ChannelSettingsVC_Overriding.swift in Sources */ = {isa = PBXBuildFile; fileRef = E332E035DA3DA5F7E9D98CBA /* ChannelSettingsVC_Overriding.swift */; };
 		A0875C861E06C0E0796252CE /* UIcolor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = C65E9DA0B945AC6F2978B9E6 /* UIcolor+Ext.swift */; };
 		A37522222D21889E328B3130 /* AIChatBotSignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5AFCA30BC1E493AC342DB7 /* AIChatBotSignInViewController.swift */; };
+		A41581E47D6F1E1336A9CF7E /* SendbirdUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = 77A9A36DBD29E031538383BA /* SendbirdUIKit */; };
 		A6B78F6ADA3514C55C3A04B4 /* CreateChannelCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7368083040846A8BFD1A786 /* CreateChannelCustomManager.swift */; };
 		A819CA3ED9DF12723954D907 /* PaddedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60919A8A488385F6A325B787 /* PaddedLabel.swift */; };
 		AB9441B3BB4B841F9584306C /* ChannelListCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899E2ADDC3C3A19F2D429597 /* ChannelListCustomManager.swift */; };
@@ -256,7 +257,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				05EF3B883F179441278AD591 /* SendbirdChatSDK in Frameworks */,
-				2EFA5D762D548A4600C1261E /* SendbirdUIKit in Frameworks */,
+				A41581E47D6F1E1336A9CF7E /* SendbirdUIKit in Frameworks */,
+				9D89ABC8DB85D4C3F426E347 /* SendbirdUIMessageTemplate in Frameworks */,
 				E9134545B3A6C96D0326C579 /* UserNotifications.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -758,7 +760,8 @@
 			name = QuickStart;
 			packageProductDependencies = (
 				74778F0EA153D6775D8BC4F6 /* SendbirdChatSDK */,
-				2EFA5D752D548A4600C1261E /* SendbirdUIKit */,
+				77A9A36DBD29E031538383BA /* SendbirdUIKit */,
+				1A9837068C5F36FF6F7E3E7C /* SendbirdUIMessageTemplate */,
 			);
 			productName = QuickStart;
 			productReference = 47D94B4A0B6065B7390DCC40 /* QuickStart.app */;
@@ -810,7 +813,7 @@
 			mainGroup = 8D9F4DD795C1C923CB15CF48;
 			packageReferences = (
 				A4CD81EE92C875D0E22463C6 /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */,
-				2EFA5D742D548A4600C1261E /* XCRemoteSwiftPackageReference "sendbird-uikit-ios-spm" */,
+				4935A9393C043AF555B43E51 /* XCRemoteSwiftPackageReference "sendbird-uikit-ios-spm" */,
 			);
 			projectDirPath = "";
 			projectRoot = "";
@@ -996,7 +999,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.29.1;
+				MARKETING_VERSION = 3.29.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1025,7 +1028,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.29.1;
+				MARKETING_VERSION = 3.29.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1171,7 +1174,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.29.1;
+				MARKETING_VERSION = 3.29.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1200,7 +1203,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.29.1;
+				MARKETING_VERSION = 3.29.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1244,12 +1247,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		2EFA5D742D548A4600C1261E /* XCRemoteSwiftPackageReference "sendbird-uikit-ios-spm" */ = {
+		4935A9393C043AF555B43E51 /* XCRemoteSwiftPackageReference "sendbird-uikit-ios-spm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sendbird/sendbird-uikit-ios-spm";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 3.29.1;
+				minimumVersion = 3.29.2;
 			};
 		};
 		A4CD81EE92C875D0E22463C6 /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */ = {
@@ -1263,15 +1266,20 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		2EFA5D752D548A4600C1261E /* SendbirdUIKit */ = {
+		1A9837068C5F36FF6F7E3E7C /* SendbirdUIMessageTemplate */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2EFA5D742D548A4600C1261E /* XCRemoteSwiftPackageReference "sendbird-uikit-ios-spm" */;
-			productName = SendbirdUIKit;
+			package = 4935A9393C043AF555B43E51 /* XCRemoteSwiftPackageReference "sendbird-uikit-ios-spm" */;
+			productName = SendbirdUIMessageTemplate;
 		};
 		74778F0EA153D6775D8BC4F6 /* SendbirdChatSDK */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A4CD81EE92C875D0E22463C6 /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */;
 			productName = SendbirdChatSDK;
+		};
+		77A9A36DBD29E031538383BA /* SendbirdUIKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4935A9393C043AF555B43E51 /* XCRemoteSwiftPackageReference "sendbird-uikit-ios-spm" */;
+			productName = SendbirdUIKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

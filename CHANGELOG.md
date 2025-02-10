@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.29.2 (Feb 10, 2025)
+
+## New Interfaces
+- Added `initializeAndLoad(channelListQuery:)` in `SBUGroupChannelListViewModel` to reset `groupChannelListQuery` and reload channel list.
+ 
+
 ### v3.29.1 (Feb 04, 2025)
 
 ## Improvements

@@ -8,7 +8,6 @@
 
 import UIKit
 import SendbirdChatSDK
-import SendbirdUIKit
 
 // This function handles alertController to be used in the sample app.
 class AlertManager: NSObject {
