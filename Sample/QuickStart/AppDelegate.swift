@@ -8,7 +8,9 @@
 
 import UIKit
 import SendbirdChatSDK
+#if canImport(SendbirdUIKit)
 @_exported import SendbirdUIKit
+#endif
 @_exported import SendbirdUIMessageTemplate
 
 @UIApplicationMain
