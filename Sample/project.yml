@@ -1,0 +1,92 @@
+name: QuickStart 
+
+options:
+  defaultConfig: Debug
+  groupSortPosition: bottom
+  transitivelyLinkDependencies: false
+
+packages: 
+  SendbirdChatSDK: 
+    url: https://github.com/sendbird/sendbird-chat-sdk-ios
+    from: 4.23.1
+  SendbirdUIKit:
+    url: https://github.com/sendbird/sendbird-uikit-ios-spm
+    from: 3.29.2
+schemes:
+  QuickStart:
+    analyze:
+      config: Debug
+    archive:
+      config: Release
+    build:
+      targets:
+        QuickStart:
+        - running
+        - testing
+        - profiling
+        - analyzing
+        - archiving
+    profile:
+      config: Debug
+    run:
+      config: Debug
+
+settingGroups:
+  preset_generic:
+    CODE_SIGN_STYLE: Automatic
+    CURRENT_PROJECT_VERSION: '1'
+    FRAMEWORK_SEARCH_PATHS: ''
+    IPHONEOS_DEPLOYMENT_TARGET: '12.0'
+    LD_RUNPATH_SEARCH_PATHS: ["$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks"]
+    MARKETING_VERSION: '3.29.2'
+    PRODUCT_NAME: "$(TARGET_NAME)"
+    SDKROOT: iphoneos
+    SWIFT_VERSION: '5.0'
+    VERSION_INFO_PREFIX: ''
+    VERSIONING_SYSTEM: apple-generic
+  preset_all:
+    groups:
+      - preset_generic
+
+targets:
+ QuickStart:
+    dependencies:
+    - target: NotificationService
+    - package: SendbirdChatSDK
+    - package: SendbirdUIKit
+      products: 
+        - SendbirdUIMessageTemplate
+    - sdk: UserNotifications.framework
+    platform: iOS
+    productName: QuickStart
+    settings:
+      groups: 
+        - preset_all
+      base:
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        INFOPLIST_FILE: QuickStart/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.sendbird.uikit.sample
+        CODE_SIGN_ENTITLEMENTS: QuickStart/QuickStart.entitlements
+        CODE_SIGN_IDENTITY: "Apple Development"
+    sources:
+    - path: QuickStart
+    - path: ../Sources/
+      excludes:
+        - Info.plist
+    type: application
+ NotificationService:
+    platform: iOS
+    productName: NotificationService
+    settings:
+      groups: 
+        - preset_all
+      base:
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        GENERATE_INFOPLIST_FILE: true
+        INFOPLIST_FILE: NotificationService/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: com.sendbird.uikit.sample.NotificationService
+        CODE_SIGN_ENTITLEMENTS: NotificationService/NotificationService.entitlements
+        CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: 'YES'
+    sources:
+    - path: NotificationService
+    type: app-extension 
