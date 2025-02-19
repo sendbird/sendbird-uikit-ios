@@ -36,7 +36,7 @@ settingGroups:
     CODE_SIGN_STYLE: Automatic
     CURRENT_PROJECT_VERSION: '1'
     FRAMEWORK_SEARCH_PATHS: ''
-    IPHONEOS_DEPLOYMENT_TARGET: '12.0'
+    IPHONEOS_DEPLOYMENT_TARGET: '13.0'
     LD_RUNPATH_SEARCH_PATHS: ["$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks"]
     MARKETING_VERSION: '3.29.2'
     PRODUCT_NAME: "$(TARGET_NAME)"
