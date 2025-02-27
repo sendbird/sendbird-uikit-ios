@@ -121,13 +121,8 @@ class SBUDownloadManager {
                         })
                     }
                     
-                    if #available(iOS 13.0, *) {
-                        // For iOS 13 issue
-                        viewController?.present(transparentVC, animated: true) { [weak transparentVC] in
-                            transparentVC?.present(activityVC, animated: true)
-                        }
-                    } else {
-                        viewController?.present(activityVC, animated: true)
+                    viewController?.present(transparentVC, animated: true) { [weak transparentVC] in
+                        transparentVC?.present(activityVC, animated: true)
                     }
                     
                     SBULoading.stop()
@@ -259,13 +254,8 @@ class SBUDownloadManager {
                         })
                     }
                     
-                    if #available(iOS 13.0, *) {
-                        // For iOS 13 issue
-                        parent?.present(transparentVC, animated: true) { [weak transparentVC] in
-                            transparentVC?.present(activityVC, animated: true)
-                        }
-                    } else {
-                        parent?.present(activityVC, animated: true)
+                    parent?.present(transparentVC, animated: true) { [weak transparentVC] in
+                        transparentVC?.present(activityVC, animated: true)
                     }
                     
                     SBULoading.stop()

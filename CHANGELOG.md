@@ -1,5 +1,12 @@
 # Changelog
 
+### v3.30.0 (Feb 27, 2025)
+
+## Improvements
+### Minimum iOS Version Requirement Updated
+- The minimum supported iOS version has been raised from iOS 12 to **iOS 13**.
+- No changes to functionality—just ensuring compatibility with modern iOS environments.
+
 ### v3.29.2 (Feb 10, 2025)
 
 ## New Interfaces

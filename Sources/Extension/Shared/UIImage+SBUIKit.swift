@@ -16,31 +16,7 @@ public extension UIImage {
     /// - Returns: `Uiimage` objects with tint color
     func sbu_with(tintColor: UIColor?) -> UIImage {
         guard let tintColor = tintColor else { return self }
-        if #available(iOS 13.0, *) {
-            return withTintColor(tintColor)
-        } else {
-            let image = self
-            UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale)
-            tintColor.setFill()
-            let context = UIGraphicsGetCurrentContext()
-            context?.translateBy(x: 0, y: image.size.height)
-            context?.scaleBy(x: 1.0, y: -1.0)
-            context?.setBlendMode(CGBlendMode.normal)
-            let rect = CGRect(
-                origin: .zero,
-                size: CGSize(width: image.size.width, height: image.size.height)
-            )
-            context?.clip(to: rect, mask: image.cgImage!)
-            context?.fill(rect)
-            
-            guard let newImage = UIGraphicsGetImageFromCurrentImageContext() else {
-                return self
-            }
-            
-            UIGraphicsEndImageContext()
-            
-            return newImage
-        }
+        return withTintColor(tintColor)
     }
     
     /// This applies the tint color to the `UIImage` with `forTemplate` option.

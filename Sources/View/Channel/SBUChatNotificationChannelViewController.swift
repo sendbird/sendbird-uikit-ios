@@ -123,9 +123,7 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
         
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
-        if #available(iOS 13.0, *) {
-            self.navigationController?.isModalInPresentation = true
-        }
+        self.navigationController?.isModalInPresentation = true
         
         self.createViewModelHandler?()
         self.createViewModelHandler = nil

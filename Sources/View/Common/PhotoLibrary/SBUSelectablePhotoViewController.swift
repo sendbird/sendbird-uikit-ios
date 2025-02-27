@@ -270,26 +270,12 @@ extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollecti
                 guard let url = URL(string: fileName) else { return }
                 let mimeType = SBUUtils.getMimeType(url: url)
                 
-                if #available(iOS 13, *) {
-                    PHImageManager().requestImageDataAndOrientation(for: asset, options: requestOptions) { data, _, _, _ in
-                        DispatchQueue.main.async { [weak self] in
-                            guard let self = self else { return }
-                            guard let data = data else { return }
-                            self.delegate?.didTapSendImageData(data, fileName: fileName, mimeType: mimeType)
-                            self.dismiss(animated: true, completion: nil)
-                        }
-                    }
-                } else {
-                    PHImageManager().requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFill, options: requestOptions) { image, _ in
-                        
-                        DispatchQueue.main.async { [weak self] in
-                            guard let image = image?.fixedOrientation(),
-                                  let imageData = image.sbu_convertToData() else { return }
-
-                            guard let self = self else { return }
-                            self.delegate?.didTapSendImageData(imageData, fileName: fileName, mimeType: mimeType)
-                            self.dismiss(animated: true, completion: nil)
-                        }
+                PHImageManager().requestImageDataAndOrientation(for: asset, options: requestOptions) { data, _, _, _ in
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        guard let data = data else { return }
+                        self.delegate?.didTapSendImageData(data, fileName: fileName, mimeType: mimeType)
+                        self.dismiss(animated: true, completion: nil)
                     }
                 }
                 

@@ -8,6 +8,9 @@
 
 import UIKit
 import SendbirdChatSDK
+#if canImport(SendbirdUIKit)
+import SendbirdUIKit
+#endif
 
 // MARK: - Module
 class CustomChannelModule { }
