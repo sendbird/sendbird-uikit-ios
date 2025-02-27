@@ -102,73 +102,39 @@ class UserInfoTitleView: UIView {
             constant: 23)
         )
         
-        if #available(iOS 11.0, *) {
-            layoutConstraints.append(self.lineView.leadingAnchor.constraint(
-                equalTo: self.safeAreaLayoutGuide.leadingAnchor,
-                constant: 16)
-            )
-            layoutConstraints.append(self.lineView.trailingAnchor.constraint(
-                equalTo: self.safeAreaLayoutGuide.trailingAnchor,
-                constant: -16)
-            )
-            layoutConstraints.append(self.userIdTitleLabel.leadingAnchor.constraint(
-                equalTo: self.safeAreaLayoutGuide.leadingAnchor,
-                constant: 16)
-            )
-            layoutConstraints.append(self.userIdTitleLabel.trailingAnchor.constraint(
-                equalTo: self.safeAreaLayoutGuide.trailingAnchor,
-                constant: -16)
-            )
-            layoutConstraints.append(self.userIdLabel.leadingAnchor.constraint(
-                equalTo: self.safeAreaLayoutGuide.leadingAnchor,
-                constant: 16)
-            )
-            layoutConstraints.append(self.userIdLabel.trailingAnchor.constraint(
-                equalTo: self.safeAreaLayoutGuide.trailingAnchor,
-                constant: -16)
-            )
-            layoutConstraints.append(self.bottomLineView.leadingAnchor.constraint(
-                equalTo: self.safeAreaLayoutGuide.leadingAnchor,
-                constant: 16)
-            )
-            layoutConstraints.append(self.bottomLineView.trailingAnchor.constraint(
-                equalTo: self.safeAreaLayoutGuide.trailingAnchor,
-                constant: -16)
-            )
-        } else {
-            layoutConstraints.append(self.lineView.leadingAnchor.constraint(
-                equalTo: self.leadingAnchor,
-                constant: 16)
-            )
-            layoutConstraints.append(self.lineView.trailingAnchor.constraint(
-                equalTo: self.trailingAnchor,
-                constant: -16)
-            )
-            layoutConstraints.append(self.userIdTitleLabel.leadingAnchor.constraint(
-                equalTo: self.leadingAnchor,
-                constant: 16)
-            )
-            layoutConstraints.append(self.userIdTitleLabel.trailingAnchor.constraint(
-                equalTo: self.trailingAnchor,
-                constant: -16)
-            )
-            layoutConstraints.append(self.userIdLabel.leadingAnchor.constraint(
-                equalTo: self.leadingAnchor,
-                constant: 16)
-            )
-            layoutConstraints.append(self.userIdLabel.trailingAnchor.constraint(
-                equalTo: self.trailingAnchor,
-                constant: -16)
-            )
-            layoutConstraints.append(self.bottomLineView.leadingAnchor.constraint(
-                equalTo: self.leadingAnchor,
-                constant: 16)
-            )
-            layoutConstraints.append(self.bottomLineView.trailingAnchor.constraint(
-                equalTo: self.trailingAnchor,
-                constant: -16)
-            )
-        }
+        layoutConstraints.append(self.lineView.leadingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.leadingAnchor,
+            constant: 16)
+        )
+        layoutConstraints.append(self.lineView.trailingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.trailingAnchor,
+            constant: -16)
+        )
+        layoutConstraints.append(self.userIdTitleLabel.leadingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.leadingAnchor,
+            constant: 16)
+        )
+        layoutConstraints.append(self.userIdTitleLabel.trailingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.trailingAnchor,
+            constant: -16)
+        )
+        layoutConstraints.append(self.userIdLabel.leadingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.leadingAnchor,
+            constant: 16)
+        )
+        layoutConstraints.append(self.userIdLabel.trailingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.trailingAnchor,
+            constant: -16)
+        )
+        layoutConstraints.append(self.bottomLineView.leadingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.leadingAnchor,
+            constant: 16)
+        )
+        layoutConstraints.append(self.bottomLineView.trailingAnchor.constraint(
+            equalTo: self.safeAreaLayoutGuide.trailingAnchor,
+            constant: -16)
+        )
+
         layoutConstraints.append(self.userIdTitleLabel.topAnchor.constraint(
             equalTo: self.lineView.bottomAnchor,
             constant: 15)

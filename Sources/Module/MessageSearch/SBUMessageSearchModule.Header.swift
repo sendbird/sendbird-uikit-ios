@@ -191,27 +191,14 @@ extension SBUMessageSearchModule {
             
             // Note: https://stackoverflow.com/a/28499827
             if let theme = self.theme {
-                if #available(iOS 13.0, *) {
-                    searchBar.searchTextField.textColor = theme.searchTextColor
-                    searchBar.searchTextField.font = theme.searchTextFont
-                    searchBar.searchTextField.attributedPlaceholder = NSAttributedString(
-                        string: SBUStringSet.Search,
-                        attributes: [.foregroundColor: theme.searchPlaceholderColor,
-                                     .font: theme.searchTextFont]
-                    )
-                    searchBar.searchTextField.backgroundColor = theme.searchTextBackgroundColor
-                } else {
-                    if let textfield = searchBar.value(forKey: "searchField") as? UITextField {
-                        textfield.textColor = theme.searchTextColor
-                        textfield.font = theme.searchTextFont
-                        textfield.attributedPlaceholder = NSAttributedString(
-                            string: SBUStringSet.Search,
-                            attributes: [.foregroundColor: theme.searchPlaceholderColor,
-                                         .font: theme.searchTextFont]
-                        )
-                        textfield.backgroundColor = theme.searchTextBackgroundColor
-                    }
-                }
+                searchBar.searchTextField.textColor = theme.searchTextColor
+                searchBar.searchTextField.font = theme.searchTextFont
+                searchBar.searchTextField.attributedPlaceholder = NSAttributedString(
+                    string: SBUStringSet.Search,
+                    attributes: [.foregroundColor: theme.searchPlaceholderColor,
+                                 .font: theme.searchTextFont]
+                )
+                searchBar.searchTextField.backgroundColor = theme.searchTextBackgroundColor
             }
             
             // NOTE: Fixed an issue with images not displaying correctly on some versions of iOS14 and below.

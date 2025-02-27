@@ -19,7 +19,6 @@ extension UINavigationController {
     /// - Since: 2.1.14
     @objc
     open func sbu_setupNavigationBarAppearance(tintColor: UIColor, shadowColor: UIColor? = nil) {
-        guard #available(iOS 13.0, *) else { return }
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = tintColor

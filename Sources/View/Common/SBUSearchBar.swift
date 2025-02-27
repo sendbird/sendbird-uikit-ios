@@ -39,16 +39,8 @@ open class SBUSearchBar: UISearchBar, SBUViewLifeCycle {
     }
     
     open func setupStyles() {
-        if #available(iOS 13.0, *) {
-            self.searchTextField.layer.cornerRadius = 20
-            self.searchTextField.layer.masksToBounds = true
-        } else {
-            if let textfield = self.value(forKey: "searchField") as? UITextField,
-               let backgroundview = textfield.subviews.first {
-                backgroundview.layer.cornerRadius = 20
-                backgroundview.clipsToBounds = true
-            }
-        }
+        self.searchTextField.layer.cornerRadius = 20
+        self.searchTextField.layer.masksToBounds = true
     }
     
     open func updateLayouts() { }

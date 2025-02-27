@@ -81,14 +81,12 @@ class CustomOpenChannelModuleList: SBUOpenChannelModule.List {
     private func createReportMessageMenuItem(for message: BaseMessage) -> SBUMenuItem {
         var iconImage: UIImage?
         
-        if #available(iOS 13.0, *) {
-            let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 24, weight: .bold)
-            if let image = UIImage(
-                systemName: "exclamationmark.triangle",
-                withConfiguration: symbolConfiguration
-            )?.withRenderingMode(.alwaysOriginal) {
-                iconImage = image.sbu_with(tintColor: SBUColorSet.primary300)
-            }
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 24, weight: .bold)
+        if let image = UIImage(
+            systemName: "exclamationmark.triangle",
+            withConfiguration: symbolConfiguration
+        )?.withRenderingMode(.alwaysOriginal) {
+            iconImage = image.sbu_with(tintColor: SBUColorSet.primary300)
         }
         
         let menuItem = SBUMenuItem(

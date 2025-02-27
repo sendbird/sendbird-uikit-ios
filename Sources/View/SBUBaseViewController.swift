@@ -181,7 +181,6 @@ extension SBUBaseViewController {
         var standardAppearanceWrapper: Any?
         var scrollEdgeAppearanceWrapper: Any?
 
-        @available(iOS 13.0, *)
         var standardAppearance: UINavigationBarAppearance? {
             get {
                 standardAppearanceWrapper as? UINavigationBarAppearance
@@ -190,7 +189,6 @@ extension SBUBaseViewController {
                 standardAppearanceWrapper = newValue
             }
         }
-        @available(iOS 13.0, *)
         var scrollEdgeAppearance: UINavigationBarAppearance? {
             get {
                 scrollEdgeAppearanceWrapper as? UINavigationBarAppearance
@@ -206,10 +204,8 @@ extension SBUBaseViewController {
             self.backgroundImage = navigationController.navigationBar.backgroundImage(for: .default)
             self.shadowImage = navigationController.navigationBar.shadowImage
             
-            if #available(iOS 13.0, *) {
-                self.standardAppearance = navigationController.navigationBar.standardAppearance
-                self.scrollEdgeAppearance = navigationController.navigationBar.scrollEdgeAppearance
-            }
+            self.standardAppearance = navigationController.navigationBar.standardAppearance
+            self.scrollEdgeAppearance = navigationController.navigationBar.scrollEdgeAppearance
             
             self.isSet = true
         }
@@ -220,12 +216,10 @@ extension SBUBaseViewController {
             navigationController.navigationBar.setBackgroundImage(self.backgroundImage, for: .default)
             navigationController.navigationBar.shadowImage = self.shadowImage
             
-            if #available(iOS 13.0, *) {
-                if let standardAppearance = self.standardAppearance {
-                    navigationController.navigationBar.standardAppearance = standardAppearance
-                }
-                navigationController.navigationBar.scrollEdgeAppearance = self.scrollEdgeAppearance
+            if let standardAppearance = self.standardAppearance {
+                navigationController.navigationBar.standardAppearance = standardAppearance
             }
+            navigationController.navigationBar.scrollEdgeAppearance = self.scrollEdgeAppearance
         }
     }
 }

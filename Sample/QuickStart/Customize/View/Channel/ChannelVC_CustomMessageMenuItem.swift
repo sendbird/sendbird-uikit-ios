@@ -81,13 +81,11 @@ class CustomGroupChannelModuleList: SBUGroupChannelModule.List {
     private func createReportMessageMenuItem(for message: BaseMessage) -> SBUMenuItem {
         var iconImage: UIImage?
         
-        if #available(iOS 13.0, *) {
-            let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 24, weight: .bold)
-            iconImage = UIImage(
-                systemName: "exclamationmark.triangle",
-                withConfiguration: symbolConfiguration
-            )
-        }
+        let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 24, weight: .bold)
+        iconImage = UIImage(
+            systemName: "exclamationmark.triangle",
+            withConfiguration: symbolConfiguration
+        )
         
         let menuItem = SBUMenuItem(
             title: "Report",

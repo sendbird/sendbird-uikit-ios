@@ -1332,15 +1332,9 @@ private var _sementicContentAttributeValue: UISemanticContentAttribute?
 extension UIView {
     static var currentSemanticContentAttribute: UISemanticContentAttribute {
         if let value = _sementicContentAttributeValue { return value }
-        if #available(iOS 13.0, *) {
-            let value = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.rootViewController?.view.semanticContentAttribute ?? .unspecified
-            _sementicContentAttributeValue = value
-            return value
-        } else {
-            let value = UIApplication.shared.keyWindow?.rootViewController?.view.semanticContentAttribute ?? .unspecified
-            _sementicContentAttributeValue = value
-            return value
-        }
+        let value = UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.rootViewController?.view.semanticContentAttribute ?? .unspecified
+        _sementicContentAttributeValue = value
+        return value
     }
     
     static func getCurrentLayoutDirection(view: UIView? = nil) -> UIUserInterfaceLayoutDirection {

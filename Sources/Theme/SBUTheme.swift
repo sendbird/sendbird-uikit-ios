@@ -394,12 +394,8 @@ public class SBUGroupChannelListTheme {
     
     public static var light: SBUGroupChannelListTheme {
         let theme = SBUGroupChannelListTheme()
+        theme.statusBarStyle = .darkContent
         
-        if #available(iOS 13.0, *) {
-            theme.statusBarStyle = .darkContent
-        } else {
-            theme.statusBarStyle = .default
-        }
         theme.leftBarButtonTintColor = SBUColorSet.primaryMain
         theme.rightBarButtonTintColor = SBUColorSet.primaryMain
         theme.navigationBarTintColor = SBUColorSet.background50
@@ -661,12 +657,8 @@ public class SBUOpenChannelListTheme {
     
     public static var light: SBUOpenChannelListTheme {
         let theme = SBUOpenChannelListTheme()
-        
-        if #available(iOS 13.0, *) {
-            theme.statusBarStyle = .darkContent
-        } else {
-            theme.statusBarStyle = .default
-        }
+        theme.statusBarStyle = .darkContent
+
         theme.leftBarButtonTintColor = SBUColorSet.primaryMain
         theme.rightBarButtonTintColor = SBUColorSet.primaryMain
         theme.navigationBarTintColor = SBUColorSet.background50
@@ -826,12 +818,8 @@ public class SBUChannelTheme {
     
     public static var light: SBUChannelTheme {
         let theme = SBUChannelTheme()
+        theme.statusBarStyle = .darkContent
         
-        if #available(iOS 13.0, *) {
-            theme.statusBarStyle = .darkContent
-        } else {
-            theme.statusBarStyle = .default
-        }
         theme.navigationBarTintColor = SBUColorSet.background50
         theme.navigationBarShadowColor = SBUColorSet.onLightTextDisabled
         theme.leftBarButtonTintColor = SBUColorSet.primaryMain
@@ -2357,11 +2345,8 @@ public class SBUUserListTheme {
     
     public static var light: SBUUserListTheme {
         let theme = SBUUserListTheme()
-        if #available(iOS 13.0, *) {
-            theme.statusBarStyle = .darkContent
-        } else {
-            theme.statusBarStyle = .default
-        }
+        theme.statusBarStyle = .darkContent
+        
         theme.navigationBarTintColor = SBUColorSet.background50
         theme.navigationShadowColor = SBUColorSet.onLightTextDisabled
         theme.leftBarButtonTintColor = SBUColorSet.primaryMain
@@ -2574,12 +2559,7 @@ public class SBUChannelSettingsTheme {
     
     public static var light: SBUChannelSettingsTheme {
         let theme = SBUChannelSettingsTheme()
-        
-        if #available(iOS 13.0, *) {
-            theme.statusBarStyle = .darkContent
-        } else {
-            theme.statusBarStyle = .default
-        }
+        theme.statusBarStyle = .darkContent
         
         theme.navigationBarTintColor = SBUColorSet.background50
         theme.navigationShadowColor = SBUColorSet.onLightTextDisabled
@@ -2791,12 +2771,7 @@ public class SBUChannelSettingsTheme {
 public class SBUUserProfileTheme {
     public static var light: SBUUserProfileTheme {
         let theme = SBUUserProfileTheme()
-        
-        if #available(iOS 13.0, *) {
-            theme.statusBarStyle = .darkContent
-        } else {
-            theme.statusBarStyle = .default
-        }
+        theme.statusBarStyle = .darkContent
         
         theme.overlayColor = SBUColorSet.overlayLight
         theme.backgroundColor = SBUColorSet.background50
@@ -3591,13 +3566,8 @@ public class SBUMessageSearchTheme {
     
     public static var light: SBUMessageSearchTheme {
         let theme = SBUMessageSearchTheme()
+        theme.statusBarStyle = .darkContent
         
-        if #available(iOS 13.0, *) {
-            theme.statusBarStyle = .darkContent
-        } else {
-            theme.statusBarStyle = .default
-        }
-        theme.navigationBarStyle = .default
         theme.navigationBarTintColor = SBUColorSet.background50
         theme.navigationBarShadowColor = SBUColorSet.onLightTextDisabled
         theme.backgroundColor = SBUColorSet.background50
@@ -3766,12 +3736,7 @@ public class SBUCreateOpenChannelTheme {
     
     public static var light: SBUCreateOpenChannelTheme {
         let theme = SBUCreateOpenChannelTheme()
-        
-        if #available(iOS 13.0, *) {
-            theme.statusBarStyle = .darkContent
-        } else {
-            theme.statusBarStyle = .default
-        }
+        theme.statusBarStyle = .darkContent
         
         theme.leftBarButtonTintColor = SBUColorSet.primaryMain
         theme.rightBarButtonTintColor = SBUColorSet.primaryMain
@@ -4231,12 +4196,7 @@ extension SBUNotificationTheme {
         
         static var defaultLight: SBUNotificationTheme.Header {
             let theme = SBUNotificationTheme.Header()
-            
-            if #available(iOS 13.0, *) {
-                theme.statusBarStyle = .darkContent
-            } else {
-                theme.statusBarStyle = .default
-            }
+            theme.statusBarStyle = .darkContent
             
             theme.buttonIconTintColor = SBUColorSet.primaryMain
             theme.lineColor = SBUColorSet.onLightTextDisabled

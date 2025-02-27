@@ -191,9 +191,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
         
-        if #available(iOS 13.0, *) {
-            self.navigationController?.isModalInPresentation = true
-        }
+        self.navigationController?.isModalInPresentation = true
     }
     
     open override func viewWillAppear(_ animated: Bool) {
