@@ -1,5 +1,17 @@
 # Changelog
 
+### v3.30.1 (Mar 20, 2025)
+
+# SendbirdUIKit
+## Improvements
+- Added support for new delegate methods in `UITextViewDelegate` for iOS 17.0 or above
+
+# SendbirdUIMessageTemplate
+## Improvements
+- Improved loading performance for background image view
+- Fixed rendering issue with carousel padding.
+- Size specification is now optional.
+
 ### v3.30.0 (Feb 27, 2025)
 
 ## Improvements

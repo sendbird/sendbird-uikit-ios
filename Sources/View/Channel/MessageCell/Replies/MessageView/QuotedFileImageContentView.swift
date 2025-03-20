@@ -69,9 +69,10 @@ open class QuotedFileImageContentView: SBUView {
         
         self.setupSizeContraint()
         
+        let iconSize = SBUConstant.quotedMessageIconSize
         self.iconImageView
             .sbu_constraint(equalTo: self, centerX: 0, centerY: 0)
-            .sbu_constraint(width: 48, height: 48)
+            .sbu_constraint(width: iconSize.width, height: iconSize.height)
             .layoutIfNeeded()
     }
     

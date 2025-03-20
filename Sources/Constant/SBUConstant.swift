@@ -13,6 +13,7 @@ class SBUConstant {
     static let thumbnailSize: CGSize = .init(width: 240, height: 160)
     static let imageSize: CGSize = .init(width: 240, height: 160)
     static let quotedMessageThumbnailSize: CGSize = .init(width: 156, height: 104)
+    static let quotedMessageIconSize: CGSize = .init(width: 48, height: 48)
     static let parentInfoMultipleFilesThumbnailSize: CGSize = .init(width: 120, height: 120)
     
     static let voiceMessageBaseSize: CGSize = .init(width: 136, height: 44)

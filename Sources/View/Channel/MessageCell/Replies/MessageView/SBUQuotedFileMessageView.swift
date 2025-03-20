@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SendbirdChatSDK
 
 open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
     /// The string value of file URL.
@@ -23,6 +24,8 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
         return UIView()
     }()
     
+    // TODO: Remove this property.
+    // This property is not used anywhere, but left it here because it's public.
     public var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.clipsToBounds = true
@@ -67,6 +70,18 @@ open class SBUQuotedFileMessageView: SBUQuotedBaseMessageView {
         
         self.urlString = urlString
         super.configure(with: configuration)
+        
+        #if SWIFTUI
+        if configuration.message.parentMessage is FileMessage {
+            if self.applyViewConverter(.quotedFileMessage, configuration: configuration) {
+                return
+            }
+        } else if configuration.message.parentMessage is MultipleFilesMessage {
+            if self.applyViewConverter(.quotedMultipleFilesMessage, configuration: configuration) {
+                return
+            }
+        }
+        #endif
         
         switch messageFileType {
         case .image, .video:
