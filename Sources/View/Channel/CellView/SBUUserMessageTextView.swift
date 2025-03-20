@@ -51,7 +51,7 @@ open class SBUUserMessageTextView: SBUView {
     public var channelType: ChannelType = .group
     public var isWebType = false
     
-    var longPressHandler: ((URL) -> Void)?
+    var longPressHandler: ((URL?) -> Void)?
     
     public var mentionManager: SBUMentionManager?
     
@@ -222,6 +222,9 @@ open class SBUUserMessageTextView: SBUView {
 }
 
 extension SBUUserMessageTextView: UITextViewDelegate {
+    
+    /// Handles tap and longpress on a URL link or a mentioned user for iOS below 17.0.
+    @available(iOS, deprecated: 17.0)
     open func textView(
         _ textView: UITextView,
         shouldInteractWith URL: URL,
@@ -231,18 +234,70 @@ extension SBUUserMessageTextView: UITextViewDelegate {
         if let mentionManager = mentionManager {
             if let mention = mentionManager.findMentions(with: characterRange).first,
                 interaction == .invokeDefaultAction {
+                // Mention tapped
                 self.delegate?.userMessageTextView(self, didTapMention: mention.user)
                 return false
             } else {
+                // Mention longpressed
                 (self.superview as? SBUUserMessageCell)?.longPressHandlerToContent?()
             }
         }
         if interaction == .presentActions {
+            // URL link longpressed
             self.longPressHandler?(URL)
         } else if interaction == .invokeDefaultAction {
+            // URL link tapped
             URL.open()
         }
 
         return false
+    }
+    
+    /// Handles tap on a URL link or a mentioned user for iOS 17.0 or above.
+    /// - Since: 3.30.1
+    @available(iOS 17.0, *)
+    open func textView(
+        _ textView: UITextView,
+        primaryActionFor textItem: UITextItem,
+        defaultAction: UIAction
+    ) -> UIAction? {
+        let characterRange = textItem.range
+        if let mentionManager = mentionManager {
+            if let mention = mentionManager.findMentions(with: characterRange).first {
+                // Mention tapped
+                return UIAction(title: "Mention Tapped") { _ in
+                    self.delegate?.userMessageTextView(self, didTapMention: mention.user)
+                }
+            }
+        } else if let tappedURL = textView.textStorage.attribute(.link, at: characterRange.location, effectiveRange: nil) as? URL {
+            // URL link tapped
+            return UIAction(title: "Link Tapped") { _ in
+                tappedURL.open()
+            }
+        }
+        
+        return nil
+    }
+    
+    /// Handles longpress on a URL link or a mentioned user for iOS 17.0 or above.
+    /// - Since: 3.30.1
+    @available(iOS 17.0, *)
+    open func textView(
+        _ textView: UITextView,
+        menuConfigurationFor textItem: UITextItem,
+        defaultMenu: UIMenu
+    ) -> UITextItem.MenuConfiguration? {
+        let characterRange = textItem.range
+        if let mentionManager = mentionManager {
+            if mentionManager.findMentions(with: characterRange).first != nil {
+                // Mention longpressed
+                self.longPressHandler?(nil)
+            }
+        } else if let tappedURL = textView.textStorage.attribute(.link, at: characterRange.location, effectiveRange: nil) as? URL {
+            // URL link longpressed
+            self.longPressHandler?(tappedURL)
+        }
+        
+        return nil
     }
 }

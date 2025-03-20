@@ -168,9 +168,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // GroupChannel - form type message
         SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled = true
         
-//        if #available(iOS 14, *) {
-//            SendbirdUI.config.groupChannel.channel.isMultipleFilesMessageEnabled = true
-//        }
+        if #available(iOS 14, *) {
+            SendbirdUI.config.groupChannel.channel.isMultipleFilesMessageEnabled = true
+        }
     }
-
 }
