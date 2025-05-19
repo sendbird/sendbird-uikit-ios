@@ -3185,6 +3185,8 @@
 			dependencies = (
 			);
 			name = NotificationService;
+			packageProductDependencies = (
+			);
 			productName = NotificationService;
 			productReference = 26F15FDAB2EA2301931B3EB6 /* NotificationService.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -3215,10 +3217,12 @@
 				en,
 			);
 			mainGroup = 8D9F4DD795C1C923CB15CF48;
+			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				A4CD81EE92C875D0E22463C6 /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */,
 				4935A9393C043AF555B43E51 /* XCRemoteSwiftPackageReference "sendbird-uikit-ios-spm" */,
 			);
+			preferredProjectObjectVersion = 54;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -3841,7 +3845,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.30.1;
+				MARKETING_VERSION = 3.30.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -3869,7 +3873,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.30.1;
+				MARKETING_VERSION = 3.30.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4014,7 +4018,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.30.1;
+				MARKETING_VERSION = 3.30.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4042,7 +4046,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.30.1;
+				MARKETING_VERSION = 3.30.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4091,7 +4095,7 @@
 			repositoryURL = "https://github.com/sendbird/sendbird-uikit-ios-spm";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 3.30.1;
+				minimumVersion = 3.30.2;
 			};
 		};
 		A4CD81EE92C875D0E22463C6 /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */ = {
@@ -4099,7 +4103,7 @@
 			repositoryURL = "https://github.com/sendbird/sendbird-chat-sdk-ios";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.25.0;
+				minimumVersion = 4.26.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
