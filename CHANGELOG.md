@@ -1,5 +1,15 @@
 # Changelog
 
+### v3.30.2 (May 19, 2025)
+
+# SendbirdUIKit
+- none
+
+# SendbirdUIMessageTemplate
+## Improvements
+- Added carousel scroll event handling in message template
+- Fixed new line string parsing issue in message template
+
 ### v3.30.1 (Mar 20, 2025)
 
 # SendbirdUIKit
