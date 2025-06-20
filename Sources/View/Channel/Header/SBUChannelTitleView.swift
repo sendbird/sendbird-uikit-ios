@@ -72,7 +72,6 @@ open class SBUChannelTitleView: UIView {
         
         self.contentView.addSubview(self.stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor).isActive = true
         self.addSubview(self.contentView)
         
     }
