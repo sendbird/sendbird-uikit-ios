@@ -718,11 +718,10 @@ extension SBUMessageThreadModule {
         /// Updates the placeholder text.
         open func updatePlaceholder() {
             let messageInputView = self.messageInputView as? SBUMessageInputView
+            messageInputView?.isThreadMessage = true
             if (self.parentMessage?.threadInfo.replyCount ?? 0) > 0 {
-                messageInputView?.isThreadMessage = true
                 messageInputView?.isThreadFirstMessage = false
             } else {
-                messageInputView?.isThreadMessage = false
                 messageInputView?.isThreadFirstMessage = true
             }
             

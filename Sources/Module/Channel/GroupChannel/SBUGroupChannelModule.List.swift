@@ -165,7 +165,7 @@ extension SBUGroupChannelModule {
     open class List: SBUBaseChannelModule.List, SBUVoicePlayerDelegate {
 
         // MARK: - UI properties (Public)
-         
+        
         /// The message cell for `AdminMessage` object. Use `register(adminMessageCell:nib:)` to update.
         public private(set) var adminMessageCell: SBUBaseMessageCell?
         
@@ -291,32 +291,40 @@ extension SBUGroupChannelModule {
             
             super.setupViews()
             
-            // register cell (GroupChannel)
+            // Register message cell types
             if self.adminMessageCell == nil {
-                self.register(adminMessageCell: Self.AdminMessageCell.init())
-            }
-            if self.userMessageCell == nil {
-                self.register(userMessageCell: Self.UserMessageCell.init())
-            }
-            if self.fileMessageCell == nil {
-                self.register(fileMessageCell: Self.FileMessageCell.init())
-            }
-            if self.multipleFilesMessageCell == nil {
-                self.register(multipleFilesMessageCell: Self.MultipleFilesMessageCell.init())
-            }
-            if self.typingIndicatorMessageCell == nil {
-                self.register(typingIndicatorMessageCell: Self.TypingIndicatorMessageCell.init())
-            }
-            if self.unknownMessageCell == nil {
-                self.register(unknownMessageCell: Self.UnknownMessageCell.init())
-            }
-            if self.messageTemplateCell == nil {
-                self.register(messageTemplateCell: SBUMessageTemplateCell())
-            }
-            if let cellType = Self.CustomMessageCell {
-                self.register(customMessageCell: cellType.init())
+                self.register(messageCellType: Self.AdminMessageCell)
             }
             
+            if self.userMessageCell == nil {
+                self.register(messageCellType: Self.UserMessageCell)
+            }
+            
+            if self.fileMessageCell == nil {
+                self.register(messageCellType: Self.FileMessageCell)
+            }
+            
+            if self.multipleFilesMessageCell == nil {
+                self.register(messageCellType: Self.MultipleFilesMessageCell)
+            }
+            
+            if self.typingIndicatorMessageCell == nil {
+                self.register(messageCellType: Self.TypingIndicatorMessageCell)
+            }
+            
+            if self.unknownMessageCell == nil {
+                self.register(messageCellType: Self.UnknownMessageCell)
+            }
+            
+            if self.messageTemplateCell == nil {
+                self.register(messageCellType: SBUMessageTemplateCell.self)
+            }
+            
+            if let customMessageCellType = Self.CustomMessageCell {
+                self.register(messageCellType: customMessageCellType)
+            }
+            
+            // Add subviews
             if let newMessageInfoView = self.newMessageInfoView {
                 newMessageInfoView.isHidden = true
                 self.addSubview(newMessageInfoView)
@@ -480,6 +488,12 @@ extension SBUGroupChannelModule {
         
         // MARK: - TableView: Cell
         
+        /// Registers message cell type to the message tableview.
+        /// - Since: 3.31.0
+        public func register(messageCellType: SBUBaseMessageCell.Type) {
+            self.tableView.register(messageCellType, forCellReuseIdentifier: messageCellType.sbu_className)
+        }
+        
         /// Registers a custom cell as a admin message cell based on `SBUBaseMessageCell`.
         /// - Parameters:
         ///   - adminMessageCell: Customized admin message cell
@@ -489,9 +503,13 @@ extension SBUGroupChannelModule {
         /// listComponent.register(adminMessageCell: MyAdminMessageCell)
         /// listComponent.configure(delegate: self, dataSource: self, theme: theme)
         /// ```
+        @available(*, deprecated, message: "This method is deprecated in 3.31.0. Use `SBUGroupChannelModule.List.AdminMessageCell` instead")
         open func register(adminMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
             self.adminMessageCell = adminMessageCell
-            self.register(messageCell: adminMessageCell, nib: nib)
+            
+            Self.AdminMessageCell = type(of: adminMessageCell)
+            self.register(nib: nib, messageCell: adminMessageCell)
+            self.register(messageCellType: type(of: adminMessageCell))
         }
         
         /// Registers a custom cell as a user message cell based on `SBUBaseMessageCell`.
@@ -503,9 +521,13 @@ extension SBUGroupChannelModule {
         /// listComponent.register(userMessageCell: MyUserMessageCell)
         /// listComponent.configure(delegate: self, dataSource: self, theme: theme)
         /// ```
+        @available(*, deprecated, message: "This method is deprecated in 3.31.0. Use `SBUGroupChannelModule.List.UserMessageCell` instead")
         open func register(userMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
             self.userMessageCell = userMessageCell
-            self.register(messageCell: userMessageCell, nib: nib)
+
+            Self.UserMessageCell = type(of: userMessageCell)
+            self.register(nib: nib, messageCell: userMessageCell)
+            self.register(messageCellType: type(of: userMessageCell))
         }
         
         /// Registers a custom cell as a file message cell based on `SBUBaseMessageCell`.
@@ -517,9 +539,13 @@ extension SBUGroupChannelModule {
         /// listComponent.register(fileMessageCell: MyFileMessageCell)
         /// listComponent.configure(delegate: self, dataSource: self, theme: theme)
         /// ```
+        @available(*, deprecated, message: "This method is deprecated in 3.31.0. Use `SBUGroupChannelModule.List.FileMessageCell` instead")
         open func register(fileMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
             self.fileMessageCell = fileMessageCell
-            self.register(messageCell: fileMessageCell, nib: nib)
+            
+            Self.FileMessageCell = type(of: fileMessageCell)
+            self.register(nib: nib, messageCell: fileMessageCell)
+            self.register(messageCellType: type(of: fileMessageCell))
         }
         
         /// Registers a custom cell as a multiple files message cell based on `SBUBaseMessageCell`.
@@ -532,9 +558,13 @@ extension SBUGroupChannelModule {
         /// listComponent.configure(delegate: self, dataSource: self, theme: theme)
         /// ```
         /// - Since: 3.10.0
+        @available(*, deprecated, message: "This method is deprecated in 3.31.0. Use `SBUGroupChannelModule.List.MultipleFilesMessageCell` instead")
         open func register(multipleFilesMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
             self.multipleFilesMessageCell = multipleFilesMessageCell
-            self.register(messageCell: multipleFilesMessageCell, nib: nib)
+            
+            Self.MultipleFilesMessageCell = type(of: multipleFilesMessageCell)
+            self.register(nib: nib, messageCell: multipleFilesMessageCell)
+            self.register(messageCellType: type(of: multipleFilesMessageCell))
         }
         
         /// Registers a custom cell as a typing message cell based on `SBUBaseMessageCell`.
@@ -547,9 +577,13 @@ extension SBUGroupChannelModule {
         /// listComponent.configure(delegate: self, dataSource: self, theme: theme)
         /// ```
         /// - Since: 3.12.0
+        @available(*, deprecated, message: "This method is deprecated in 3.31.0. Use `SBUGroupChannelModule.List.TypingIndicatorMessageCell` instead")
         open func register(typingIndicatorMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
             self.typingIndicatorMessageCell = typingIndicatorMessageCell
-            self.register(messageCell: typingIndicatorMessageCell, nib: nib)
+            
+            Self.TypingIndicatorMessageCell = type(of: typingIndicatorMessageCell)
+            self.register(nib: nib, messageCell: typingIndicatorMessageCell)
+            self.register(messageCellType: type(of: typingIndicatorMessageCell))
         }
         
         /// Registers a custom cell as a message template cell based on `SBUMessageTemplateCell`.
@@ -564,7 +598,9 @@ extension SBUGroupChannelModule {
         /// - Since: 3.27.2
         open func register(messageTemplateCell: SBUMessageTemplateCell, nib: UINib? = nil) {
             self.messageTemplateCell = messageTemplateCell
-            self.register(messageCell: messageTemplateCell, nib: nib)
+            
+            self.register(nib: nib, messageCell: messageTemplateCell)
+            self.register(messageCellType: type(of: messageTemplateCell))
         }
         
         /// Registers a custom cell as a unknown message cell based on `SBUBaseMessageCell`.
@@ -576,9 +612,13 @@ extension SBUGroupChannelModule {
         /// listComponent.register(unknownMessageCell: MyUnknownMessageCell)
         /// listComponent.configure(delegate: self, dataSource: self, theme: theme)
         /// ```
+        @available(*, deprecated, message: "Use `SBUGroupChannelModule.List.UnknownMessageCell` instead")
         open func register(unknownMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
             self.unknownMessageCell = unknownMessageCell
-            self.register(messageCell: unknownMessageCell, nib: nib)
+            
+            Self.UnknownMessageCell = type(of: unknownMessageCell)
+            self.register(nib: nib, messageCell: unknownMessageCell)
+            self.register(messageCellType: type(of: unknownMessageCell))
         }
         
         /// Registers a custom cell as a additional message cell based on `SBUBaseMessageCell`.
@@ -590,9 +630,13 @@ extension SBUGroupChannelModule {
         /// listComponent.register(customMessageCell: MyCustomMessageCell)
         /// listComponent.configure(delegate: self, dataSource: self, theme: theme)
         /// ```
+        @available(*, deprecated, message: "Use `SBUGroupChannelModule.List.CustomMessageCell` instead")
         open func register(customMessageCell: SBUBaseMessageCell, nib: UINib? = nil) {
             self.customMessageCell = customMessageCell
-            self.register(messageCell: customMessageCell, nib: nib)
+            
+            Self.CustomMessageCell = type(of: customMessageCell)
+            self.register(nib: nib, messageCell: customMessageCell)
+            self.register(messageCellType: type(of: customMessageCell))
         }
         
         /// Configures cell with message for a particular row.
@@ -881,6 +925,15 @@ extension SBUGroupChannelModule {
             }
         }
         
+        public func register(nib: UINib? = nil, messageCell: SBUBaseMessageCell) {
+            if let nib = nib {
+                self.tableView.register(
+                    nib,
+                    forCellReuseIdentifier: messageCell.sbu_className
+                )
+            }
+        }
+        
         /// Generates identifier of message cell.
         /// - Parameter message: Message object
         /// - Returns: The identifier of message cell.
@@ -896,17 +949,17 @@ extension SBUGroupChannelModule {
             
             switch message {
             case is SBUTypingIndicatorMessage:
-                return typingIndicatorMessageCell?.sbu_className ?? SBUTypingIndicatorMessageCell.sbu_className
+                return Self.TypingIndicatorMessageCell.sbu_className
             case is MultipleFilesMessage:
-                return multipleFilesMessageCell?.sbu_className ?? SBUMultipleFilesMessageCell.sbu_className
+                return Self.MultipleFilesMessageCell.sbu_className
             case is FileMessage:
-                return fileMessageCell?.sbu_className ?? SBUFileMessageCell.sbu_className
+                return Self.FileMessageCell.sbu_className
             case is UserMessage:
-                return userMessageCell?.sbu_className ?? SBUUserMessageCell.sbu_className
+                return Self.UserMessageCell.sbu_className
             case is AdminMessage:
-                return adminMessageCell?.sbu_className ?? SBUAdminMessageCell.sbu_className
+                return Self.AdminMessageCell.sbu_className
             default:
-                return unknownMessageCell?.sbu_className ?? SBUUnknownMessageCell.sbu_className
+                return Self.UnknownMessageCell.sbu_className
             }
         }
         

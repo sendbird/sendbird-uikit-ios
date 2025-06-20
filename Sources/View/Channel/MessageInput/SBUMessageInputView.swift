@@ -302,17 +302,23 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         return SBUStackView(axis: .vertical, alignment: .fill, spacing: 0)
     }()
     
+    /// Stack view that takes up any view that go on top of the textfield.
+    /// - Since: [SWIFTUI_NEXT_VERSION]
+    lazy var topStackView: SBUStackView = {
+        return SBUStackView(axis: .vertical, alignment: .fill, spacing: 0)
+    }()
+    
     private lazy var contentView: UIView = {
         return UIView()
     }()
     
     // + ----------------- +
-    // | quoteMessageView  |
+    // | topStackView      |
     // + ----------------- +
     // | contentHStackView |
     // + ----------------- +
     
-    private lazy var contentVStackView: SBUStackView = {
+    lazy var contentVStackView: SBUStackView = {
         return SBUStackView(axis: .vertical, alignment: .fill, spacing: 0)
     }()
     
@@ -425,6 +431,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.datasource?.channelForMessageInputView(self)?.channelType ?? .group
     }
     
+    /// - Since: [SWIFTUI_NEXT_VERSION]
+    var isQuoteReplyingMode = false
+    
     // MARK: - Life cycle
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -497,7 +506,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         self.delegate?.messageInputView(self, didChangeMode: mode, message: message)
     }
-    
+
     /**
      Starts to reply to message. It's called when `mode` is set to `.quoteReply`
      
@@ -511,6 +520,13 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             message: message
         )
         self.quoteMessageView?.configure(with: configuration)
+        
+        isQuoteReplyingMode = true
+        
+        // SwiftUI
+        #if SWIFTUI
+        self.startQuoteReplyModeForSwiftUI(configure: configuration)
+        #endif
     }
     
     /**
@@ -520,6 +536,13 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public func endQuoteReplyMode() {
         self.quoteMessageView?.isHidden = true
         self.divider.isHidden = true
+        
+        isQuoteReplyingMode = false
+        
+        // SwiftUI
+        #if SWIFTUI
+        self.endQuoteReplyModeForSwiftUI()
+        #endif
     }
     
     /// This function handles the initialization of views.
@@ -532,7 +555,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         // + ---------------------------------------------------------------- +
         // | divider                                                          |
         // + ---------------------------------------------------------------- +
-        // | quoteMessageView                                                 |
+        // | + ------------------------------------------------------------ + |
+        // | | quoteMessageView                                             | |
+        // | + ------------------------------------------------------------ + |
         // + ------------------ + --------------------- + ------------------- +
         // |                    | inputViewTopSpacer    |                     |
         // |                    + --------------------- +                     |
@@ -543,7 +568,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         // |                    | inputViewBottomSpacer |                     |
         // + ------------------ + --------------------- + ------------------- +
         
-        // inputHStacView
+        // inputHStackView
         // + --------- + ------- + ---------------- + ------- + ---------- + ----------------- +
         // | addButton | tvLP(*) | inputContentView | tvTP(*) | sendButton | voiceRecordButton |
         // + --------- + ------- + ---------------- + ------- + ---------- + ----------------- +
@@ -571,7 +596,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         self.contentView.addSubview(
             self.contentVStackView.setVStack([
-                self.quoteMessageView,
+                self.topStackView.setVStack([
+                    self.quoteMessageView
+                ]),
                 self.contentHStackView.setHStack([
                     self.leadingPaddingView,
                     self.inputVStackView.setVStack([
@@ -867,7 +894,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         #if SWIFTUI
         self.setFrozenModeStateForSwiftUI(isFrozen)
         #endif
-
+        
         self.updateInputState()
     }
     
@@ -1244,7 +1271,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
 }
 
 extension SBUMessageInputView: SBUQuoteMessageInputViewDelegate {
-    func didTapClose() {
+    public func didTapClose() {
         self.setMode(.none)
     }
 }
@@ -1363,6 +1390,37 @@ extension SBUMessageInputView {
         default:
             break
         }
+    }
+    
+    func startQuoteReplyModeForSwiftUI(configure: SBUQuoteMessageInputViewParams) {
+        switch self.channelType {
+        case .open:
+            break
+        case .group:
+            if self.isThreadMessage {
+                break
+            } else {
+                self.applyViewConverter(.topView, quoteMessageInputViewParams: configure)
+            }
+        default:
+            break
+        }
+    }
+    
+    func endQuoteReplyModeForSwiftUI() {
+        switch self.channelType {
+        case .open:
+            break
+        case .group:
+            if self.isThreadMessage {
+                break
+            } else {
+                self.applyViewConverter(.topView)
+            }
+        default:
+            break
+        }
+
     }
     
     func setFrozenModeStateForSwiftUI(_ isFrozen: Bool) {

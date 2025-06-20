@@ -9,7 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
-protocol SBUQuoteMessageInputViewDelegate: AnyObject {
+public protocol SBUQuoteMessageInputViewDelegate: AnyObject {
     func didTapClose()
 }
 
