@@ -1,5 +1,23 @@
 # Changelog
 
+### v1.0.999 (Jul 24, 2025)
+
+# SendbirdUIKit
+### Improvements and Deprecations
+We have fixed autolayout warnings. 
+In the process, we have improved message cell types to be registered based on Metatypes, instead of instances. 
+Accordingly, the below interfaces in `SBUGroupChannelModule.List` have been deprecated. 
+- `open func register(adminMessageCell:nib:)`
+- `open func register(userMessageCell:nib:)` 
+- `open func register(fileMessageCell:nib:)` 
+- `open func register(multipleFilesMessageCell:nib:)` 
+- `open func register(typingIndicatorMessageCell:nib:)` 
+- `open func register(unknownMessageCell:nib:)`   
+- `open func register(customMessageCell:nib:)`     
+
+# SendbirdUIMessageTemplate
+- none
+
 ### v3.31.0 (Jun 20, 2025)
 
 # SendbirdUIKit

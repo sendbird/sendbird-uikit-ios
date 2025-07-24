@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -3222,7 +3222,7 @@
 				A4CD81EE92C875D0E22463C6 /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */,
 				4935A9393C043AF555B43E51 /* XCRemoteSwiftPackageReference "sendbird-uikit-ios-spm" */,
 			);
-			preferredProjectObjectVersion = 54;
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
