@@ -1,5 +1,19 @@
 # Changelog
 
+### v3.31.1 (Jul 25, 2025)
+
+# SendbirdUIKit
+
+## Improvements
+
+- Updated the SDK build base to Xcode 16.1.
+
+# SendbirdUIMessageTemplate
+
+## Improvements
+
+- Updated the SDK build base to Xcode 16.1.
+
 ### v3.31.0 (Jun 20, 2025)
 
 # SendbirdUIKit
