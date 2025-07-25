@@ -303,7 +303,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     }()
     
     /// Stack view that takes up any view that go on top of the textfield.
-    /// - Since: [SWIFTUI_NEXT_VERSION]
+    /// - Since: 1.1.0 (SendbirdSwiftUI)
     lazy var topStackView: SBUStackView = {
         return SBUStackView(axis: .vertical, alignment: .fill, spacing: 0)
     }()
@@ -431,7 +431,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.datasource?.channelForMessageInputView(self)?.channelType ?? .group
     }
     
-    /// - Since: [SWIFTUI_NEXT_VERSION]
+    /// - Since: 1.1.0 (SendbirdSwiftUI)
     var isQuoteReplyingMode = false
     
     // MARK: - Life cycle
