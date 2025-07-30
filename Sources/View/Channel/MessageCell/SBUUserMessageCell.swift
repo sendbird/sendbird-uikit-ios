@@ -197,6 +197,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     open override func configure(with configuration: SBUBaseMessageCellParams) {
         guard let configuration = configuration as? SBUUserMessageCellParams else { return }
         guard let message = configuration.userMessage else { return }
+        
         // Set using reaction
         self.useReaction = configuration.useReaction
         self.enableEmojiLongPress = configuration.enableEmojiLongPress
@@ -349,7 +350,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
             return
         }
         
-        url.open()
+        self.urlTapHandler?(url)
     }
     
     // MARK: - Suggested Reply
@@ -454,6 +455,12 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// As a default, it calls `groupChannelModule(_:didTapMentionUser:)` in ``SBUGroupChannelModuleListDelegate``.
     open func userMessageTextView(_ textView: SBUUserMessageTextView, didTapMention user: SBUUser) {
         self.mentionTapHandler?(user)
+    }
+    
+    // MARK: - URL
+    /// - Since: 3.32.0
+    open func userMessageTextView(_ textView: SBUUserMessageTextView, didTapURL url: URL) {
+        self.urlTapHandler?(url)
     }
 
     // MARK: - Suggested reply delegate

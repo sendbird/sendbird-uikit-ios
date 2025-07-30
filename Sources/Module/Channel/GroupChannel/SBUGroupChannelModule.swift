@@ -87,6 +87,10 @@ extension SBUGroupChannelModule.List {
     /// Represents the type of profile view on the group channel module.
     /// - Since: 3.28.0
     public static var UserProfileView: SBUUserProfileView.Type = SBUUserProfileView.self
+    
+    /// Represents the type of unread message info view in the group channel module.
+    /// - Since: 3.32.0
+    public static var UnreadMessageInfoView: SBUUnreadMessageInfoView.Type = SBUUnreadMessageInfoView.self
 }
 
 // MARK: Input

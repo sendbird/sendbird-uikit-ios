@@ -1,5 +1,30 @@
 # Changelog
 
+### v3.32.0 (Jul 30, 2025)
+
+# SendbirdUIKit
+
+## 📌 New Features
+### Mark as Unread
+- Added **mark as unread** functionality for messages in Group Channel
+- New configuration property `SBUConfig.GroupChannel.Channel.isMarkAsUnreadEnabled` to enable/disable the feature
+- New "Mark as unread" menu item in message context menus
+- Visual unread message indicators with `SBUUnreadMessageNewLine` and `SBUUnreadMessageInfoView`
+- New delegate method `groupChannelModule(_:didTapMarkAsUnread:)` in `SBUGroupChannelModuleListDelegate`
+- Refer to the official [mark as unread documentation](https://sendbird.com/docs/chat/uikit/v3/ios-uikit/features/unread-messages).
+
+### URL Link Tap Interception
+- Added ability to intercept URL link taps in message text views. URL taps now call delegate methods instead of automatically opening URLs
+- Override these new delegate methods to customize the URL tap interception
+  - New delegate method `userMessageTextView(_:didTapURL:)` in `SBUUserMessageTextViewDelegate`
+  - New delegate method `groupChannelModule(_:didTapURL:)` in `SBUGroupChannelModuleListDelegate`
+
+
+# SendbirdUIMessageTemplate
+none
+
+
+
 ### v3.31.1 (Jul 25, 2025)
 
 # SendbirdUIKit

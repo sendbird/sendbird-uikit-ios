@@ -294,6 +294,21 @@ extension SBUBaseChannelModule {
         /// - NOTE: You can use the customized view and a view that inherits `SBUNewMessageInfo`.
         public var newMessageInfoView: UIView?
         
+        /// A view that indicates the number of unread messages.
+        /// - Since: 3.32.0
+        public var unreadMessageInfoView: UIView?
+        
+        /// Stack view that contains channelStateBanner and unreadMessageInfoView.
+        /// - Since: 3.32.0
+        public lazy var topStackView: UIStackView = {
+            let stackView = UIStackView()
+            stackView.axis = .vertical
+            stackView.spacing = 8
+            stackView.alignment = .center
+            stackView.distribution = .fill
+            return stackView
+        }()
+        
         /// A view that scrolls table view to the bottom.
         /// The default view type is ``UIView``.
         public var scrollBottomView: UIView?
@@ -337,6 +352,10 @@ extension SBUBaseChannelModule {
         
         func createDefaultNewMessageInfoView() -> SBUNewMessageInfo? {
             SBUNewMessageInfo.createDefault(SBUNewMessageInfo.self)
+        }
+        
+        func createDefaultUnreadMessageInfoView() -> SBUUnreadMessageInfoView? {
+            SBUUnreadMessageInfoView.createDefault(SBUUnreadMessageInfoView.self)
         }
         
         // MARK: - Logic properties (Public)
@@ -407,10 +426,6 @@ extension SBUBaseChannelModule {
             // channel state & common
             if self.channelStateBanner == nil {
                 self.channelStateBanner = self.createDefaultChannelStateBanner()
-            }
-            
-            if let channelStateBanner = self.channelStateBanner {
-                self.addSubview(channelStateBanner)
             }
             
             if self.userProfileView == nil {
@@ -680,32 +695,51 @@ extension SBUBaseChannelModule {
         /// - Parameter message: The `BaseMessage` object  that refers to the message of the menu to display.
         /// - Returns: The array of ``SBUMenuItem`` objects for a `message`
         open func createMessageMenuItems(for message: BaseMessage) -> [SBUMenuItem] {
+            return createMessageMenuItems(for: message, isThreadMessage: false)
+        }
+        
+        /// Creates an array of ``SBUMenuItem`` objects for a `message`.
+        /// - Parameter message: The `BaseMessage` object  that refers to the message of the menu to display.
+        /// - Returns: The array of ``SBUMenuItem`` objects for a `message`
+        /// - Since: 3.32.0
+        open func createMessageMenuItems(for message: BaseMessage, isThreadMessage: Bool) -> [SBUMenuItem] {
             let isSentByMe = message.sender?.userId == SBUGlobals.currentUser?.userId
             var items: [SBUMenuItem] = []
             
             switch message {
             case is UserMessage:
-                // UserMessage: copy, (edit), (delete)
+                // UserMessage: copy, (edit), (markAsUnread), (delete)
                 let copy = self.createCopyMenuItem(for: message)
                 items.append(copy)
                 if isSentByMe {
                     let edit = self.createEditMenuItem(for: message)
-                    let delete = self.createDeleteMenuItem(for: message)
                     items.append(edit)
+                }
+                if let markAsUnread = self.createMarkAsUnreadMenuItem(for: message, isThreadMessage: isThreadMessage) {
+                    items.append(markAsUnread)
+                }
+                if isSentByMe {
+                    let delete = self.createDeleteMenuItem(for: message)
                     items.append(delete)
                 }
             case let fileMessage as FileMessage:
-                // FileMessage: save, (delete)
+                // FileMessage: save, markAsUnread, (delete)
                 let save = self.createSaveMenuItem(for: message)
                 if SBUUtils.getFileType(by: fileMessage) != .voice {
                     items.append(save)
+                }
+                if let markAsUnread = self.createMarkAsUnreadMenuItem(for: message, isThreadMessage: isThreadMessage) {
+                    items.append(markAsUnread)
                 }
                 if isSentByMe {
                     let delete = self.createDeleteMenuItem(for: message)
                     items.append(delete)
                 }
             case is MultipleFilesMessage:
-                // MultipleFilesMessage: delete
+                // MultipleFilesMessage: (markAsUnread), delete
+                if let markAsUnread = self.createMarkAsUnreadMenuItem(for: message, isThreadMessage: isThreadMessage) {
+                    items.append(markAsUnread)
+                }
                 if isSentByMe {
                     let delete = self.createDeleteMenuItem(for: message)
                     items.append(delete)
@@ -844,6 +878,15 @@ extension SBUBaseChannelModule {
             menuItem.isEnabled = isEnabled
             menuItem.transitionsWhenSelected = isThreadType
             return menuItem
+        }
+        
+        /// Creates a markAsUnread menu item.
+        /// - Parameters:
+        ///   - message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
+        ///   - isThreadMessage: Whether it is for thread message screen or not.
+        /// - Since: 3.32.0
+        open func createMarkAsUnreadMenuItem(for message: BaseMessage, isThreadMessage: Bool) -> SBUMenuItem? {
+            return nil
         }
         
         // MARK: - Actions

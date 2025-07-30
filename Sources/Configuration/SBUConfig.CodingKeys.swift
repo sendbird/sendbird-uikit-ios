@@ -59,6 +59,7 @@ extension SBUConfig.GroupChannel.Channel {
         case replyType
         case threadReplySelectType
         case input
+        case isMarkAsUnreadEnabled = "enableMarkAsUnread"  // 3.32.0
     }
 }
 

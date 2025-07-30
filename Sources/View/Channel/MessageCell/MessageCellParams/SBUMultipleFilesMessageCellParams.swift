@@ -32,7 +32,8 @@ public class SBUMultipleFilesMessageCellParams: SBUBaseMessageCellParams {
         isThreadMessage: Bool = false,
         joinedAt: Int64 = 0,
         voiceFileInfo: SBUVoiceFileInfo? = nil,
-        enableEmojiLongPress: Bool = true
+        enableEmojiLongPress: Bool = true,
+        isFirstUnreadMessage: Bool = false
     ) {
         self.useReaction = useReaction
         
@@ -51,7 +52,8 @@ public class SBUMultipleFilesMessageCellParams: SBUBaseMessageCellParams {
             groupPosition: groupPosition,
             receiptState: receiptState,
             isThreadMessage: isThreadMessage,
-            joinedAt: joinedAt
+            joinedAt: joinedAt,
+            isFirstUnreadMessage: isFirstUnreadMessage
         )
     }
 }

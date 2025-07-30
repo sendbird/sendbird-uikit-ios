@@ -61,6 +61,10 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         }
     }
     
+    public var allowsAutoMarkAsReadOnScroll: Bool {
+        self.viewModel?.allowsAutoMarkAsReadOnScroll ?? false
+    }
+    
     override var isChatInputDisabled: Bool {
         didSet {
             (self.baseInputComponent?.messageInputView as? SBUMessageInputView)?.setDisableChatInputState(isChatInputDisabled)
@@ -172,10 +176,18 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         super.viewWillAppear(animated)
     }
     
+    open override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        DispatchQueue.main.async {
+            self.listComponent?.checkForMarkAsRead()
+        }
+    }
+    
     open override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
     }
+    
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -372,6 +384,21 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             }
         }
         return true
+    }
+    
+    /// Increases unread message count.
+    /// - Since: 3.32.0
+    public func increaseUnreadMessageCount(message: BaseMessage) {
+        guard let viewModel = viewModel else { return }
+        guard !baseChannelViewModel(viewModel, isScrollNearBottomInChannel: viewModel.channel) else { return }
+        
+        guard super.increaseNewMessageCount() else { return }
+        self.viewModel?.newMessagesList.append(message)
+        
+        if let unreadMessageInfoView = self.listComponent?.unreadMessageInfoView as? SBUUnreadMessageInfoView,
+           unreadMessageInfoView.isHidden == false {
+            unreadMessageInfoView.updateCount(addCount: 1)
+        }
     }
     
     // MARK: - Message: Menu
@@ -848,6 +875,72 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         }
     }
     
+    open override func baseChannelViewModel(
+        _ viewModel: SBUBaseChannelViewModel,
+        didReceiveNewMessage message: BaseMessage,
+        forChannel channel: BaseChannel
+    ) {
+        if (message is UserMessage || message is FileMessage || message is MultipleFilesMessage) {
+            self.increaseNewMessageCount()
+        }
+        self.increaseUnreadMessageCount(message: message)
+    }
+    
+    /// - Since: 3.32.0
+    override open func baseChannelViewModel(
+        _ viewModel: SBUBaseChannelViewModel,
+        shouldUpdateScrollInMessageList messages: [BaseMessage],
+        forContext context: MessageContext?,
+        keepsScroll: Bool
+    ) {
+        SBULog.info("Fetched : \(messages.count), keepScroll : \(keepsScroll)")
+        guard let baseListComponent = baseListComponent else { return }
+        
+        guard !messages.isEmpty else {
+            SBULog.info("Fetched empty messages.")
+            return
+        }
+        
+        switch context?.source {
+        case .eventMessageSent:
+            SBULog.info("context.source == .eventMessageSent, messages=\(messages.map { $0.message })")
+            if !keepsScroll {
+                self.baseChannelModuleDidTapScrollToButton(baseListComponent, animated: false)
+            }
+            
+            let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+            if isMarkAsUnreadEnabled {
+                if self.allowsAutoMarkAsReadOnScroll {
+                    // scroll in near bottom & successfully sent a new message & user never explicitly called markAsUnread().
+                    // Thus, should call markAsRead().
+                    self.viewModel?.markAsRead()
+                }
+            }
+        case .eventMessageReceived:
+            // Source includes .eventMessageReceived
+            SBULog.info("context.source else block (including .eventMessageReceived), messages=\(messages.map { $0.message })")
+            if !baseChannelViewModel(viewModel, isScrollNearBottomInChannel: viewModel.channel) {
+                self.lastSeenIndexPath = baseListComponent.keepCurrentScroll(for: messages)
+            } else {
+                // scroll is near bottom & received new message
+                let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+                if isMarkAsUnreadEnabled {
+                    if self.allowsAutoMarkAsReadOnScroll {
+                        // scroll is near bottom & received new message & user never explicitly called markAsUnread().
+                        // Thus, should markAsRead().
+                        self.viewModel?.markAsRead()
+                    }
+                }
+            }
+        default:
+            SBULog.info("context.source is neither .eventMessageSent nor .eventMessageReceived")
+            // follow keepScroll flag if context is not `eventMessageReceived`.
+            if keepsScroll, !baseChannelViewModel(viewModel, isScrollNearBottomInChannel: viewModel.channel) {
+                self.lastSeenIndexPath = baseListComponent.keepCurrentScroll(for: messages)
+            }
+        }
+    }
+    
     open func groupChannelViewModel(
         _ viewModel: SBUGroupChannelViewModel,
         didReceiveSuggestedMentions members: [SBUUser]?) {
@@ -872,6 +965,62 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         forChannel channel: GroupChannel
     ) {
         self.listComponent?.updateStreamMessage(message)
+    }
+    
+    public func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        didUpdateFirstUnreadMessage message: BaseMessage?
+    ) {
+        self.listComponent?.reloadTableView()
+    }
+    
+    public func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        updateUnreadMessageInfoViewVisibility firstUnreadMessage: BaseMessage?
+    ) {
+        let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+        guard isMarkAsUnreadEnabled else { return }
+            
+        guard let channel = self.channel else { return }
+        
+        // Check if there are unread messages.
+        if (self.channel?.unreadMessageCount ?? 0) <= 0 {
+            self.listComponent?.unreadMessageInfoView?.isHidden = true
+            return
+        }
+        
+        // Check if firstUnreadMessage's newline is visible on screen
+        guard let tableView = self.listComponent?.tableView else { return }
+
+        let visibleCells = tableView.visibleCells
+        var isUnreadMarkVisible = false
+
+        for case let messageCell as SBUBaseMessageCell in visibleCells {
+            if let cellMessage = messageCell.message,
+               cellMessage.messageId == firstUnreadMessage?.messageId {
+
+                // Check if the newline is visible
+                guard let newline = messageCell.unreadMessageNewLine else { return }
+                if newline.isHidden == false {
+                  let newlineInTable = newline.convert(newline.bounds, to: tableView)
+                  let visibleRect = tableView.bounds
+                  isUnreadMarkVisible = visibleRect.contains(newlineInTable)
+                }
+                break
+            }
+        }
+
+        // Show unreadMessageInfoView if firstUnreadMessage's newline is not on screen
+        if !isUnreadMarkVisible {
+          self.listComponent?.unreadMessageInfoView?.isHidden = false
+
+          // Update the count.
+          if let unreadMessageInfoView = self.listComponent?.unreadMessageInfoView as? SBUUnreadMessageInfoView {
+              unreadMessageInfoView.updateCount(replaceCount: channel.unreadMessageCount)
+          }
+        } else {
+          self.listComponent?.unreadMessageInfoView?.isHidden = true
+        }
     }
     
     // MARK: - SBUGroupChannelModuleHeaderDelegate
@@ -1000,6 +1149,10 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapMentionUser user: SBUUser) {
         self.showUserProfile(user: user)
+    }
+    
+    open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapURL url: URL) {
+        url.open()
     }
     
     open func groupChannelModuleDidTapThreadInfoView(_ threadInfoView: SBUThreadInfoView) {
@@ -1132,6 +1285,44 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         }
     }
     
+    public func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        didScrollToUnreadMessageNewLine messageCell: SBUBaseMessageCell
+    ) {
+        // Check if markAsUnread feature is enabled.
+        let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+        guard isMarkAsUnreadEnabled else { return }
+        
+        // Should markAsRead if there are no newMessagesList.
+        if let viewModel = self.viewModel, viewModel.newMessagesList.isEmpty {
+            // Hide unreadMessageInfoView
+            self.listComponent?.unreadMessageInfoView?.isHidden = true
+            
+            viewModel.markAsRead { [weak self] error in
+                guard let self, error == nil else {
+                    return
+                }
+            }
+        } else {
+            if let viewModel = self.viewModel, let firstNewMessage = viewModel.newMessagesList.first {
+                // Internally markAsUnread
+                SBULog.info("Should call markAsUnread with message=\(firstNewMessage.message)")
+                viewModel.markMessageAsUnread(firstNewMessage) { _ in
+                    SBULog.info("markAsUnread done")
+                }
+            }
+        }
+    }
+    
+    public func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        didTapUnreadMessageInfoView: Bool
+    ) {
+        self.viewModel?.markAsRead()
+        self.viewModel?.firstUnreadMessage = nil
+        self.viewModel?.allowsAutoMarkAsReadOnScroll = true
+    }
+    
     open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapVoiceMessage fileMessage: FileMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         super.baseChannelModule(listComponent, didTapVoiceMessage: fileMessage, cell: cell, forRowAt: indexPath)
         
@@ -1143,6 +1334,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     open override func baseChannelModuleDidTapScrollToButton(_ listComponent: SBUBaseChannelModule.List, animated: Bool) {
         guard self.baseViewModel?.fullMessageList.isEmpty == false else { return }
         self.newMessagesCount = 0
+        self.viewModel?.newMessagesList = []
         
         super.baseChannelModuleDidTapScrollToButton(listComponent, animated: animated)
     }
@@ -1163,6 +1355,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     
     open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didScroll scrollView: UIScrollView) {
+        guard let channel = self.channel else { return }
         super.baseChannelModule(listComponent, didScroll: scrollView)
         
         self.lastSeenIndexPath = nil
@@ -1170,6 +1363,37 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         if listComponent.isScrollNearByBottom {
             self.newMessagesCount = 0
             self.updateNewMessageInfo(hidden: true)
+            
+            // Check isMarkAsUnreadEnabled
+            let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+            guard isMarkAsUnreadEnabled else { return }
+            guard let listComponent = self.listComponent else { return }
+            
+            // Call markAsRead()
+            if self.allowsAutoMarkAsReadOnScroll
+                && channel.unreadMessageCount > 0
+                && (listComponent.hasSeenNewLine || listComponent.didUnreadMessageExist == false) {
+                
+                SBULog.info("Scrolled to bottom, call markAsRead()")
+                self.viewModel?.newMessagesList = []
+                self.viewModel?.markAsRead()
+                self.listComponent?.unreadMessageInfoView?.isHidden = true
+            }
+        }
+    }
+    
+    /// - Since: 3.32.0
+    open func groupChannelModule(
+        _ listComponent: SBUBaseChannelModule.List,
+        didTapMarkAsUnread message: BaseMessage
+    ) {
+        let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+        guard isMarkAsUnreadEnabled else { return }
+        
+        self.viewModel?.markMessageAsUnread(message) { error in
+            guard error == nil else { return }
+            // set allowsAutoMarkAsReadOnScroll to false only when the user explicitly called markAsUnread().
+            self.viewModel?.allowsAutoMarkAsReadOnScroll = false
         }
     }
     
@@ -1303,6 +1527,14 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         return self.listComponent?.tableView.indexPathsForVisibleRows
     }
     
+    public func groupChannelModuleFirstUnreadMessage(_ listComponent: SBUGroupChannelModule.List) -> BaseMessage? {
+        self.viewModel?.firstUnreadMessage
+    }
+    
+    public func groupChannelModuleAllowsAutoMarkAsReadOnScroll(_ listComponent: SBUGroupChannelModule.List) -> Bool {
+        self.allowsAutoMarkAsReadOnScroll
+    }
+
     // MARK: - SBUMentionManagerDataSource
     open func mentionManager(_ manager: SBUMentionManager, suggestedMentionUsersWith filterText: String) -> [SBUUser] {
         return self.viewModel?.suggestedMemberList ?? []

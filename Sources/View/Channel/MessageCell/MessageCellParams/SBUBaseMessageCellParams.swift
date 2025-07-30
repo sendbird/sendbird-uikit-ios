@@ -53,6 +53,9 @@ public class SBUBaseMessageCellParams {
     /// - Since: 3.28.0
     var isThreadMessage: Bool = false
     
+    /// - Since: 3.32.0
+    public var isFirstUnreadMessage: Bool = false
+    
     /**
      - Parameters:
         - messagePosition: Cell position (left / right / center)
@@ -67,7 +70,9 @@ public class SBUBaseMessageCellParams {
                 isThreadMessage: Bool = false,
                 joinedAt: Int64 = 0,
                 shouldHideFeedback: Bool = true,
-                messageOffsetTimestamp: Int64 = 0) {
+                messageOffsetTimestamp: Int64 = 0,
+                isFirstUnreadMessage: Bool = false
+    ) {
         self.message = message
         self.hideDateView = hideDateView
         self.messagePosition = messagePosition
@@ -94,5 +99,7 @@ public class SBUBaseMessageCellParams {
         
         self.joinedAt = joinedAt
         self.messageOffsetTimestamp = messageOffsetTimestamp
+        
+        self.isFirstUnreadMessage = isFirstUnreadMessage
     }
 }

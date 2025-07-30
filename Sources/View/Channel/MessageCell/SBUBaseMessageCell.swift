@@ -26,6 +26,16 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     
     // Used to display the date separator in the message list.
     public lazy var dateView: UIView = SBUMessageDateView()
+    
+    /// A horizontal line that marks the first unread message.
+    /// - Since: 3.32.0
+    public lazy var unreadMessageNewLine: UIView? = {
+        if SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled {
+            return SBUUnreadMessageNewLine()
+        } else {
+            return nil
+        }
+    }()
 
     @SBUThemeWrapper(theme: SBUTheme.messageCellTheme)
     public var theme: SBUMessageCellTheme
@@ -71,6 +81,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     var moreEmojiTapHandler: (() -> Void)?
     var emojiLongPressHandler: ((_ emojiKey: String) -> Void)?
     var mentionTapHandler: ((_ user: SBUUser) -> Void)?
+    var urlTapHandler: ((_ url: URL) -> Void)?  // 3.32.0
     var errorHandler: ((_ error: SBError) -> Void)?
     
     /// The action of ``SBUSuggestedReplyView`` that is called when a ``SBUSuggestedReplyOptionView`` is selected.
@@ -108,15 +119,19 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     
     open override func setupViews() {
         self.dateView.isHidden = true
+        self.unreadMessageNewLine?.isHidden = true
         
-        // + ------------------ +
-        // | dateView           |
-        // + ------------------ +
-        // | messageContentView |
-        // + ------------------ +
+        // + --------------------- +
+        // | dateView              |
+        // + --------------------- +
+        // | unreadMessageNewLine |
+        // + --------------------- +
+        // | messageContentView    |
+        // + --------------------- +
         
         self.stackView.setVStack([
             self.dateView,
+            self.unreadMessageNewLine,
             self.messageContentView
         ])
         self.contentView.addSubview(self.stackView)
@@ -174,6 +189,9 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
         self.dateView.isHidden = configuration.hideDateView
         self.receiptState = configuration.receiptState
         self.shouldHideFeedback = configuration.shouldHideFeedback
+        
+        // MARK: Set up Unread Message Mark View
+        self.unreadMessageNewLine?.isHidden = (configuration.isFirstUnreadMessage == false)
         
         var didApplyEntireCellViewConverter = false
         #if SWIFTUI
