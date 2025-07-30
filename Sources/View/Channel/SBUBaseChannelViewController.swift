@@ -559,6 +559,10 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// This function increases the new message count.
     @discardableResult
     public func increaseNewMessageCount() -> Bool {
+        // [base calss - core logic]
+        // Ensures that:
+        // 1. Table view hasn't scrolled
+        // 2. Currently loading next messages
         guard let tableView = self.baseListComponent?.tableView,
               tableView.contentOffset != .zero,
               self.baseViewModel?.isLoadingNext == false
@@ -915,6 +919,8 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         }
     }
     
+    
+
     open func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didDismissMenuForCell cell: UITableViewCell) {
         cell.isSelected = false
     }
@@ -1347,7 +1353,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     // MARK: - SBUBaseChannelViewModelDataSource
     open func baseChannelViewModel(_ viewModel: SBUBaseChannelViewModel,
                                    isScrollNearBottomInChannel channel: BaseChannel?) -> Bool {
-        return self.baseListComponent?.isScrollNearByBottom ?? true
+        self.baseListComponent?.isScrollNearByBottom ?? true
     }
     
     // MARK: - UIGestureRecognizerDelegate

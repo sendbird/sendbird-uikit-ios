@@ -3033,6 +3033,17 @@ public class SBUComponentTheme {
         // Feedback
         theme.feedbackToastUpdateDoneColor = SBUColorSet.secondaryLight // 3.15.0
         
+        // Unread Message  ([NEXT_VERSION])
+        theme.unreadMessageFont = SBUFontSet.body2
+        theme.unreadMessageLabelTintColor = SBUColorSet.onLightTextMidEmphasis
+        theme.unreadMessageButtonTintColor = SBUColorSet.primaryMain
+        theme.unreadMessageBackground = SBUColorSet.background50
+        
+        // Unread Message New Line  ([NEXT_VERSION])
+        theme.newLineLabelFont = SBUFontSet.caption3
+        theme.newLineLabelTintColor = SBUColorSet.primaryMain
+        theme.newLineTintColor = SBUColorSet.primaryMain
+        
         return theme
     }
     
@@ -3149,6 +3160,17 @@ public class SBUComponentTheme {
         theme.toastTitleColor = SBUColorSet.onLightTextHighEmphasis // 3.15.0
         
         theme.feedbackToastUpdateDoneColor = SBUColorSet.secondaryMain // 3.15.0
+        
+        // Unread Message  ([NEXT_VERSION])
+        theme.unreadMessageFont = SBUFontSet.body2
+        theme.unreadMessageLabelTintColor = SBUColorSet.onDarkTextMidEmphasis
+        theme.unreadMessageButtonTintColor = SBUColorSet.primaryLight
+        theme.unreadMessageBackground = SBUColorSet.background400
+        
+        // Unread Message New Line  ([NEXT_VERSION])
+        theme.newLineLabelFont = SBUFontSet.caption3
+        theme.newLineLabelTintColor = SBUColorSet.primaryLight
+        theme.newLineTintColor = SBUColorSet.primaryLight
         
         return theme
     }
@@ -3347,7 +3369,16 @@ public class SBUComponentTheme {
                 loadingSpinnerColor: UIColor = SBUColorSet.primaryMain,
                 toastContainerColor: UIColor = SBUColorSet.background700, // 3.15.0
                 toastTitleColor: UIColor = SBUColorSet.onDarkTextHighEmphasis, // 3.15.0
-                feedbackToastUpdateDoneColor: UIColor = SBUColorSet.secondaryLight // 3.15.0
+                feedbackToastUpdateDoneColor: UIColor = SBUColorSet.secondaryLight, // 3.15.0
+                
+                unreadMessageFont: UIFont = SBUFontSet.body2,
+                unreadMessageLabelTintColor: UIColor = SBUColorSet.onLightTextMidEmphasis,
+                unreadMessageBackground: UIColor = SBUColorSet.background50,
+                unreadMessageButtonTintColor: UIColor = SBUColorSet.primaryMain,
+                
+                newLineLabelFont: UIFont = SBUFontSet.caption3,
+                newLineLabelTintColor: UIColor = SBUColorSet.primaryMain,
+                newLineTintColor: UIColor = SBUColorSet.primaryMain
     ) {
         
         self.emptyViewBackgroundColor = emptyViewBackgroundColor
@@ -3440,6 +3471,17 @@ public class SBUComponentTheme {
         
         // Feedback toast
         self.feedbackToastUpdateDoneColor = feedbackToastUpdateDoneColor // 3.15.0
+        
+        // Unread Message  ([NEXT_VERSION])
+        self.unreadMessageFont = unreadMessageFont
+        self.unreadMessageLabelTintColor = unreadMessageLabelTintColor
+        self.unreadMessageButtonTintColor = unreadMessageButtonTintColor
+        self.unreadMessageBackground = unreadMessageBackground
+        
+        // Unread Message New line  ([NEXT_VERSION])
+        self.newLineLabelFont = newLineLabelFont
+        self.newLineLabelTintColor = newLineLabelTintColor
+        self.newLineTintColor = newLineTintColor
     }
     
     // EmptyView
@@ -3558,6 +3600,17 @@ public class SBUComponentTheme {
     
     // Feedback
     public var feedbackToastUpdateDoneColor: UIColor // 3.15.0
+    
+    // Unread Message
+    public var unreadMessageFont: UIFont  // [NEXT_VERSION]
+    public var unreadMessageLabelTintColor: UIColor  // [NEXT_VERSION]
+    public var unreadMessageButtonTintColor: UIColor  // [NEXT_VERSION]
+    public var unreadMessageBackground: UIColor  // [NEXT_VERSION]
+    
+    // Unread Message New Line
+    public var newLineLabelFont: UIFont  // [NEXT_VERSION]
+    public var newLineLabelTintColor: UIColor  // [NEXT_VERSION]
+    public var newLineTintColor: UIColor  // [NEXT_VERSION]
 }
 
 // MARK: - Message Search Theme

@@ -644,6 +644,13 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         self.showUserProfile(user: user)
     }
     
+    open func messageThreadModule(
+        _ listComponent: SBUMessageThreadModule.List,
+        didTapURL url: URL
+    ) {
+        url.open()
+    }
+    
     /// - Note: This interface is beta. We do not gaurantee this interface to work properly yet.
     /// - Since: [NEXT_VERSION_MFM_THREAD]
     public func messageThreadModule(

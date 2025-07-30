@@ -433,6 +433,8 @@ open class SBUContentBaseMessageCell: SBUBaseMessageCell {
         
         // MARK: Group messages
         self.setMessageGrouping()
+        
+        // Configure --- New Message --- view
     }
     
     public func setupQuotedMessageView(joinedAt: Int64 = 0, messageOffsetTimestamp: Int64 = 0) {

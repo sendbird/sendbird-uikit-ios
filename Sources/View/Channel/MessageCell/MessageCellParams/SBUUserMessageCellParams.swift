@@ -43,7 +43,8 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
         messageOffsetTimestamp: Int64 = 0,
         shouldHideSuggestedReplies: Bool = true,
         shouldHideFormTypeMessage: Bool = true,
-        enableEmojiLongPress: Bool = true
+        enableEmojiLongPress: Bool = true,
+        isFirstUnreadMessage: Bool = false
     ) {
         self.useReaction = useReaction
         self.withTextView = withTextView
@@ -65,7 +66,8 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
             receiptState: receiptState,
             isThreadMessage: isThreadMessage,
             joinedAt: joinedAt,
-            messageOffsetTimestamp: messageOffsetTimestamp
+            messageOffsetTimestamp: messageOffsetTimestamp,
+            isFirstUnreadMessage: isFirstUnreadMessage
         )
     }
 }

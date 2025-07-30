@@ -214,6 +214,11 @@ public class SBUIconSet {
     public static var iconBad = SBUIconSetType.iconBad.load() {
         didSet { SBUIconSetType.iconBad.markCustomized() }
     }
+
+    /// - Since: [NEXT_VERSION]
+    public static var iconMarkAsUnread: UIImage = SBUIconSetType.iconMarkAsUnread.load() {
+        didSet { SBUIconSetType.iconMarkAsUnread.markCustomized() }
+    }
     
     /// Restore all customized icons to SDK's default icons.
     ///

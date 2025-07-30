@@ -35,6 +35,12 @@ public protocol SBUMessageThreadModuleListDelegate: SBUBaseChannelModuleListDele
     ///    - user: The`SBUUser` object from the tapped mention.
     func messageThreadModule(_ listComponent: SBUMessageThreadModule.List, didTapMentionUser user: SBUUser)
     
+    /// Called when URL link in a message cell is tapped.
+    /// - Parameters:
+    ///    - URL: The`URL` object from the tapped URL link.
+    /// - Since: [NEXT_VERSION]
+    func messageThreadModule(_ listComponent: SBUMessageThreadModule.List, didTapURL url: URL)
+    
     /// Called when one of the files is selected in the multiple file message cell.
     /// - Parameters:
     ///    - listComponent: `SBUMessageThreadModule.List ` object.
@@ -344,6 +350,11 @@ extension SBUMessageThreadModule {
                 self.delegate?.messageThreadModule(self, didTapMentionUser: user)
             }
             
+            self.parentMessageInfoView.urlTapHandler = { [weak self] url in
+                guard let self = self else { return }
+                self.delegate?.messageThreadModule(self, didTapURL: url)
+            }
+            
             self.parentMessageInfoView.errorHandler = { [weak self] error in
                 guard let self = self else { return }
                 self.delegate?.didReceiveError(error, isBlocker: false)
@@ -376,7 +387,7 @@ extension SBUMessageThreadModule {
         }
         
         open override func createMessageMenuItems(for message: BaseMessage) -> [SBUMenuItem] {
-            let items = super.createMessageMenuItems(for: message)
+            let items = super.createMessageMenuItems(for: message, isThreadMessage: true)
             return items
         }
         
@@ -448,6 +459,11 @@ extension SBUMessageThreadModule {
             cell.mentionTapHandler = { [weak self] user in
                 guard let self = self else { return }
                 self.delegate?.messageThreadModule(self, didTapMentionUser: user)
+            }
+            
+            cell.urlTapHandler = { [weak self] url in
+                guard let self = self else { return }
+                self.delegate?.messageThreadModule(self, didTapURL: url)
             }
         }
         
