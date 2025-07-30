@@ -32,7 +32,8 @@ public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
         joinedAt: Int64 = 0,
         messageOffsetTimestamp: Int64 = 0,
         voiceFileInfo: SBUVoiceFileInfo? = nil,
-        enableEmojiLongPress: Bool = true
+        enableEmojiLongPress: Bool = true,
+        isFirstUnreadMessage: Bool = false
     ) {
         self.useReaction = useReaction
         
@@ -52,7 +53,8 @@ public class SBUFileMessageCellParams: SBUBaseMessageCellParams {
             receiptState: receiptState,
             isThreadMessage: isThreadMessage,
             joinedAt: joinedAt,
-            messageOffsetTimestamp: messageOffsetTimestamp
+            messageOffsetTimestamp: messageOffsetTimestamp,
+            isFirstUnreadMessage: isFirstUnreadMessage
         )
         
         self.voiceFileInfo = voiceFileInfo ?? SBUVoiceFileInfo.createVoiceFileInfo(with: message)

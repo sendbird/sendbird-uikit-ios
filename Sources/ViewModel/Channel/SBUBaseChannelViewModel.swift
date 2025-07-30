@@ -617,6 +617,9 @@ open class SBUBaseChannelViewModel: NSObject {
         self.channel?.deleteMessage(message, completionHandler: nil)
     }
     
+    // MARK: - Message related
+    public func updateFirstUnreadMessage() { }
+    
     // MARK: - List
     
     /// This function updates the messages in the list.
@@ -664,11 +667,13 @@ open class SBUBaseChannelViewModel: NSObject {
     ///   - messages: Message array to upsert
     ///   - needUpdateNewMessage: If set to `true`, increases new message count.
     ///   - needReload: If set to `true`, the tableview will be call reloadData.
+    ///   - shouldUpdateFirstUnreadMessage: `true` when this method was called when loading the initial messages 
     /// - Since: 1.2.5
     public func upsertMessagesInList(
         messages: [BaseMessage]?,
         needUpdateNewMessage: Bool = false,
-        needReload: Bool
+        needReload: Bool,
+        shouldUpdateFirstUnreadMessage: Bool = false
     ) {
         SBULog.info("First : \(String(describing: messages?.first)), Last : \(String(describing: messages?.last))")
         
@@ -681,7 +686,7 @@ open class SBUBaseChannelViewModel: NSObject {
             }
             
             guard self.messageListParams.belongsTo(message) else {
-                self.sortAllMessageList(needReload: needReload)
+                self.sortAllMessageList(needReload: needReload, shouldUpdateFirstUnreadMessage: shouldUpdateFirstUnreadMessage)
                 return
             }
             
@@ -722,15 +727,20 @@ open class SBUBaseChannelViewModel: NSObject {
         }
         
         let sortAllMessageListBlock = { [weak self] in
-            self?.sortAllMessageList(needReload: needReload)
+            self?.sortAllMessageList(needReload: needReload, shouldUpdateFirstUnreadMessage: shouldUpdateFirstUnreadMessage)
         }
         
         if needMarkAsRead,
            let channel = self.channel as? GroupChannel,
            !self.isThreadMessageMode,
             SendbirdChat.getConnectState() == .open {
-            channel.markAsRead { error in
+            
+            if SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled {
                 sortAllMessageListBlock()
+            } else {
+                channel.markAsRead { error in
+                    sortAllMessageListBlock()
+                }
             }
         } else {
             sortAllMessageListBlock()
@@ -842,7 +852,7 @@ open class SBUBaseChannelViewModel: NSObject {
     /// This function sorts the all message list. (Included `presendMessages`, `messageList` and `resendableMessages`.)
     /// - Parameter needReload: If set to `true`, the tableview will be call reloadData and, scroll to last seen index.
     /// - Since: 1.2.5
-    public func sortAllMessageList(needReload: Bool) {
+    public func sortAllMessageList(needReload: Bool, shouldUpdateFirstUnreadMessage: Bool = false) {
         // Generate full list for draw
         let pendingMessages = self.pendingMessageManager.getPendingMessages(
             channelURL: self.channel?.channelURL,
@@ -873,6 +883,11 @@ open class SBUBaseChannelViewModel: NSObject {
             self.fullMessageList = self.messageList
                                     + refinedPendingMessages.sorted { $0.createdAt < $1.createdAt }
                                     + typingMessageArray
+        }
+        
+        // Find first unread message.
+        if shouldUpdateFirstUnreadMessage {
+            self.updateFirstUnreadMessage()
         }
         
         self.baseDelegates.forEach {

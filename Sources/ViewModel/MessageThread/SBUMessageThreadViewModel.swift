@@ -893,7 +893,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     }
     
     // MARK: - List
-    public override func sortAllMessageList(needReload: Bool) {
+    public override func sortAllMessageList(needReload: Bool, shouldUpdateFirstUnreadMessage: Bool = false) {
         // Generate full list for draw
         let pendingMessages = self.pendingMessageManager
             .getPendingMessages(

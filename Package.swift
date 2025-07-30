@@ -25,13 +25,13 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "SendbirdUIKit",
-            url: "https://github.com/sendbird/sendbird-uikit-ios/releases/download/3.31.1/SendbirdUIKit.xcframework.zip", // SendbirdUIKit_URL
-            checksum: "76f1c50d7e1d0503c9a71ae761cadddaf454398d149e322e5a5a9802dbd7c54f" // SendbirdUIKit_CHECKSUM
+            url: "https://github.com/sendbird/sendbird-uikit-ios/releases/download/1.0.999/SendbirdUIKit.xcframework.zip", // SendbirdUIKit_URL
+            checksum: "fa71a3ec185ac6f3039e9b3631c4bcbe09a4b309b67e93f28af568267ed504ba" // SendbirdUIKit_CHECKSUM
         ),
         .binaryTarget(
             name: "SendbirdUIMessageTemplate",
-            url: "https://github.com/sendbird/sendbird-uikit-ios/releases/download/3.31.1/SendbirdUIMessageTemplate.xcframework.zip", // SendbirdUIMessageTemplate_URL
-            checksum: "e9b79ce17dae84da74e7d1f359515f7d3f14f6507d95be281f3631f89013c5ef" // SendbirdUIMessageTemplate_CHECKSUM
+            url: "https://github.com/sendbird/sendbird-uikit-ios/releases/download/1.0.999/SendbirdUIMessageTemplate.xcframework.zip", // SendbirdUIMessageTemplate_URL
+            checksum: "4ee7079edb5aa61051f161985b5ae3fcbea72b3951f68cf6492a004b87eadc6e" // SendbirdUIMessageTemplate_CHECKSUM
         ),
         .target(
             name: "SendbirdUIKitTarget",
