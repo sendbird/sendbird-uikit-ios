@@ -49,6 +49,37 @@ public protocol SBUGroupChannelViewModelDelegate: SBUBaseChannelViewModelDelegat
         didReceiveStreamMessage message: BaseMessage,
         forChannel channel: GroupChannel
     )
+    
+    /// Called when the first unread message is updated.
+    /// - Parameters:
+    ///   - viewModel: `SBUGroupChannelViewModel` object.
+    ///   - message: The new first unread message.
+    /// - Since: 3.32.0
+    func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        didUpdateFirstUnreadMessage message: BaseMessage?
+    )
+    
+    /// Checks whether to show or hide unreadMessageInfoView.
+    /// - Since: 3.32.0
+    func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        updateUnreadMessageInfoViewVisibility firstUnreadMessage: BaseMessage?
+    )
+}
+
+extension SBUGroupChannelViewModelDelegate {
+    /// Default implementation
+    public func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        didUpdateFirstUnreadMessage message: BaseMessage?
+    ) { }
+    
+    /// Default implementation
+    public func groupChannelViewModel(
+        _ viewModel: SBUGroupChannelViewModel,
+        updateUnreadMessageInfoViewVisibility firstUnreadMessage: BaseMessage?
+    ) { }
 }
 
 open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
@@ -62,7 +93,12 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         get { self.baseDataSource as? SBUGroupChannelViewModelDataSource }
         set { self.baseDataSource = newValue }
     }
-
+    
+    /// A list of messages that newly arrived while the scroll is not near bottom.
+    /// Older messages come first in the list.
+    /// - Since: 3.32.0
+    public internal(set) var newMessagesList: [BaseMessage] = []
+    
     // MARK: SwiftUI (Internal)
     var delegates: WeakDelegateStorage<SBUGroupChannelViewModelDelegate> {
         let computedDelegates = WeakDelegateStorage<SBUGroupChannelViewModelDelegate>()
@@ -428,10 +464,11 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 
                 self.upsertMessagesInList(
                     messages: cacheResult,
-                    needReload: self.displaysLocalCachedListFirst
+                    needReload: self.displaysLocalCachedListFirst,
+                    shouldUpdateFirstUnreadMessage: true
                 )
-                
-            }, apiResultHandler: { [weak self] apiResult, error in
+            },
+            apiResultHandler: { [weak self] apiResult, error in
                 guard let self = self else { return }
                 
                 self.loadInitialPendingMessages()
@@ -453,13 +490,17 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     
                     return
                 }
-        
+                
                 if self.initPolicy == .cacheAndReplaceByApi {
                     self.clearMessageList()
                 }
                 
                 self.isInitialLoading = false
-                self.upsertMessagesInList(messages: apiResult, needReload: true)
+                self.upsertMessagesInList(
+                    messages: apiResult,
+                    needReload: true,
+                    shouldUpdateFirstUnreadMessage: true
+                )
             })
     }
     
@@ -504,7 +545,8 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 return
             }
             
-            guard let messages = messages, !messages.isEmpty else { return }
+            guard let messages = messages,
+                  !messages.isEmpty else { return }
             SBULog.info("[Prev message response] \(messages.count) messages")
             
             self.delegates.forEach {
@@ -515,7 +557,11 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     keepsScroll: false
                 )
             }
-            self.upsertMessagesInList(messages: messages, needReload: true)
+            self.upsertMessagesInList(
+                messages: messages,
+                needReload: true,
+                shouldUpdateFirstUnreadMessage: true
+            )
         }
     }
     
@@ -529,7 +575,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         guard let messageCollection = self.messageCollection else { return }
         self.isLoadingNext = true
         
-        messageCollection.loadNext { [weak self] messages, error in
+        messageCollection.loadNext {
+            [weak self] messages,
+            error in
             guard let self = self else { return }
             defer {
                 self.nextLock.unlock()
@@ -554,7 +602,11 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     keepsScroll: true
                 )
             }
-            self.upsertMessagesInList(messages: messages, needReload: true)
+            self.upsertMessagesInList(
+                messages: messages,
+                needReload: true,
+                shouldUpdateFirstUnreadMessage: true
+            )
         }
     }
 
@@ -572,11 +624,129 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         self.markAsRead(completionHandler: nil)
     }
     
+    /// Calls markAsRead() only if the `isMarkAsUnreadEnabled` feature is disabled.
+    /// - Since: 3.32.0
+    public func markAsReadIfAppropriate() {
+        let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+        if isMarkAsUnreadEnabled == false {
+            self.markAsRead(completionHandler: nil)
+        }
+    }
+    
+    /// Calls markAsRead() with a completionHandler, only if the `isMarkAsUnreadEnabled` feature is disabled.
+    /// - Parameter completionHandler: A callback block that is run after markAsRead request is complete.
+    /// - Since: 3.32.0
+    func markAsReadIfAppropriate(completionHandler: SendbirdChatSDK.SBErrorHandler?) {
+        let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+        if isMarkAsUnreadEnabled == false {
+            self.markAsRead(completionHandler: completionHandler)
+        }
+    }
+    
     func markAsRead(completionHandler: SendbirdChatSDK.SBErrorHandler?) {
         if let channel = self.channel as? GroupChannel,
-           SendbirdChat.getConnectState() == .open {
+              SendbirdChat.getConnectState() == .open {
             channel.markAsRead(completionHandler: completionHandler)
         }
+    }
+    
+    /// Marks a message as unread.
+    /// - Parameters:
+    ///    - message: The message to mark as unread.
+    ///    - completionHandler: A handler block to be executed after marking the message as unread.
+    /// - Since: 3.32.0
+    open func markMessageAsUnread(_ message: BaseMessage, completionHandler: SendbirdChatSDK.SBErrorHandler?) {
+        let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+        guard isMarkAsUnreadEnabled else {
+            SBULog.warning("To call markAsUnread, please first enable `SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled` feature.")
+            return
+        }
+        
+        if let groupChannel = channel as? GroupChannel {
+            groupChannel.markAsUnread(message: message) { [weak self] error in
+                guard let self = self else { return }
+                if let error = error {
+                    SBULog.error("Failed to mark message as unread. \(error)")
+                    self.delegates.forEach {
+                        $0.didReceiveError(error)
+                    }
+                }
+                
+                self.sortAllMessageList(needReload: true)
+                completionHandler?(error)
+            }
+        }
+    }
+    
+    /// Whether automatic mark-as-read is allowed when scrolling past the newline.
+    /// Set to `false` when user explicitly calls markAsUnread to prevent auto-read behavior.
+    /// - Since: 3.32.0
+    var allowsAutoMarkAsReadOnScroll: Bool = true
+    
+    /// - Since: 3.32.0
+    /// If `nil`, either all messages are read or first unread message is not yet loaded in `messageList`.
+    var firstUnreadMessage: BaseMessage? {
+        didSet {
+            self.delegates.forEach {
+                $0.groupChannelViewModel(self, didUpdateFirstUnreadMessage: firstUnreadMessage)
+            }
+        }
+    }
+    
+    override public func updateFirstUnreadMessage() {
+        SBULog.info("Update firstUnreadMessage")
+        guard let groupChannel = self.channel as? GroupChannel else { return }
+        guard let collection = self.messageCollection else { return }
+                
+        let myLastRead = groupChannel.myLastRead
+        
+        // Check if we have any loaded messages
+        guard !self.messageList.isEmpty else {
+            self.firstUnreadMessage = nil
+            SBULog.info("No messages loaded yet. firstUnreadMessage = nil")
+            return
+        }
+        
+        if let oldestLoadedMessageTimestamp = self.messageList.last?.createdAt,
+           let newestLoadedMessageTimestamp = self.messageList.first?.createdAt {
+            let isFirstUnreadMessageInLoadedMessageList = oldestLoadedMessageTimestamp <= myLastRead && myLastRead <= newestLoadedMessageTimestamp
+            
+            // If there are unread messages but the first unread message is not in the currently loaded range
+            if !isFirstUnreadMessageInLoadedMessageList {
+                // Check if the first unread message might be before our loaded messages
+                if myLastRead < oldestLoadedMessageTimestamp && collection.hasPrevious {
+                    self.firstUnreadMessage = nil
+                    SBULog.info("The first unread message is not yet loaded in `messageList` (before current range).")
+                    return
+                }
+                // Check if the first unread message might be after our loaded messages  
+                else if myLastRead > newestLoadedMessageTimestamp && collection.hasNext {
+                    self.firstUnreadMessage = nil
+                    SBULog.info("The first unread message is not yet loaded in `messageList` (after current range).")
+                    return
+                } else {
+                    // If we don't have previous/next messages to load, proceed to find within current range
+                }
+            }
+        }
+        
+        // Search for the first unread message in the currently loaded messages
+        var tempFirstUnreadMessage: BaseMessage?
+        for currentMessage in self.messageList {
+            // A silent message is excluded as an unread message. (Also excluded from unreadMessageCount)
+            if currentMessage.isSilent { continue }
+            
+            if currentMessage is UserMessage || currentMessage is FileMessage || currentMessage is MultipleFilesMessage || currentMessage is AdminMessage {
+                if groupChannel.myLastRead < currentMessage.createdAt {
+                    SBULog.info("Temporary firstUnreadMessage=\(currentMessage.message)")
+                    tempFirstUnreadMessage = currentMessage
+                }
+            }
+        }
+        
+        self.firstUnreadMessage = tempFirstUnreadMessage
+        
+        SBULog.info("Finished finding firstUnreadMessage. firstUnreadMessage=\(self.firstUnreadMessage?.message ?? "nil")")
     }
     
     // MARK: - Typing
@@ -725,10 +895,12 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     }
     
     override func reset() {
-        self.markAsRead()
-        
+        self.markAsReadIfAppropriate()
         super.reset()
     }
+    
+    var addedMessages = [BaseMessage]()
+    var addedMessageContext: MessageContext? = nil
 }
 
 extension SBUGroupChannelViewModel: MessageCollectionDelegate {
@@ -756,9 +928,10 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         if existInPendingMessage { return }
 
         SBULog.info("messageCollection addedMessages : \(messages.count)")
+        
         switch context.source {
         case .eventMessageReceived:
-            self.markAsRead()
+            self.markAsReadIfAppropriate()
         default: break
         }
         
@@ -875,6 +1048,55 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         
         self.delegates.forEach {
             $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+        }
+    }
+    
+    public func messageCollection(
+        _ collection: MessageCollection,
+        channelContext: ChannelContext,
+        updatedChannel: GroupChannel
+    ) {
+        switch channelContext.source {
+        case .eventUserDidMarkAsRead:
+            SBULog.info("channelContext.source == .eventDidMarkAsRead")
+            guard let readEventDetail = channelContext.eventDetail as? EventDetail.UserDidMarkAsRead else {
+                return
+            }
+            
+            SBULog.info("reader=\(readEventDetail.userIds[0])")
+            if let currentUserId = SBUGlobals.currentUser?.userId,
+               readEventDetail.userIds[0] == currentUserId {
+                SBULog.info(".eventDidMarkAsRead by CurrentUser")
+            }
+        
+        case .eventUserDidMarkAsUnread:
+            SBULog.info("channelContext.source == .eventDidMarkAsUnread")
+            guard let unreadEventDetail = channelContext.eventDetail as? EventDetail.UserDidMarkAsUnread else {
+                return
+            }
+            
+            SBULog.info("reader=\(unreadEventDetail.userIds[0])")
+            guard let currentUserId = SBUGlobals.currentUser?.userId,
+                  unreadEventDetail.userIds[0] == currentUserId else {
+                return
+            }
+            
+            SBULog.info(".eventDidMarkAsUnread by CurrentUser")
+            self.updateFirstUnreadMessage()
+        case .eventChannelChanged:
+            SBULog.info("channelContext.source == .eventChannelChanged")
+            
+            // Update unreadMessageInfoView's visibility based on
+            // the updated channel data (myLastRead, lastMessage.createdAt).
+            self.delegates.forEach {
+                $0.groupChannelViewModel(
+                    self,
+                    updateUnreadMessageInfoViewVisibility: self.firstUnreadMessage
+                )
+            }
+            
+        default:
+            break
         }
     }
     
@@ -1064,7 +1286,7 @@ extension SBUGroupChannelViewModel {
             self.messageCache?.loadNext()
         }
         
-        self.markAsRead { [weak self] _ in
+        self.markAsReadIfAppropriate() { [weak self] error in
             self?.refreshChannel()
         }
     }
@@ -1081,8 +1303,9 @@ extension SBUGroupChannelViewModel: GroupChannelDelegate {
         
         let isScrollBottom = self.dataSource?.baseChannelViewModel(self, isScrollNearBottomInChannel: self.channel)
         if (self.hasNext() == true || isScrollBottom == false) &&
-            (message is UserMessage || message is FileMessage) {
+            (message is UserMessage || message is FileMessage || message is MultipleFilesMessage || message is AdminMessage) {
 //            let context = MessageContext(source: .eventMessageReceived, sendingStatus: .succeeded)
+            
             if let channel = self.channel {
                 self.delegates.forEach {
                     $0.baseChannelViewModel(self, didReceiveNewMessage: message, forChannel: channel)

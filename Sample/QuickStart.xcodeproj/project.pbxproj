@@ -64,6 +64,7 @@
 		1F9AF11CBD57A1C0F046A1BD /* SBUChatNotificationChannelModule.Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99899ECBA692C5EB392A03A5 /* SBUChatNotificationChannelModule.Header.swift */; };
 		2102BD005C1F814FFAAB4BB8 /* SBUBaseChannelViewController.Keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C506D21F5EE397AB774BAD4 /* SBUBaseChannelViewController.Keyboard.swift */; };
 		2123BD09DF18EA06E021CDD2 /* SendbirdUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEE17806E0CF16A2393D71D /* SendbirdUI.swift */; };
+		216362FBB1035E9250E50437 /* SBUUnreadMessageNewLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26D3D4DE92792573C29A7D04 /* SBUUnreadMessageNewLine.swift */; };
 		2193672786394505EDEBAAA7 /* SBUMarginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DAE73AB89AC743DE6D891EA /* SBUMarginView.swift */; };
 		21CAB9B93132D4BFD8900A98 /* SBUOpenChannelListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AB89DA1F609B23DDA77AD2 /* SBUOpenChannelListViewController.swift */; };
 		22967075D93E3F70BCD9A2C9 /* SBUSearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CB1790089AF2411471CD267 /* SBUSearchBar.swift */; };
@@ -366,6 +367,7 @@
 		B30BD4D38EA996F0F48AD523 /* SBUOpenChannelViewController.Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03343061392340BDE2ACD83F /* SBUOpenChannelViewController.Deprecated.swift */; };
 		B3E0A420A3ED443D3AFE4FB5 /* SBUError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 608F851659F07B69DD950778 /* SBUError.swift */; };
 		B4FE947914359645BC044370 /* SBUThreadInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39E34937B21FBB070FFA33AF /* SBUThreadInfoView.swift */; };
+		B5008C359915BAD070D4223C /* SBUUnreadMessageInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DD008C2F5E8944BD525DA1 /* SBUUnreadMessageInfoView.swift */; };
 		B5856123F9358E8F052C9322 /* ChannelSettingsCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03CD5B640800DF99AAADDCA /* ChannelSettingsCustomManager.swift */; };
 		B58CC3FE52F1464A8ED9EA47 /* SBUNewMessageInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EA9E2368D74F5331F0D2A5 /* SBUNewMessageInfo.swift */; };
 		B59C88E2A6DE7C7D12EAC2EC /* SBUConfig.Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = E12267B5F86E985A1950FB9B /* SBUConfig.Base.swift */; };
@@ -662,6 +664,7 @@
 		2628AA835EFFD20C7225B817 /* SBUNotificationTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUNotificationTimelineView.swift; sourceTree = "<group>"; };
 		268FDB1348A09BE4D0F8E284 /* SBUContentBaseMessageCell.Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUContentBaseMessageCell.Deprecated.swift; sourceTree = "<group>"; };
 		26B3A0BDFAE02540461DFD20 /* SBUChannelInfoHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUChannelInfoHeaderView.swift; sourceTree = "<group>"; };
+		26D3D4DE92792573C29A7D04 /* SBUUnreadMessageNewLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUUnreadMessageNewLine.swift; sourceTree = "<group>"; };
 		26F15FDAB2EA2301931B3EB6 /* NotificationService.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = NotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		27CD5219F5AE337CF80DD8AC /* SBUGroupChannelListModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUGroupChannelListModule.swift; sourceTree = "<group>"; };
 		280E8DDB6DAF1F077BA69125 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -998,6 +1001,7 @@
 		C553040C17F47F0EAB30D6DC /* SBUOpenChannelFileMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUOpenChannelFileMessageCell.swift; sourceTree = "<group>"; };
 		C64DCA66958E329D2396EC70 /* SBUFeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUFeedbackView.swift; sourceTree = "<group>"; };
 		C65E9DA0B945AC6F2978B9E6 /* UIcolor+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIcolor+Ext.swift"; sourceTree = "<group>"; };
+		C6DD008C2F5E8944BD525DA1 /* SBUUnreadMessageInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUUnreadMessageInfoView.swift; sourceTree = "<group>"; };
 		C7368083040846A8BFD1A786 /* CreateChannelCustomManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelCustomManager.swift; sourceTree = "<group>"; };
 		C9042A3782300E8F4CF02708 /* SBUNavigationTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUNavigationTitleView.swift; sourceTree = "<group>"; };
 		C90D1386116B8BE15F521624 /* SBUCacheManager.MemoryCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUCacheManager.MemoryCache.swift; sourceTree = "<group>"; };
@@ -1310,6 +1314,7 @@
 				2628AA835EFFD20C7225B817 /* SBUNotificationTimelineView.swift */,
 				5C406F4F895C575FE5BE451E /* SBUOpenChannelMessageWebView.swift */,
 				E28358E77951CDC52D0FE156 /* SBUSelectableStackView.swift */,
+				26D3D4DE92792573C29A7D04 /* SBUUnreadMessageNewLine.swift */,
 				E748FA77E40B9D0B4CE2573A /* SBUUserMessageTextView.swift */,
 				82F80A3F363B14916DD1409A /* SBUUserNameView.swift */,
 			);
@@ -2767,6 +2772,7 @@
 			children = (
 				60EA9E2368D74F5331F0D2A5 /* SBUNewMessageInfo.swift */,
 				62021F741BE661BBA08FFDB1 /* SBUNewNotificationInfo.swift */,
+				C6DD008C2F5E8944BD525DA1 /* SBUUnreadMessageInfoView.swift */,
 			);
 			path = NewMessageInfo;
 			sourceTree = "<group>";
@@ -3734,6 +3740,8 @@
 				9FA0B248364A167F93CC2441 /* SBUUnderLineTextField.swift in Sources */,
 				F3A57FD76830966953395B89 /* SBUUnknownMessageCell.swift in Sources */,
 				EFE5D9079E3FE566F9B941C9 /* SBUUnknownMessageCellParams.swift in Sources */,
+				B5008C359915BAD070D4223C /* SBUUnreadMessageInfoView.swift in Sources */,
+				216362FBB1035E9250E50437 /* SBUUnreadMessageNewLine.swift in Sources */,
 				516542E3E12A57A889FEF222 /* SBUUser.swift in Sources */,
 				9B880DC490DBBB2B2EEFDECF /* SBUUserCell.swift in Sources */,
 				4D6991964EFA4D8CBB93A6D5 /* SBUUserListModule.Deprecated.swift in Sources */,
@@ -3845,7 +3853,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.31.1;
+				MARKETING_VERSION = 3.32.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -3873,7 +3881,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.31.1;
+				MARKETING_VERSION = 3.32.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4018,7 +4026,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.31.1;
+				MARKETING_VERSION = 3.32.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4046,7 +4054,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.31.1;
+				MARKETING_VERSION = 3.32.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4095,7 +4103,7 @@
 			repositoryURL = "https://github.com/sendbird/sendbird-uikit-ios-spm";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 3.31.1;
+				minimumVersion = 3.32.0;
 			};
 		};
 		A4CD81EE92C875D0E22463C6 /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */ = {

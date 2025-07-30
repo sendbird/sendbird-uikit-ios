@@ -1282,7 +1282,7 @@ extension UIView {
     }
 }
 
-// Round Corners
+// MARK: - Round Corners
 extension UIView {
     func roundCorners(corners: UIRectCorner, radius: CGFloat) {
         self.clipsToBounds = true
@@ -1295,6 +1295,28 @@ extension UIView {
         if corners.contains(.bottomRight) { maskedCorners.insert(.layerMaxXMaxYCorner) }
         
         self.layer.maskedCorners = maskedCorners
+    }
+}
+
+// Shadows
+extension UIView {
+    func applyMultipleShadows(cornerRadius: CGFloat = 20, backgroundColor: UIColor, shadowConfigs: [(radius: CGFloat, offset: CGSize, color: UIColor)]) {
+        // Clear existing shadow sublayers
+        self.layer.sublayers?.removeAll { $0.name == "shadowLayer" }
+        
+        for shadowConfig in shadowConfigs {
+            let shadowLayer = CALayer()
+            shadowLayer.name = "shadowLayer"
+            shadowLayer.frame = self.bounds
+            shadowLayer.backgroundColor = backgroundColor.cgColor
+            shadowLayer.cornerRadius = cornerRadius
+            shadowLayer.shadowColor = shadowConfig.color.cgColor
+            shadowLayer.shadowOffset = shadowConfig.offset
+            shadowLayer.shadowRadius = shadowConfig.radius
+            shadowLayer.shadowOpacity = 1
+            shadowLayer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: cornerRadius).cgPath
+            self.layer.insertSublayer(shadowLayer, at: 0)
+        }
     }
 }
 

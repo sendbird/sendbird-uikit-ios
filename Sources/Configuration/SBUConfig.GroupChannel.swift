@@ -102,6 +102,11 @@ extension SBUConfig.GroupChannel {
             set { _isSuperGroupReactionsEnabled = newValue }
         }
         
+        /// Enable the feature to mark message as unread.
+        ///
+        /// - Since: 3.32.0
+        @SBUPrioritizedConfig public var isMarkAsUnreadEnabled: Bool = false
+        
         /// Enable the feature to mention specific members in a message for notification.
         ///
         /// - NOTE: If it's `true`, it sets new ``SBUUserMentionConfiguration`` instance to ``SBUGlobals/userMentionConfig`` if needed. If it's `false`, ``SBUGlobals/userMentionConfig`` is set to `nil`
@@ -183,7 +188,8 @@ extension SBUConfig.GroupChannel {
             self._isFormTypeMessageEnabled.setDashboardValue(channel.isFormTypeMessageEnabled)
             self._isFeedbackEnabled.setDashboardValue(channel.isFeedbackEnabled)
             self._isMarkdownForUserMessageEnabled.setDashboardValue(channel.isMarkdownForUserMessageEnabled)
-
+            self._isMarkAsUnreadEnabled.setDashboardValue(channel.isMarkAsUnreadEnabled)
+            
             self.input.updateWithDashboardData(channel.input)
         }
         
@@ -207,6 +213,7 @@ extension SBUConfig.GroupChannel {
                 SendbirdUI.config.groupChannel.channel.isFeedbackEnabled
             self.isMarkdownForUserMessageEnabled = (try? container.decode(Bool.self, forKey: .isMarkdownForUserMessageEnabled)) ??
             SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled
+            self.isMarkAsUnreadEnabled = (try? container.decode(Bool.self, forKey: .isMarkAsUnreadEnabled)) ?? SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
             
             self.input = try container.decode(SBUConfig.GroupChannel.Channel.Input.self, forKey: .input)
         }
@@ -227,6 +234,8 @@ extension SBUConfig.GroupChannel {
             try container.encode(self._isSuperGroupReactionsEnabled, forKey: .isSuperGroupReactionsEnabled)
             try container.encode(self.isFeedbackEnabled, forKey: .isFeedbackEnabled)
             try container.encode(self.isMarkdownForUserMessageEnabled, forKey: .isMarkdownForUserMessageEnabled)
+            try container.encode(self.isMarkAsUnreadEnabled, forKey: .isMarkAsUnreadEnabled)
+            
             try container.encode(self.input, forKey: .input)
         }
     }

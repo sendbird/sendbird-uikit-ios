@@ -15,6 +15,13 @@ public protocol SBUUserMessageTextViewDelegate: AnyObject {
     ///     textView: `SBUUserMessageTextView` object that contains the message text.
     ///     user: The user corresponding to tapped mention.
     func userMessageTextView(_ textView: SBUUserMessageTextView, didTapMention user: SBUUser)
+    
+    /// Called when the URL link in message is tapped.
+    /// - Parameters:
+    ///     textView: `SBUUserMessageTextView` object that contains the message text.
+    ///     URL: The URL link that is tapped.
+    /// - Since: 3.32.0
+    func userMessageTextView(_ textView: SBUUserMessageTextView, didTapURL url: URL)
 }
 
 open class SBUUserMessageTextView: SBUView {
@@ -247,7 +254,7 @@ extension SBUUserMessageTextView: UITextViewDelegate {
             self.longPressHandler?(URL)
         } else if interaction == .invokeDefaultAction {
             // URL link tapped
-            URL.open()
+            self.delegate?.userMessageTextView(self, didTapURL: URL)
         }
 
         return false
@@ -272,7 +279,7 @@ extension SBUUserMessageTextView: UITextViewDelegate {
         } else if let tappedURL = textView.textStorage.attribute(.link, at: characterRange.location, effectiveRange: nil) as? URL {
             // URL link tapped
             return UIAction(title: "Link Tapped") { _ in
-                tappedURL.open()
+                self.delegate?.userMessageTextView(self, didTapURL: tappedURL)
             }
         }
         

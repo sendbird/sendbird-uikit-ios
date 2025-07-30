@@ -40,6 +40,12 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
     ///    - user: The`SBUUser` object from the tapped mention.
     func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapMentionUser user: SBUUser)
     
+    /// Called when URL link in a message cell is tapped.
+    /// - Parameters:
+    ///    - URL: The`URL` object from the tapped URL link.
+    /// - Since: 3.32.0
+    func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didTapURL url: URL)
+    
     /// Called when tapped the thread info in the cell
     /// - Parameter threadInfoView: The `SBUThreadInfoView` object from the tapped thread info.
     /// - Since: 3.3.0
@@ -138,6 +144,33 @@ public protocol SBUGroupChannelModuleListDelegate: SBUBaseChannelModuleListDeleg
         shouldHandleUncachedTemplateImages cacheData: [String: String],
         messageCell: SBUBaseMessageCell
     )
+    
+    /// Called when the unreadMessageNewLine comes on-screen.
+    /// - Parameters:
+    ///    - listComponent: `SBUGroupChannelModule.List` object.
+    ///    - messageCell: The message cell that the unreadMessageNewLine belongs to.
+    /// - Since: 3.32.0
+    func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        didScrollToUnreadMessageNewLine messageCell: SBUBaseMessageCell
+    )
+    
+    /// Called when the button of  unreadMessageInfoView is tapped.
+    /// - Parameters:
+    ///    - listComponent: `SBUGroupChannelModule.List` object.
+    ///    - didTapUnreadMessageInfoView: The `SBUUnreadMessageInfoView` object.
+    /// - Since: 3.32.0
+    func groupChannelModule(
+        _ listComponent: SBUGroupChannelModule.List,
+        didTapUnreadMessageInfoView: Bool
+    )
+    
+    /// Called when a user selects the *mark as unread* menu item of a `message` in the `listComponent`.
+    /// - Parameters:
+    ///    - listComponent: A ``SBUBaseChannelModule/List`` object.
+    ///    - message: The message that the selected menu item belongs to.
+    /// - Since: 3.32.0
+    func groupChannelModule(_ listComponent: SBUBaseChannelModule.List, didTapMarkAsUnread message: BaseMessage)
 }
 
 /// Methods to get data source for list component in a group channel.
@@ -156,6 +189,16 @@ public protocol SBUGroupChannelModuleListDataSource: SBUBaseChannelModuleListDat
         _ listComponent: SBUGroupChannelModule.List,
         didHandleUncachedTemplateKeys templateKeys: [String]
     ) -> Bool?
+    
+    /// Ask data source to return the first unread message.
+    /// - Returns: A `BaseMessage` instance if there is a first unread message, `nil` if there is none.
+    /// - Since: 3.32.0
+    func groupChannelModuleFirstUnreadMessage(_ listComponent: SBUGroupChannelModule.List) -> BaseMessage?
+    
+    /// Ask data source whether messages should be marked as read when scrolling.
+    /// - Returns: `true` if messages should be marked as read on scroll, `false` otherwise.
+    /// - Since: 3.32.0
+    func groupChannelModuleAllowsAutoMarkAsReadOnScroll(_ listComponent: SBUGroupChannelModule.List) -> Bool
 }
 
 extension SBUGroupChannelModule {
@@ -225,6 +268,31 @@ extension SBUGroupChannelModule {
         
         public var voicePlayer: SBUVoicePlayer?
         
+        /// The first of all unread messages in the channel.
+        /// - Since: 3.32.0
+        public var firstUnreadMessage: BaseMessage? {
+            return self.dataSource?.groupChannelModuleFirstUnreadMessage(self)
+        }
+        
+        /// Whether messages should be marked as read when scrolling.
+        /// - Since: 3.32.0
+        public var allowsAutoMarkAsReadOnScroll: Bool {
+            self.dataSource?.groupChannelModuleAllowsAutoMarkAsReadOnScroll(self) ?? false
+        }
+        
+        /// A boolean flag that shows whether a unreadMessageNewLine has been on-screen or not.
+        /// - Since: 3.32.0
+        public var hasSeenNewLine: Bool = false
+        
+        /// A boolean flag that shows whether an unread message existed in the channel before receiving new messages.
+        /// - Since: 3.32.0
+        public var didUnreadMessageExist: Bool = false
+        
+        /// A set of strings that keep track of previously on-screen newlines.
+        /// It is used to detect the moment the newline goes off-screen.
+        /// - Since: 3.32.0
+        public var previouslyVisibleNewLines: Set<String> = []
+        
         // MARK: default views
         
         override func createDefaultEmptyView() -> SBUEmptyView {
@@ -250,6 +318,26 @@ extension SBUGroupChannelModule {
         
         override func createDefaultNewMessageInfoView() -> SBUNewMessageInfo? {
             SBUNewMessageInfo.createDefault(Self.NewMessageInfo)
+        }
+        
+        override func createDefaultUnreadMessageInfoView() -> SBUUnreadMessageInfoView? {
+            let view = SBUUnreadMessageInfoView.createDefault(Self.UnreadMessageInfoView)
+            view.actionHandler = { [weak self] in
+                guard let self else { return }
+                
+                // vc -> vm.markAsRead()
+                self.delegate?.groupChannelModule(
+                    self,
+                    didTapUnreadMessageInfoView: true
+                )
+                
+                // Hide unreadMessageInfoView, newMessageInfoView.
+                self.unreadMessageInfoView?.isHidden = true
+                self.newMessageInfoView?.isHidden = true
+                
+                self.hasSeenNewLine = true
+            }
+            return view
         }
         
         // MARK: Private properties
@@ -324,10 +412,31 @@ extension SBUGroupChannelModule {
                 self.register(messageCellType: customMessageCellType)
             }
             
-            // Add subviews
+            // setup topStackView, channelStateBanner, unreadMessageInfoView
+            let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+            if isMarkAsUnreadEnabled {
+                if self.unreadMessageInfoView == nil {
+                    self.unreadMessageInfoView = self.createDefaultUnreadMessageInfoView()
+                }
+            }
+            
+            if let channelStateBanner = self.channelStateBanner {
+                topStackView.addArrangedSubview(channelStateBanner)
+            }
+            
+            if let unreadMessageInfoView = self.unreadMessageInfoView {
+                topStackView.addArrangedSubview(unreadMessageInfoView)
+            }
+            
+            self.addSubview(topStackView)
+          
             if let newMessageInfoView = self.newMessageInfoView {
                 newMessageInfoView.isHidden = true
                 self.addSubview(newMessageInfoView)
+            }
+            
+            if let unreadMessageInfoView = self.unreadMessageInfoView {
+                unreadMessageInfoView.isHidden = true
             }
 
             if let scrollBottomView = self.scrollBottomView {
@@ -341,9 +450,13 @@ extension SBUGroupChannelModule {
         open override func setupLayouts() {
             super.setupLayouts()
             
-            self.channelStateBanner?
+            self.topStackView
                 .sbu_constraint(equalTo: self, leading: 8, trailing: -8, top: 8)
-                .sbu_constraint(height: 24)
+            
+            channelStateBanner?.sbu_constraint(height: 24)
+            channelStateBanner?.sbu_constraint(equalTo: topStackView, leading: 0, trailing: 0)
+            
+            self.unreadMessageInfoView?.sbu_constraint(height: 38)
             
             (self.newMessageInfoView as? SBUNewMessageInfo)?
                 .sbu_constraint(equalTo: self, bottom: 8, centerX: 0)
@@ -378,11 +491,113 @@ extension SBUGroupChannelModule {
             guard self.scrollBottomView?.isHidden != isHidden else { return }
             self.scrollBottomView?.isHidden = isHidden
         }
-        
+
         open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
             super.scrollViewDidScroll(scrollView)
             
             self.setScrollBottomView(hidden: isScrollNearByBottom)
+            
+            // If markAsUnread feature is enabled,
+            // handle markAsRead, markAsUnread, and unreadMessageInfoView
+            // depending on whether `unreadMessageNewLine` comes on-screen or goes off-screen.
+            let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+            guard isMarkAsUnreadEnabled else { return }
+            
+            // Get all visible cells
+            guard let tableView = scrollView as? UITableView else { return }
+            let visibleCells = tableView.visibleCells
+            var currentlyVisibleNewLines: Set<String> = []
+            for case let messageCell as SBUBaseMessageCell in visibleCells {
+                guard let newline = messageCell.unreadMessageNewLine else { return }
+                
+                // Detect whether the messagecell with a newline completely came on-screen.
+                checkIfNewLineCameOnScreen(messageCell: messageCell, newline: newline)
+                
+                // Keep track of visible newlines
+                currentlyVisibleNewLines = recordVisibleNewLines(messageCell: messageCell, newline: newline, currentlyVisibleNewLines: currentlyVisibleNewLines)
+            }
+            
+            // Detect whether a newline went completely off-screen.
+            checkIfNewLineWentOffScreen(currentlyVisibleNewLines: currentlyVisibleNewLines)
+            
+            // Update state for next scroll event
+            previouslyVisibleNewLines = currentlyVisibleNewLines
+        }
+        
+        /// If the message cell with the newline starts coming on-screen, update UI states.
+        /// - Since: 3.32.0
+        public func checkIfNewLineCameOnScreen(messageCell: SBUBaseMessageCell, newline: UIView) {
+            let newlineInTable = newline.convert(newline.bounds, to: tableView)
+            let visibleRect = tableView.bounds
+            
+            // Check if the message cell with the newline starts coming on-screen (intersects with visible area).
+            if newline.isHidden == false, visibleRect.intersects(newlineInTable) {
+                // unreadMessageNewLine is starting to come on-screen or is partially/entirely on-screen
+                
+                if self.allowsAutoMarkAsReadOnScroll {
+                    // User has never explicitly called markAsUnread.
+                    if self.hasSeenNewLine == false {
+                        self.delegate?.groupChannelModule(self, didScrollToUnreadMessageNewLine: messageCell)
+                        self.hasSeenNewLine = true
+                    }
+                } else {
+                    // User has explicitly called markAsUnread.
+                    // Only hide unreadMessageInfoView.
+                    // Do not call markAsRead()
+                    self.unreadMessageInfoView?.isHidden = true
+                }
+            } else {
+                // unreadMessageNewLine is completely off-screen
+            }
+        }
+        
+        /// Track visible newlines for off-screen detection.
+        /// - Since: 3.32.0
+        public func recordVisibleNewLines(messageCell: SBUBaseMessageCell, newline: UIView, currentlyVisibleNewLines: Set<String>) -> Set<String> {
+            var tempCurrentlyVisibleNewLines = currentlyVisibleNewLines
+            
+            // Convert the newline's bounds into the tableView’s coordinate space
+            let newlineInTable = newline.convert(newline.bounds, to: tableView)
+            
+            // tableView.bounds is the visible area in its own coordinates
+            let visibleRect = tableView.bounds
+            
+            let newlineKey: String
+            if let message = messageCell.message {
+                newlineKey = "newline_\(message.messageId)"
+            } else {
+                newlineKey = "newline_cell_\(messageCell.hashValue)"
+            }
+            
+            // Check if the newline is actually visible on screen
+            if !newline.isHidden && visibleRect.intersects(newlineInTable) {
+                // newline is visible on screen
+                tempCurrentlyVisibleNewLines.insert(newlineKey)
+            }
+            
+            return tempCurrentlyVisibleNewLines
+        }
+        
+        /// Detects the moment when newline goes off-screen.
+        /// - Since: 3.32.0
+        public func checkIfNewLineWentOffScreen(currentlyVisibleNewLines: Set<String> ) {
+            // Find newlines that went off-screen
+            let newlinesGoneOffScreen = previouslyVisibleNewLines.subtracting(currentlyVisibleNewLines)
+            
+            for newlineKey in newlinesGoneOffScreen {
+                SBULog.info("Newline '\(newlineKey)' just went off-screen.")
+                
+                // This is the moment the newline goes off-screen.
+                // If unreMessagesCount > 0, update unreadMessageInfoView to be visible.
+                if let unreadMessageCount = channel?.unreadMessageCount, unreadMessageCount > 0 {
+                    self.unreadMessageInfoView?.isHidden = false
+                    
+                    (self.unreadMessageInfoView as? SBUUnreadMessageInfoView)?.updateCount(replaceCount: unreadMessageCount)
+                    
+                    // Break after first detection, since we only want to handle one at a time
+                    break
+                }
+            }
         }
         
         // MARK: - EmptyView
@@ -426,12 +641,42 @@ extension SBUGroupChannelModule {
                     let reply = self.createReplyMenuItem(for: message)
                     items.append(reply)
                 }
+                
             default: break
             }
             
             return items
         }
         
+        /// Creates a markAsUnread menu item.
+        /// - Parameters:
+        ///   - message: The `BaseMessage` object  that corresponds to the message of the menu item to show.
+        ///   - isThreadMessage: Whether it is for thread message screen or not.
+        /// - Since: 3.32.0
+        open override func createMarkAsUnreadMenuItem(for message: BaseMessage, isThreadMessage: Bool) -> SBUMenuItem? {
+            let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+            guard isMarkAsUnreadEnabled else { return nil }
+            
+            guard isThreadMessage == false else { return nil }
+                
+            let iconImage = SBUIconSetType.iconMarkAsUnread.image(
+                with: SBUTheme.componentTheme.alertButtonColor,
+                to: SBUIconSetType.Metric.iconActionSheetItem
+            )
+            
+            let menuItem = SBUMenuItem(
+                title: SBUStringSet.MarkAsUnread,
+                color: self.theme?.menuTextColor,
+                image: iconImage
+            ) { [weak self, message] in
+                guard let self = self else { return }
+                // call channel.markAsUnread()
+                self.delegate?.groupChannelModule(self, didTapMarkAsUnread: message)
+            }
+            
+            return menuItem
+        }
+       
         open override func showMessageContextMenu(for message: BaseMessage, cell: UITableViewCell, forRowAt indexPath: IndexPath) {
             let messageMenuItems = self.createMessageMenuItems(for: message)
             guard !messageMenuItems.isEmpty else { return }
@@ -671,13 +916,23 @@ extension SBUGroupChannelModule {
                 indexPath: indexPath
             )
             
+            // Update isFirstUnreadMessage only if markAsUnread feature is enabled.
+            var isFirstUnreadMessage = false
+            if SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled {
+                if let firstUnreadMessage = self.firstUnreadMessage,
+                   firstUnreadMessage.messageId == message.messageId {
+                    isFirstUnreadMessage = true
+                }
+            }
+            
             switch (message, messageCell) {
                 // Admin message
             case let (adminMessage, adminMessageCell) as (AdminMessage, SBUAdminMessageCell):
                 let configuration = SBUAdminMessageCellParams(
                     message: adminMessage,
                     hideDateView: isSameDay,
-                    isThreadMessage: false
+                    isThreadMessage: false,
+                    isFirstUnreadMessage: isFirstUnreadMessage
                 )
                 adminMessageCell.configure(with: configuration)
                 self.setMessageCellAnimation(adminMessageCell, message: adminMessage, indexPath: indexPath)
@@ -717,7 +972,8 @@ extension SBUGroupChannelModule {
                     messageOffsetTimestamp: self.channel?.messageOffsetTimestamp ?? 0,
                     shouldHideSuggestedReplies: shouldHideSuggestedReplies,
                     shouldHideFormTypeMessage: false,
-                    enableEmojiLongPress: enableEmojiLongPress
+                    enableEmojiLongPress: enableEmojiLongPress,
+                    isFirstUnreadMessage: isFirstUnreadMessage
                 )
                 configuration.shouldHideFeedback = message.myFeedbackStatus == .notApplicable
                 userMessageCell.configure(with: configuration)
@@ -741,7 +997,8 @@ extension SBUGroupChannelModule {
                     joinedAt: self.channel?.joinedAt ?? 0,
                     messageOffsetTimestamp: self.channel?.messageOffsetTimestamp ?? 0,
                     voiceFileInfo: voiceFileInfo,
-                    enableEmojiLongPress: enableEmojiLongPress
+                    enableEmojiLongPress: enableEmojiLongPress,
+                    isFirstUnreadMessage: isFirstUnreadMessage
                 )
                 configuration.shouldHideFeedback = message.myFeedbackStatus == .notApplicable
                 
@@ -774,7 +1031,8 @@ extension SBUGroupChannelModule {
                     useMessagePosition: true,
                     receiptState: receiptState,
                     useReaction: true,
-                    enableEmojiLongPress: enableEmojiLongPress
+                    enableEmojiLongPress: enableEmojiLongPress,
+                    isFirstUnreadMessage: isFirstUnreadMessage
                 )
                 configuration.shouldHideFeedback = message.myFeedbackStatus == .notApplicable
                 multipleFilesMessageCell.configure(with: configuration)
@@ -852,6 +1110,11 @@ extension SBUGroupChannelModule {
             messageCell.mentionTapHandler = { [weak self] user in
                 guard let self = self else { return }
                 self.delegate?.groupChannelModule(self, didTapMentionUser: user)
+            }
+            
+            messageCell.urlTapHandler = { [weak self] url in
+                guard let self = self else { return }
+                self.delegate?.groupChannelModule(self, didTapURL: url)
             }
             
             messageCell.suggestedReplySelectHandler = { [weak self] optionView in
@@ -1271,5 +1534,60 @@ extension SBUGroupChannelModule.List {
             guard let self = self else { return nil }
             return self.dataSource?.groupChannelModule(self, didHandleUncachedTemplateKeys: keys) ?? nil
         }
+    }
+}
+
+// - MARK: MarkAsRead
+extension SBUGroupChannelModule.List {
+    /// Checks to call markAsRead(), if `unreadMessageNewLine` is displayed upon entering the channel.
+    /// - Since: 3.32.0
+    public func checkForMarkAsRead() {
+        let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+        guard isMarkAsUnreadEnabled else { return }
+        
+        // Set initial shouldShowUnreadMessageInfoView value.
+        var shouldShowUnreadMessageInfoView: Bool = false
+        if let unreadCount = self.channel?.unreadMessageCount, unreadCount > 0 {
+            shouldShowUnreadMessageInfoView = true
+        }
+        
+        // Check all visible message cells.
+        let visibleCells = tableView.visibleCells
+        for case let messageCell as SBUBaseMessageCell in visibleCells {
+            guard let newline = messageCell.unreadMessageNewLine else { return }
+            
+            // Convert the newline bounds into the tableView’s coordinate space
+            let newlineInTable = newline.convert(newline.bounds, to: tableView)
+            
+            // tableView.bounds is the visible area in its own coordinates
+            let visibleRect = tableView.bounds
+            
+            // Check for full containment
+            if self.allowsAutoMarkAsReadOnScroll,
+               newline.isHidden == false,
+               visibleRect.contains(newlineInTable) {
+                // unreadMessageNewLine is entirely on-screen.
+                self.delegate?.groupChannelModule(self, didScrollToUnreadMessageNewLine: messageCell)
+                
+                shouldShowUnreadMessageInfoView = false
+            } else {
+                // unreadMessageNewLine is partially or completely off-screen
+            }
+        }
+
+        if shouldShowUnreadMessageInfoView {
+            if let unreadCount = self.channel?.unreadMessageCount, unreadCount > 0 {
+                SBULog.info("Show unreadMessageInfoView")
+                self.unreadMessageInfoView?.isHidden = false
+                (self.unreadMessageInfoView as? SBUUnreadMessageInfoView)?.updateCount(replaceCount: unreadCount)
+            }
+        }
+        
+        // check for didUnreadMessageExist
+        guard let channel = self.channel else {
+            self.didUnreadMessageExist = false
+            return
+        }
+        self.didUnreadMessageExist = channel.myLastRead < (channel.lastMessage?.createdAt ?? -1)
     }
 }

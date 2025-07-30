@@ -150,6 +150,9 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
     public var emojiLongPressHandler: ((_ emojiKey: String) -> Void)?
     /// The handler that set the logic to be called when a mention is tapped.
     public var mentionTapHandler: ((_ user: SBUUser) -> Void)?
+    /// The handler that set the logic to be called when a URL link is tapped.
+    /// - Since: 3.32.0
+    public var urlTapHandler: ((_ url: URL) -> Void)?
     
     var errorHandler: ((_ error: SBError) -> Void)?
     
@@ -737,7 +740,7 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
             return
         }
         
-        url.open()
+        self.urlTapHandler?(url)
     }
     
     /// Calls the `moreButtonTapHandlerToContent()` when the more button is tapped.
@@ -749,6 +752,11 @@ open class SBUParentMessageInfoView: SBUView, SBUUserMessageTextViewDelegate {
     
     open func userMessageTextView(_ textView: SBUUserMessageTextView, didTapMention user: SBUUser) {
         self.mentionTapHandler?(user)
+    }
+    
+    /// - Since: 3.32.0
+    open func userMessageTextView(_ textView: SBUUserMessageTextView, didTapURL url: URL) {
+        self.urlTapHandler?(url)
     }
 }
 

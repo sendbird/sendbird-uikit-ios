@@ -34,6 +34,7 @@ public class SBUStringSet {
     public static var Settings = "Settings"
     public static var Reply = "Reply"
     public static var Submit = "Submit" // 3.11.0
+    public static var MarkAsUnread = "Mark as unread"  // 3.32.0
     
     // MARK: - Alert
     public static var Alert_Delete = "Are you sure you want to delete?"
@@ -109,7 +110,22 @@ public class SBUStringSet {
             return ""
         }
     }
-    public static var Channel_State_Banner_Frozen = "Channel frozen"
+    public static var Channel_State_Banner_Frozen = "Channel is frozen"
+    /// - Since: 3.32.0
+    public static var Channel_Unread_Message: (UInt) -> String = { count in
+        switch count {
+        case 1:
+            return "1 unread message"
+        case 2...99:
+            return "\(count) unread messages"
+        case 100...:
+            return "99+ unread messages"
+        default:
+            return ""
+        }
+    }
+    /// - Since: 3.32.0
+    public static var Channel_Unread_Message_Newline = "New messages"
     
     // MARK: - Open Channel
     public static var Open_Channel_Name_Default = "Open Channel"
