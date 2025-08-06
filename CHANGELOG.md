@@ -1,5 +1,12 @@
 # Changelog
 
+### v1.0.999 (Aug 06, 2025)
+
+# SendbirdUIKit
+testing release automation....
+
+# SendbirdUIMessageTemplate
+testing release automation....
 ### v3.32.0 (Jul 30, 2025)
 
 # SendbirdUIKit
