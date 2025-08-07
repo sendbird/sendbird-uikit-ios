@@ -1,5 +1,18 @@
 # Changelog
 
+### v3.32.1 (Aug 07, 2025)
+
+# SendbirdUIKit
+
+- SendbirdChatSDK dependency version has been updated to v4.29.2
+
+# SendbirdUIMessageTemplate
+
+## Improvements
+
+- Cascade Template Support: Added new cascadeView template type for vertical scrollable item lists
+- Enhanced Action System: Extended Action class with internalData field and internal action type
+
 ### v3.32.0 (Jul 30, 2025)
 
 # SendbirdUIKit
