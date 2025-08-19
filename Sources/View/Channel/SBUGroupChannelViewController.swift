@@ -401,6 +401,23 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         }
     }
     
+    // MARK: - Mark as read
+    /// Calls markAsRead() if appropriate, after receiving or sending a new message.
+    /// - Since: 3.32.2
+    private func handleMarkAsRead() {
+        let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
+        if isMarkAsUnreadEnabled {
+            let didUnreadMessageExist = self.listComponent?.didUnreadMessageExist ?? false
+            let hasSeenNewLine = self.listComponent?.hasSeenNewLine ?? true
+            if self.allowsAutoMarkAsReadOnScroll && (didUnreadMessageExist == false || hasSeenNewLine) {
+                // scroll is near bottom & received new message & user never explicitly called markAsUnread()
+                // & there was no unread message when entering the channel.
+                // Thus, should markAsRead().
+                self.viewModel?.markAsRead()
+            }
+        }
+    }
+    
     // MARK: - Message: Menu
     
     /// Calculates the `CGPoint` value that indicates where to draw the message menu in the group channel screen.
@@ -908,29 +925,15 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
                 self.baseChannelModuleDidTapScrollToButton(baseListComponent, animated: false)
             }
             
-            let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
-            if isMarkAsUnreadEnabled {
-                if self.allowsAutoMarkAsReadOnScroll {
-                    // scroll in near bottom & successfully sent a new message & user never explicitly called markAsUnread().
-                    // Thus, should call markAsRead().
-                    self.viewModel?.markAsRead()
-                }
-            }
+            handleMarkAsRead()
         case .eventMessageReceived:
             // Source includes .eventMessageReceived
-            SBULog.info("context.source else block (including .eventMessageReceived), messages=\(messages.map { $0.message })")
+            SBULog.info("context.source == .eventMessageReceived, messages=\(messages.map { $0.message })")
             if !baseChannelViewModel(viewModel, isScrollNearBottomInChannel: viewModel.channel) {
                 self.lastSeenIndexPath = baseListComponent.keepCurrentScroll(for: messages)
             } else {
                 // scroll is near bottom & received new message
-                let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
-                if isMarkAsUnreadEnabled {
-                    if self.allowsAutoMarkAsReadOnScroll {
-                        // scroll is near bottom & received new message & user never explicitly called markAsUnread().
-                        // Thus, should markAsRead().
-                        self.viewModel?.markAsRead()
-                    }
-                }
+                handleMarkAsRead()
             }
         default:
             SBULog.info("context.source is neither .eventMessageSent nor .eventMessageReceived")

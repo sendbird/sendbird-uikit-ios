@@ -1570,6 +1570,7 @@ extension SBUGroupChannelModule.List {
                 self.delegate?.groupChannelModule(self, didScrollToUnreadMessageNewLine: messageCell)
                 
                 shouldShowUnreadMessageInfoView = false
+                hasSeenNewLine = true 
             } else {
                 // unreadMessageNewLine is partially or completely off-screen
             }

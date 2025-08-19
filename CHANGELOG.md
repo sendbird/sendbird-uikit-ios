@@ -1,5 +1,14 @@
 # Changelog
 
+### v3.32.2 (Aug 19, 2025)
+
+# SendbirdUIKit
+## Improvements
+- Fixed a bug related to Mark As Unread feature, where `unreadMessageInfoView` is not displayed when entering channel with first unread message not on-screen
+
+# SendbirdUIMessageTemplate
+none
+
 ### v3.32.1 (Aug 07, 2025)
 
 # SendbirdUIKit
