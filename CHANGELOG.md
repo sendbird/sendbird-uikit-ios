@@ -1,5 +1,15 @@
 # Changelog
 
+### v3.32.3 (Oct 30, 2025)
+
+# SendbirdUIKit
+### Changed
+Updated dependency SDK versions to latest stable releases
+- SendbirdChatSDK: v4.31.1
+
+# SendbirdUIMessageTemplate
+none
+
 ### v3.32.2 (Aug 19, 2025)
 
 # SendbirdUIKit
