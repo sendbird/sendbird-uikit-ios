@@ -22,7 +22,7 @@ protocol MessageSearchViewEventDelegate: AnyObject {
 ///
 /// - Since: 2.1.0
 @objcMembers
-open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSearchModuleHeaderDelegate, SBUMessageSearchModuleListDelegate, SBUMessageSearchModuleListDataSource, SBUCommonViewModelDelegate, SBUEmptyViewDelegate, SBUMessageSearchViewModelDelegate {
+open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSearchModuleHeaderDelegate, SBUMessageSearchModuleListDelegate, SBUMessageSearchModuleListDataSource, SBUEmptyViewDelegate, SBUMessageSearchViewModelDelegate {
     
     // MARK: - UI properties (Public)
     public var headerComponent: SBUMessageSearchModule.Header?
@@ -308,11 +308,11 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     }
     
     // MARK: - SBUCommonViewModelDelegate
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.description ?? "")
         

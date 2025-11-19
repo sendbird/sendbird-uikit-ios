@@ -18,7 +18,7 @@ public protocol SBUCreateOpenChannelViewModelDelegate: SBUCommonViewModelDelegat
 }
 
 /// `SBUCreateOpenChannelViewModel` is a class that handles the creation of open channels.
-open class SBUCreateOpenChannelViewModel {
+open class SBUCreateOpenChannelViewModel: SBUBaseViewModel {
     
     // MARK: - Property (Private)
     weak var delegate: SBUCreateOpenChannelViewModelDelegate?
@@ -31,6 +31,9 @@ open class SBUCreateOpenChannelViewModel {
     /// Initializes a new instance of `SBUCreateOpenChannelViewModel`.
     /// - Parameter delegate: An optional delegate that conforms to `SBUCreateOpenChannelViewModelDelegate`.
     required public init(delegate: SBUCreateOpenChannelViewModelDelegate?) {
+        super.init()
+        self.commonDelegate = delegate
+        
         self.delegate = delegate
         self.delegates.addDelegate(delegate, type: .uikit)
     }

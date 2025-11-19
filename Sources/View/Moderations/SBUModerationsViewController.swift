@@ -18,7 +18,7 @@ protocol ModerationsViewEventDelegate: AnyObject {
 }
 #endif
 
-open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsModuleHeaderDelegate, SBUModerationsModuleListDelegate, SBUModerationsModuleListDataSource, SBUCommonViewModelDelegate, SBUModerationsViewModelDelegate {
+open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsModuleHeaderDelegate, SBUModerationsModuleListDelegate, SBUModerationsModuleListDataSource, SBUModerationsViewModelDelegate {
     
     // MARK: - UI properties (Public)
     public var headerComponent: SBUModerationsModule.Header?
@@ -357,11 +357,11 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     }
     
     // MARK: - SBUCommonViewModelDelegate
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.description ?? "")
     }

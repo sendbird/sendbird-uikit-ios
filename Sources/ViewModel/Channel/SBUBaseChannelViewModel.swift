@@ -82,7 +82,7 @@ public protocol SBUBaseChannelViewModelDelegate: SBUCommonViewModelDelegate {
     )
 }
 
-open class SBUBaseChannelViewModel: NSObject {
+open class SBUBaseChannelViewModel: SBUBaseViewModel {
     // MARK: - Constant
     let defaultFetchLimit: Int = 30
     let initPolicy: MessageCollectionInitPolicy = .cacheAndReplaceByApi
@@ -151,7 +151,7 @@ open class SBUBaseChannelViewModel: NSObject {
     var isThreadMessageMode: Bool = false
     
     // MARK: - LifeCycle
-    public override init() {
+    override public init() {
         super.init()
         
         SendbirdChat.addConnectionDelegate(
@@ -1016,12 +1016,15 @@ open class SBUBaseChannelViewModel: NSObject {
         
         return mergedList
     }
+    
 }
 
 // MARK: - ConnectionDelegate
-extension SBUBaseChannelViewModel: ConnectionDelegate {
-    open func didSucceedReconnection() {
+extension SBUBaseChannelViewModel {
+    open override func didSucceedReconnection() {
         SBULog.info("Did succeed reconnection")
+        
+        super.didSucceedReconnection()
         
         SendbirdUI.updateUserInfo { error in
             if let error = error {

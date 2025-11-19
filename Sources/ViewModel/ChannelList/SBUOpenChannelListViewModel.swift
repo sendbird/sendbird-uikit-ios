@@ -72,6 +72,8 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
         channelListQuery: OpenChannelListQuery?
     ) {
         super.init(delegate: delegate)
+        self.commonDelegate = delegate
+        
         self.baseDelegates.addDelegate(delegate, type: .uikit)
         
         self.customizedChannelListQuery = channelListQuery

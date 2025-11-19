@@ -9,7 +9,7 @@
 import UIKit
 import SendbirdChatSDK
 
-open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelectUserModuleHeaderDataSource, SBUBaseSelectUserModuleListDataSource, SBUCommonViewModelDelegate, SBUBaseSelectUserViewModelDataSource, SBUBaseSelectUserViewModelDelegate {
+open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelectUserModuleHeaderDataSource, SBUBaseSelectUserModuleListDataSource, SBUBaseSelectUserViewModelDataSource, SBUBaseSelectUserViewModelDelegate {
     
     // MARK: - UI properties (Public)
     public var baseHeaderComponent: SBUBaseSelectUserModule.Header?
@@ -164,11 +164,11 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
     }
     
     // MARK: - SBUCommonViewModelDelegate
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.localizedDescription)
         
@@ -177,6 +177,7 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
             self.baseListComponent?.reloadTableView()
         }
     }
+    
     
     // MARK: - SBUBaseSelectUserViewModelDataSource
     /// When creating and using a user list directly, overriding this function and return the next user list.

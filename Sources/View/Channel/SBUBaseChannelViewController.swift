@@ -14,7 +14,7 @@ import SafariServices
 import PhotosUI
 
 @objcMembers
-open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelViewModelDelegate, SBUBaseChannelModuleHeaderDelegate, SBUBaseChannelModuleListDelegate, SBUBaseChannelModuleListDataSource, SBUBaseChannelModuleInputDelegate, SBUBaseChannelModuleInputDataSource, SBUBaseChannelViewModelDataSource, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UIDocumentPickerDelegate, UIDocumentInteractionControllerDelegate, SBUSelectablePhotoViewDelegate, SBUFileViewControllerDelegate, SBUCommonViewModelDelegate, SBUAlertViewDelegate {
+open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelViewModelDelegate, SBUBaseChannelModuleHeaderDelegate, SBUBaseChannelModuleListDelegate, SBUBaseChannelModuleListDataSource, SBUBaseChannelModuleInputDelegate, SBUBaseChannelModuleInputDataSource, SBUBaseChannelViewModelDataSource, UIGestureRecognizerDelegate, UIViewControllerTransitioningDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UIDocumentPickerDelegate, UIDocumentInteractionControllerDelegate, SBUSelectablePhotoViewDelegate, SBUFileViewControllerDelegate, SBUAlertViewDelegate {
     
     // MARK: - UI Properties (Public)
     public var baseHeaderComponent: SBUBaseChannelModule.Header?
@@ -1490,11 +1490,11 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     open func didDismissAlertView() { }
     
     // MARK: - SBUCommonViewModelDelegate
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         if self.baseViewModel?.fullMessageList.isEmpty == true, isBlocker {
             self.baseListComponent?.updateEmptyView(type: .error)

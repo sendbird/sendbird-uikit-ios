@@ -19,7 +19,7 @@ protocol UserListViewEventDelegate: AnyObject {
 #endif
 
 /// This class handling members,  operators,  muted/Participants,  banned,  participants,
-open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHeaderDelegate, SBUUserListModuleListDelegate, SBUUserListModuleListDataSource, SBUCommonViewModelDelegate, SBUUserProfileViewDelegate, SBUUserListViewModelDelegate, SBUUserListViewModelDataSource {
+open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHeaderDelegate, SBUUserListModuleListDelegate, SBUUserListModuleListDataSource, SBUUserProfileViewDelegate, SBUUserListViewModelDelegate, SBUUserListViewModelDataSource {
     
     // MARK: - UI properties (Public)
     public var headerComponent: SBUUserListModule.Header?
@@ -541,11 +541,11 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     }
     
     // MARK: - SBUCommonViewModelDelegate
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.description ?? "")
         

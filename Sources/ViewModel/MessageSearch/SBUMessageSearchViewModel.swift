@@ -21,7 +21,7 @@ public protocol SBUMessageSearchViewModelDelegate: SBUCommonViewModelDelegate {
 /// `SBUMessageSearchViewModel` open class
 ///
 /// This class is responsible for managing and handling the search functionality in the chat.
-open class SBUMessageSearchViewModel {
+open class SBUMessageSearchViewModel: SBUBaseViewModel {
     // MARK: - Constants
     static let limit: UInt = 20
     
@@ -65,6 +65,9 @@ open class SBUMessageSearchViewModel {
         self.delegate = delegate
         self.delegates.addDelegate(delegate, type: .uikit)
         
+        super.init()
+        self.commonDelegate = delegate
+        
         self.channelURL = channel.channelURL
         
         self.initializeAndLoad(channelURL: channel.channelURL, params: params)
@@ -84,6 +87,9 @@ open class SBUMessageSearchViewModel {
     ) {
         self.delegate = delegate
         self.delegates.addDelegate(delegate, type: .uikit)
+        
+        super.init()
+        self.commonDelegate = delegate
 
         self.channelURL = channelURL
         

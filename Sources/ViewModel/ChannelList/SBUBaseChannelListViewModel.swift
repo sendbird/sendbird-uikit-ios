@@ -11,7 +11,7 @@ import SendbirdChatSDK
 
 public protocol SBUBaseChannelListViewModelDelegate: SBUCommonViewModelDelegate {}
 
-open class SBUBaseChannelListViewModel: NSObject {
+open class SBUBaseChannelListViewModel: SBUBaseViewModel {
     
     // MARK: - Property (private)
     weak var baseDelegate: SBUBaseChannelListViewModelDelegate?
@@ -94,9 +94,11 @@ open class SBUBaseChannelListViewModel: NSObject {
 }
 
 // MARK: ConnectionDelegate
-extension SBUBaseChannelListViewModel: ConnectionDelegate {
-    open func didSucceedReconnection() {
+extension SBUBaseChannelListViewModel {
+    open override func didSucceedReconnection() {
         SBULog.info("Did succeed reconnection")
+        
+        super.didSucceedReconnection()
         
         SendbirdUI.updateUserInfo { error in
             if let error = error {

@@ -7,12 +7,32 @@
 //
 
 import UIKit
+import SendbirdChatSDK
 
 // TODO: SBUBaseViewController -> SBUViewController
 
 @objcMembers
-open class SBUBaseViewController: UIViewController, UINavigationControllerDelegate, SBULoadingIndicatorProtocol {
+open class SBUBaseViewController: UIViewController, UINavigationControllerDelegate, SBULoadingIndicatorProtocol, SBUCommonViewModelDelegate {
+    open func didReceiveError(_ error: SendbirdChatSDK.SBError?, isBlocker: Bool) {
+        
+    }
     
+    public func shouldUpdateLoadingState(_ isLoading: Bool) {
+        
+    }
+    
+    public func baseViewModel(_ viewModel: SBUBaseViewModel, retryAfter: UInt) {
+        self.showBusyServerCountdownAlert(retryAfter: retryAfter)
+    }
+    
+    public func baseViewModelDidSucceedReconnection(_ viewModel: SBUBaseViewModel) {
+        self.dismissBusyServerCountdownAlert()
+    }
+    
+    public func baseViewModelDidFailReconnection(_ viewModel: SBUBaseViewModel) {
+        self.dismissBusyServerCountdownAlert()
+    }
+
     /// - Since: 3.8.0
     var prevNavigationBarSettings: SBUPrevNavigationBarSettings? = SBUPrevNavigationBarSettings()
     
@@ -167,6 +187,21 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
                 SBULoading.stop()
             }
         }
+    }
+    
+    func showBusyServerCountdownAlert(retryAfter: UInt) {
+        SBUAlertView.show(
+            title: SBUStringSet.Alert_Busy_Server_Title,
+            message: SBUStringSet.Alert_Busy_Server_Message,
+            cancelButtonItem: nil,
+            delegate: nil,
+            countDownSeconds: retryAfter,
+            enableBackgroundTapToDismiss: false
+        )
+    }
+    
+    func dismissBusyServerCountdownAlert() {
+        SBUAlertView.dismiss()
     }
 }
 

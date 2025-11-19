@@ -127,9 +127,11 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         dataSource: SBUMessageThreadViewModelDataSource? = nil
     ) {
         super.init()
+        self.commonDelegate = delegate
         
         self.delegate = delegate
         self.baseDelegates.addDelegate(self.delegate, type: .uikit)
+        
         self.dataSource = dataSource
         self.isTransformedList = false
         self.isThreadMessageMode = true
@@ -1328,7 +1330,7 @@ extension SBUMessageThreadViewModel {
     
     /// This function is called when reconnection fails.
     /// It is currently empty and can be overridden in subclasses to provide custom behavior.
-    open func didFailReconnection() { }
+    open override func didFailReconnection() { }
 }
 
 // MARK: - GroupChannelDelegate (parent message, threaded message)

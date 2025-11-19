@@ -15,7 +15,7 @@ protocol CreateGroupChannelViewEventDelegate: AnyObject {
 }
 #endif
 
-open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChannelModuleHeaderDelegate, SBUCreateChannelModuleHeaderDataSource, SBUCreateChannelModuleListDataSource, SBUCreateChannelModuleListDelegate, SBUCommonViewModelDelegate, SBUCreateChannelViewModelDataSource, SBUCreateChannelViewModelDelegate {
+open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChannelModuleHeaderDelegate, SBUCreateChannelModuleHeaderDataSource, SBUCreateChannelModuleListDataSource, SBUCreateChannelModuleListDelegate, SBUCreateChannelViewModelDataSource, SBUCreateChannelViewModelDelegate {
     
     // MARK: - UI properties (Public)
     public var headerComponent: SBUCreateChannelModule.Header?
@@ -270,11 +270,11 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     }
     
     // MARK: - SBUCommonViewModelDelegate
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.localizedDescription)
         

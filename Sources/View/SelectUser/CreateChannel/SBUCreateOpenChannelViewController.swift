@@ -17,7 +17,7 @@ protocol CreateOpenChannelViewEventDelegate: AnyObject {
 }
 #endif
 
-open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCreateOpenChannelModuleHeaderDelegate, SBUCreateOpenChannelModuleProfileInputDelegate, SBUCommonViewModelDelegate, SBUCreateOpenChannelViewModelDelegate, SBUAlertViewDelegate {
+open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCreateOpenChannelModuleHeaderDelegate, SBUCreateOpenChannelModuleProfileInputDelegate, SBUCreateOpenChannelViewModelDelegate, SBUAlertViewDelegate {
 
     // MARK: - UI properties (Public)
     public var headerComponent: SBUCreateOpenChannelModule.Header?
@@ -369,11 +369,11 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     }
     
     // MARK: - SBUCommonViewModelDelegate
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.localizedDescription)
     }

@@ -46,6 +46,9 @@ public class SBUStringSet {
     public static var Alert_Allow_PhotoLibrary_Access_Message = "PhotoLibrary access required to get your photos and videos"
     /// A text used to ask the user permission for microphone usage.
     public static var Alert_Allow_Microphone_Access = "Please allow microphone usage from settings"
+    
+    public static var Alert_Busy_Server_Title = "Something went wrong.\nYou'll be reconnected \nshortly."
+    public static var Alert_Busy_Server_Message = "Estimated waiting time:"
 
     // MARK: - Date Format
     public static var Date_Yesterday = "Yesterday"

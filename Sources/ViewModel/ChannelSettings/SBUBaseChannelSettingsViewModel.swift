@@ -27,7 +27,7 @@ public protocol SBUBaseChannelSettingsViewModelDelegate: SBUCommonViewModelDeleg
     )
 }
 
-open class SBUBaseChannelSettingsViewModel: NSObject {
+open class SBUBaseChannelSettingsViewModel: SBUBaseViewModel {
     
     // MARK: - Logic properties (Public)
     public internal(set) var channel: BaseChannel?
@@ -47,8 +47,7 @@ open class SBUBaseChannelSettingsViewModel: NSObject {
     weak var baseDelegate: SBUBaseChannelSettingsViewModelDelegate?
     var baseDelegates = WeakDelegateStorage<SBUBaseChannelSettingsViewModelDelegate>()
     
-    // MARK: - LifeCycle
-    public override init() {
+    override public init() {
         super.init()
     }
     
