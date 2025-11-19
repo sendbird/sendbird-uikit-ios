@@ -64,6 +64,7 @@ open class SBURegisterOperatorViewModel: SBUBaseSelectUserViewModel {
             delegate: delegate,
             dataSource: dataSource
         )
+        self.commonDelegate = delegate
         self.baseDelegates.addDelegate(delegate, type: .uikit)
     }
     

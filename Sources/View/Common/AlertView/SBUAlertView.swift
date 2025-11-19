@@ -55,7 +55,20 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
     
     public var containerCornerRadius: CGFloat = 10.0
     
-    // Private
+    // MARK: Private properties
+    /// Timer for countdown.
+    /// - Since: 3.32.4
+    private var countdownTimer: Timer?
+    /// The remaining seconds for countdown.
+    /// - Since: 3.32.4
+    private var countdownRemainingSeconds: Int?
+    /// Base text template for message with countdown.
+    /// - Since: 3.32.4
+    private var baseCountdownMessage: String?
+    /// Flag option that enables/ disables dismiss on background tap.
+    /// - Since: 3.32.4
+    private var enableBackgroundTapToDismiss: Bool = true
+    
     static private var shared = SBUModuleSet.CommonModule.AlertView.init()
     
     static func resetInstance() {
@@ -88,7 +101,7 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
     /// This static function shows the alertView.
     /// - Parameters:
     ///   - title: Title text
-    ///   - message: Message text (default: nil)
+    ///   - message: Message text (default: nil).
     ///   - needInputField: If an input field is required, set value to `true`.
     ///   - inputText: If an input field has pre-defined text  set value `text`.
     ///   - placeHolder: Placeholder text (default: "")
@@ -97,6 +110,8 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
     ///   - confirmButtonItem: Confirm button item
     ///   - cancelButtonItem: Cancel button item (nullable)
     ///   - delegate: AlertView delegate
+    ///   - countDownSeconds: Optional number of seconds for displaying a live countdown in the message
+    ///   - dismissHandler: Called when the alert is dismissed by user interaction
     open class func show(
         title: String,
         message: String? = nil,
@@ -122,6 +137,56 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
                 confirmButtonItem: confirmButtonItem,
                 cancelButtonItem: cancelButtonItem,
                 delegate: delegate,
+                dismissHandler: dismissHandler
+            )
+        }
+    }
+    
+    /// This static function shows the alertView with a countdown message.
+    /// - Parameters:
+    ///   - title: Title text
+    ///   - message: Message text (default: nil).
+    ///   - needInputField: If an input field is required, set value to `true`.
+    ///   - inputText: If an input field has pre-defined text  set value `text`.
+    ///   - placeHolder: Placeholder text (default: "")
+    ///   - centerYRatio: AlertView's centerY ratio.
+    ///   - oneTimetheme: One-time theme setting
+    ///   - confirmButtonItem: Confirm button item (optional)
+    ///   - cancelButtonItem: Cancel button item (optional)
+    ///   - delegate: AlertView delegate
+    ///   - countDownSeconds: Optional number of seconds for displaying a live countdown in the message
+    ///   - enableBackgroundTapToDismiss: If set to `false`, the alert view is not dismissed when the user taps on the background. Defaults to `true`.
+    ///   - dismissHandler: Called when the alert is dismissed by user interaction
+    /// - Since: 3.32.4
+    open class func show(
+        title: String,
+        message: String? = nil,
+        needInputField: Bool = false,
+        inputText: String? = nil,
+        placeHolder: String? = "",
+        centerYRatio: CGFloat? = 1.0,
+        oneTimetheme: SBUComponentTheme? = nil,
+        confirmButtonItem: SBUAlertButtonItem? = nil,
+        cancelButtonItem: SBUAlertButtonItem?,
+        delegate: SBUAlertViewDelegate? = nil,
+        countDownSeconds: UInt? = nil,
+        enableBackgroundTapToDismiss: Bool = true,
+        dismissHandler: (() -> Void)? = nil
+    ) {
+        Thread.executeOnMain {
+            self.shared.show(
+                title: title,
+                message: message,
+                needInputField: needInputField,
+                inputText: inputText,
+                placeHolder: placeHolder,
+                centerYRatio: centerYRatio,
+                oneTimetheme: oneTimetheme,
+                confirmButtonItem: confirmButtonItem,
+                cancelButtonItem: cancelButtonItem,
+                delegate: delegate,
+                countDownSeconds: countDownSeconds,
+                enableBackgroundTapToDismiss: enableBackgroundTapToDismiss,
                 dismissHandler: dismissHandler
             )
         }
@@ -164,6 +229,10 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
             originY = inputField.frame.maxY + inputBottomMargin
         } else {
             originY += textTopBottomMargin
+        }
+        
+        guard confirmButtonItem != nil || cancelButtonItem != nil else {
+            return
         }
         
         // separator
@@ -215,6 +284,7 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
         self.messageLabel?.font = theme.alertDetailFont
         self.messageLabel?.textColor = theme.alertDetailColor
         self.messageLabel?.textAlignment = .center
+        self.applyBoldFontOnTimer()
         
         self.inputField?.backgroundColor = theme.alertTextFieldBackgroundColor
         self.inputField?.font = theme.alertTextFieldFont
@@ -249,16 +319,7 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
         self.backgroundView.frame = parentView.bounds
         self.containerView.layer.masksToBounds = true
         
-        // containerView: RoundRect
-        let rectShape = CAShapeLayer()
-        rectShape.bounds = self.containerView.frame
-        rectShape.position = self.containerView.center
-        rectShape.path = UIBezierPath(
-            roundedRect: self.containerView.bounds,
-            byRoundingCorners: [.topLeft, .topRight, .bottomLeft, .bottomRight],
-            cornerRadii: CGSize(width: containerCornerRadius, height: containerCornerRadius)
-        ).cgPath
-        self.containerView.layer.mask = rectShape
+        setRoundRectOnContainerView()
         
         // inputField: RoundRect
         if self.needInputField,
@@ -279,6 +340,12 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
     open func setupActions() {
         self.backgroundView.addTarget(self, action: #selector(dismiss), for: .touchUpInside)
     }
+    
+    func updateActions() {
+        if self.enableBackgroundTapToDismiss == false {
+            self.backgroundView.removeTarget(self, action: #selector(dismiss), for: .touchUpInside)
+        }
+    }
 }
 
 // MARK: - Public
@@ -297,7 +364,7 @@ extension SBUAlertView {
         
         totalHeight += self.titleHeight
 
-        if message != nil {
+        if self.message != nil {
             totalHeight += (self.textInsideMargin + self.messageHeight)
         }
         
@@ -309,7 +376,9 @@ extension SBUAlertView {
             totalHeight += (textTopBottomMargin + textTopBottomMargin)
         }
         
-        totalHeight += self.buttonHeight
+        if confirmButtonItem != nil || cancelButtonItem != nil {
+            totalHeight += self.buttonHeight
+        }
         
         return totalHeight
     }
@@ -351,6 +420,32 @@ extension SBUAlertView {
         )
     }
     
+    public func setRoundRectOnContainerView() {
+        setRoundRect(
+            on: self.containerView,
+            cornerRadii: CGSize(
+                width: containerCornerRadius,
+                height: containerCornerRadius
+            )
+        )
+    }
+    
+    public func setRoundRect(
+        on targetView: UIView,
+        cornerRadii: CGSize
+    ) {
+        let rectShape = CAShapeLayer()
+        rectShape.bounds = targetView.frame
+        rectShape.position = targetView.center
+        rectShape.path = UIBezierPath(
+            roundedRect: targetView.bounds,
+            byRoundingCorners: [.topLeft, .topRight, .bottomLeft, .bottomRight],
+            cornerRadii: cornerRadii
+        ).cgPath
+        
+        targetView.layer.mask = rectShape
+    }
+    
     // MARK: Button action
     /// This function is called when the button is clicked.
     /// - Since: 3.28.0
@@ -377,9 +472,11 @@ extension SBUAlertView {
         placeHolder: String? = "",
         centerYRatio: CGFloat? = 1.0,
         oneTimetheme: SBUComponentTheme? = nil,
-        confirmButtonItem: SBUAlertButtonItem,
+        confirmButtonItem: SBUAlertButtonItem? = nil,
         cancelButtonItem: SBUAlertButtonItem?,
         delegate: SBUAlertViewDelegate?,
+        countDownSeconds: UInt? = nil,
+        enableBackgroundTapToDismiss: Bool? = nil,
         dismissHandler: (() -> Void)? = nil
     ) {
         self.storeProperties(
@@ -393,6 +490,8 @@ extension SBUAlertView {
             confirmButtonItem: confirmButtonItem,
             cancelButtonItem: cancelButtonItem,
             delegate: delegate,
+            countDownSeconds: countDownSeconds,
+            enableBackgroundTapToDismiss: enableBackgroundTapToDismiss,
             dismissHandler: dismissHandler
         )
 
@@ -401,6 +500,8 @@ extension SBUAlertView {
         self.updateStyles()
         self.updateLayouts()
         self.presentView()
+        
+        self.updateActions()
     }
     
     /// Stores properties for the toast view.
@@ -412,17 +513,34 @@ extension SBUAlertView {
         placeHolder: String? = "",
         centerYRatio: CGFloat? = 1.0,
         oneTimetheme: SBUComponentTheme? = nil,
-        confirmButtonItem: SBUAlertButtonItem,
+        confirmButtonItem: SBUAlertButtonItem? = nil,
         cancelButtonItem: SBUAlertButtonItem?,
         delegate: SBUAlertViewDelegate?,
+        countDownSeconds: UInt? = nil,
+        enableBackgroundTapToDismiss: Bool? = nil,
         dismissHandler: (() -> Void)? = nil
     ) {
+        self.invalidateCountdown()
+        
         if let oneTimetheme = oneTimetheme {
             self.theme = oneTimetheme
         }
         
         self.title = title
-        self.message = message
+        
+        // AlertView has a countdown.
+        if let countDownSeconds {
+            let remaining = Int(countDownSeconds)
+            self.countdownRemainingSeconds = remaining
+            self.baseCountdownMessage = message
+            self.message = self.countdownMessage(for: remaining)
+        } else {
+            // A normal AlertView (without a countdown).
+            self.countdownRemainingSeconds = nil
+            self.baseCountdownMessage = nil
+            self.message = message
+        }
+
         self.needInputField = needInputField
         self.inputText = inputText
         self.placeHolder = placeHolder
@@ -430,6 +548,10 @@ extension SBUAlertView {
         self.cancelButtonItem = cancelButtonItem
         self.delegate = delegate
         self.dismissHandler = dismissHandler
+        if let enableBackgroundTapToDismiss,
+           enableBackgroundTapToDismiss == false {
+            self.enableBackgroundTapToDismiss = false
+        }
         
         if let centerYRatio = centerYRatio {
             self.centerYRatio = centerYRatio
@@ -482,6 +604,11 @@ extension SBUAlertView {
                 self.inputField?.becomeFirstResponder()
             }
             self.isShowing = false
+            
+            // Count down if seconds remain.
+            if self.countdownRemainingSeconds != nil {
+                self.startCountdownIfNeeded()
+            }
         }
     }
     
@@ -537,9 +664,110 @@ extension SBUAlertView {
         )
     }
     
+    // MARK: Countdown
+    /// Starts countdown.
+    private func startCountdownIfNeeded() {
+        guard countdownTimer == nil,
+              let remaining = countdownRemainingSeconds,
+              remaining > 0 else { return }
+        
+        self.updateCountdownMessage(with: remaining)
+        
+        let timer = Timer(timeInterval: 1.0, repeats: true) { [weak self] _ in
+            self?.handleCountdownTick()
+        }
+        timer.tolerance = 0.1
+        RunLoop.main.add(timer, forMode: .common)
+        self.countdownTimer = timer
+    }
+    
+    /// Counts down by one second, and updates `messageLabel` at each second.
+    private func handleCountdownTick() {
+        guard let current = countdownRemainingSeconds else {
+            invalidateCountdown()
+            return
+        }
+        
+        guard current >= 0 else {
+            invalidateCountdown()
+            return
+        }
+        
+        let updated = current - 1
+        countdownRemainingSeconds = updated
+        self.updateCountdownMessage(with: max(updated, -1))
+        
+        if updated < 0 {
+            invalidateCountdown()
+        }
+    }
+    
+    /// Updates `messageLabel` with remaining seconds.
+    private func updateCountdownMessage(with remaining: Int) {
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+
+            let shouldHideMessageLabel = (remaining < 0)
+            
+            if shouldHideMessageLabel {
+                self.message = nil
+                self.messageLabel?.attributedText = nil
+                self.messageLabel?.text = nil
+                self.messageLabel?.isHidden = true
+            } else {
+                let newMessage = self.countdownMessage(for: remaining)
+                self.message = newMessage
+                self.messageLabel?.text = newMessage
+                self.applyBoldFontOnTimer()
+                self.messageLabel?.isHidden = false
+            }
+            
+            // Update containerView.
+            UIView.animate(withDuration: 0.3) {
+                // update containerView height
+                self.containerView.frame.size.height = self.calculateTotalHeight()
+                
+                // update containerView's roundRect
+                self.setRoundRectOnContainerView()
+                
+                self.containerView.layoutIfNeeded()
+             }
+        }
+    }
+    
+    /// Turns off the timer.
+    private func invalidateCountdown() {
+        countdownTimer?.invalidate()
+        countdownTimer = nil
+        countdownRemainingSeconds = nil
+    }
+    
+    /// Creates a message with the countdown seconds.
+    private func countdownMessage(for remaining: Int) -> String {
+        let formattedTime = self.formattedTime(from: remaining)
+        let baseMessage = self.baseCountdownMessage ?? ""
+        
+        return "\(baseMessage) \(formattedTime)"
+    }
+    
+    /// Formats the seconds into `mm:ss` format.
+    private func formattedTime(from totalSeconds: Int) -> String {
+        let clampedSeconds = max(totalSeconds, 0)
+        let minutes = clampedSeconds / 60
+        let seconds = clampedSeconds % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
     // MARK: Action
     @objc
     private func handleDismiss(isUserInitiated: Bool) {
+        if isUserInitiated {
+            self.invalidateCountdown()
+        } else {
+            self.countdownTimer?.invalidate()
+            self.countdownTimer = nil
+        }
+        
         for subView in self.containerView.subviews {
             subView.removeFromSuperview()
         }
@@ -629,8 +857,54 @@ extension SBUAlertView {
             ),
             size: CGSize(width: insideItemWidth, height: messageHeight)
         ))
-        label.text = message
+        label.text = self.message
+        
         return label
+    }
+    
+    /// Applies bold font to the countdown part of the `messageLabel`.
+    /// - Since: 3.32.4
+    private func applyBoldFontOnTimer() {
+        guard
+            let label = self.messageLabel,
+            let text = self.message,
+            let remaining = self.countdownRemainingSeconds,
+            remaining >= 0
+        else {
+            return
+        }
+
+        let countdownText = self.formattedTime(from: remaining)
+        let nsText = text as NSString
+        let range = nsText.range(of: countdownText, options: .backwards)
+        
+        guard range.location != NSNotFound else {
+            return
+        }
+        
+        let attributed = NSMutableAttributedString(string: text)
+        let baseFont = self.theme.alertDetailFont
+        let baseColor = self.theme.alertDetailColor
+        attributed.addAttributes(
+            [.font: baseFont, .foregroundColor: baseColor],
+            range: NSRange(location: 0, length: nsText.length)
+        )
+        attributed.addAttributes(
+            [.font: self.boldFont(basedOn: baseFont), .foregroundColor: baseColor],
+            range: range
+        )
+        
+        label.attributedText = attributed
+    }
+    
+    /// Returns a bold font based on the provided font.
+    /// - Since: 3.32.4
+    private func boldFont(basedOn font: UIFont) -> UIFont {
+        if let descriptor = font.fontDescriptor.withSymbolicTraits(.traitBold) {
+            return UIFont(descriptor: descriptor, size: font.pointSize)
+        } else {
+            return UIFont.boldSystemFont(ofSize: font.pointSize)
+        }
     }
     
     /// This function creates a inputFiled.

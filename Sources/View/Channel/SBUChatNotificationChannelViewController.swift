@@ -17,8 +17,7 @@ import SafariServices
 open class SBUChatNotificationChannelViewController: SBUBaseViewController,
     SBUChatNotificationChannelViewModelDelegate, SBUChatNotificationChannelViewModelDataSource,
     SBUChatNotificationChannelModuleListDelegate, SBUChatNotificationChannelModuleListDataSource,
-    SBUChatNotificationChannelModuleHeaderDelegate,
-    SBUCommonViewModelDelegate {
+    SBUChatNotificationChannelModuleHeaderDelegate {
     
     // MARK: - Module components (Public)
     public var headerComponent: SBUChatNotificationChannelModule.Header?
@@ -728,11 +727,11 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
     }
     
     // MARK: - SBUCommonViewModelDelegate
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SendbirdChatSDK.SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SendbirdChatSDK.SBError?, isBlocker: Bool) {
         if self.viewModel?.notifications.isEmpty == true, isBlocker {
             self.listComponent?.updateEmptyView(type: .error)
             self.listComponent?.reloadTableView()

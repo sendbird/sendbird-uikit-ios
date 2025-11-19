@@ -47,6 +47,7 @@ open class SBUGroupChannelPushSettingsViewModel: SBUBaseChannelSettingsViewModel
         delegate: SBUGroupChannelPushSettingsViewModelDelegate? = nil
     ) {
         super.init()
+        self.commonDelegate = delegate
 
         self.delegate = delegate
         self.baseDelegates.addDelegate(delegate, type: .uikit)

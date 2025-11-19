@@ -42,7 +42,7 @@ public protocol SBUCreateChannelViewModelDataSource: AnyObject {
 }
 
 /// `SBUCreateChannelViewModel` is a class that handles the creation of channels.
-open class SBUCreateChannelViewModel {
+open class SBUCreateChannelViewModel: SBUBaseViewModel {
     // MARK: - Constants
     static let limit: UInt = 20
     
@@ -86,6 +86,9 @@ open class SBUCreateChannelViewModel {
         delegate: SBUCreateChannelViewModelDelegate? = nil,
         dataSource: SBUCreateChannelViewModelDataSource? = nil
     ) {
+        super.init()
+        self.commonDelegate = delegate
+        
         self.delegate = delegate
         self.dataSource = dataSource
         self.delegates.addDelegate(delegate, type: .uikit)

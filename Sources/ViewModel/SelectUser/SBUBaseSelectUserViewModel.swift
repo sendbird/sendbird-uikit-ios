@@ -31,7 +31,7 @@ public protocol SBUBaseSelectUserViewModelDataSource: AnyObject {
     func nextUserList() -> [SBUUser]?
 }
 
-open class SBUBaseSelectUserViewModel: NSObject {
+open class SBUBaseSelectUserViewModel: SBUBaseViewModel {
     // MARK: - Constants
     static let limit: UInt = 20
     
@@ -79,12 +79,12 @@ open class SBUBaseSelectUserViewModel: NSObject {
         delegate: SBUBaseSelectUserViewModelDelegate? = nil,
         dataSource: SBUBaseSelectUserViewModelDataSource? = nil
     ) {
+        super.init()
+        
         self.baseDelegate = delegate
         self.baseDataSource = dataSource
         
         self.baseDelegates.addDelegate(delegate, type: .uikit)
-        
-        super.init()
         
         if let channel = channel {
             self.channel = channel

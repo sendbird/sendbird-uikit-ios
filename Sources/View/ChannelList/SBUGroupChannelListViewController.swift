@@ -23,7 +23,7 @@ protocol GroupChannelListViewEventDelegate: AnyObject {
 #endif
 
 @objcMembers
-open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, SBUGroupChannelListModuleHeaderDelegate, SBUGroupChannelListModuleListDelegate, SBUGroupChannelListModuleListDataSource, SBUCreateChannelTypeSelectorDelegate, SBUCommonViewModelDelegate, SBUGroupChannelListViewModelDelegate {
+open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, SBUGroupChannelListModuleHeaderDelegate, SBUGroupChannelListModuleListDelegate, SBUGroupChannelListModuleListDataSource, SBUCreateChannelTypeSelectorDelegate, SBUGroupChannelListViewModelDelegate {
     
     // MARK: - UI Properties (Public)
     public var headerComponent: SBUGroupChannelListModule.Header? {
@@ -464,11 +464,11 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
         }
     }
     
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.description ?? "")
         

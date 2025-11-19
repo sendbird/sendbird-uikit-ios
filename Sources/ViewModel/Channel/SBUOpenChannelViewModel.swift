@@ -101,11 +101,14 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         dataSource: SBUOpenChannelViewModelDataSource? = nil
     ) {
         super.init()
+        self.commonDelegate = delegate
     
         self.delegate = delegate
         self.dataSource = dataSource
         
         self.baseDelegates.addDelegate(self.delegate, type: .uikit)
+        
+        self.commonDelegate = delegate
         
         SendbirdChat.addChannelDelegate(
             self,

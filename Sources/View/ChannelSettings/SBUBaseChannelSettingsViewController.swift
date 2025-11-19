@@ -11,7 +11,7 @@ import SendbirdChatSDK
 import PhotosUI
 import MobileCoreServices
 
-open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUCommonViewModelDelegate, SBUBaseChannelSettingsViewModelDelegate, SBUAlertViewDelegate {
+open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActionSheetDelegate, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, SBUSelectablePhotoViewDelegate, SBUBaseChannelSettingsViewModelDelegate, SBUAlertViewDelegate {
     
     // MARK: - UI Properties (Public)
     public var baseHeaderComponent: SBUBaseChannelSettingsModule.Header?
@@ -381,11 +381,11 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     }
     
     // MARK: - SBUCommonViewModelDelegate
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
     }
     

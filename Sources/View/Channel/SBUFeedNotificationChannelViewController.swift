@@ -14,8 +14,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     SBUFeedNotificationChannelViewModelDelegate, SBUFeedNotificationChannelViewModelDataSource,
     SBUFeedNotificationChannelModuleListDelegate, SBUFeedNotificationChannelModuleListDataSource,
     SBUFeedNotificationChannelModuleHeaderDelegate, SBUFeedNotificationChannelModuleHeaderDataSource,
-    SBUFeedNotificationChannelModuleCategoryFilterDelegate, SBUFeedNotificationChannelModuleCategoryFilterDataSource,
-    SBUCommonViewModelDelegate {
+    SBUFeedNotificationChannelModuleCategoryFilterDelegate, SBUFeedNotificationChannelModuleCategoryFilterDataSource {
     
     // MARK: - Module components (Public)
     public var headerComponent: SBUFeedNotificationChannelModule.Header?
@@ -847,11 +846,11 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     }
     
     // MARK: - SBUCommonViewModelDelegate
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SendbirdChatSDK.SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SendbirdChatSDK.SBError?, isBlocker: Bool) {
         if self.viewModel?.notifications.isEmpty == true, isBlocker {
             self.listComponent?.updateEmptyView(type: .error)
             self.listComponent?.reloadTableView()

@@ -57,6 +57,7 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         delegate: SBUGroupChannelSettingsViewModelDelegate? = nil
     ) {
         super.init()
+        self.commonDelegate = delegate
         
         self.delegate = delegate
         self.baseDelegates.addDelegate(delegate, type: .uikit)

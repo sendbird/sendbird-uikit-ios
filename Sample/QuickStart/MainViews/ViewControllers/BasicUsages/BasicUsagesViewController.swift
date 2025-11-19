@@ -159,6 +159,25 @@ extension BasicUsagesViewController: UserEventDelegate {
 
 extension BasicUsagesViewController: ConnectionDelegate {
     func didSucceedReconnection() {
+        print("[connection delegate] reconnected")
         self.updateUnreadCount()
+        SBUAlertView.dismiss()
+    }
+    
+    func didDelayConnection(retryAfter: UInt) {
+        print("[connection delegate] connection delayed")
+        
+        SBUAlertView.show(
+            title: SBUStringSet.Alert_Busy_Server_Title,
+            message: SBUStringSet.Alert_Busy_Server_Message,
+            cancelButtonItem: nil,
+            delegate: nil,
+            countDownSeconds: retryAfter,
+            enableBackgroundTapToDismiss: false
+        )
+    }
+    
+    func didStartReconnection() {
+        print("[connection delegate] started reconnecting")
     }
 }

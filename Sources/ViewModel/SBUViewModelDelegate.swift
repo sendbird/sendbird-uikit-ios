@@ -19,6 +19,15 @@ public protocol SBUCommonViewModelDelegate: SBUCommonDelegate {
     
     // Loading
     func shouldUpdateLoadingState(_ isLoading: Bool)
+    
+    func baseViewModelDidDelayConnection(
+        _ viewModel: SBUBaseViewModel,
+        retryAfter: UInt
+    )
+    
+    func baseViewModelDidSucceedReconnection(_ viewModel: SBUBaseViewModel)
+    
+    func baseViewModelDidFailReconnection(_ viewModel: SBUBaseViewModel)
 }
 
 extension SBUCommonViewModelDelegate {
@@ -29,4 +38,19 @@ extension SBUCommonViewModelDelegate {
     public func didReceiveError(_ error: SBError?) {
         self.didReceiveError(error, isBlocker: false)
     }
+    
+    /// This method is called when connection is delayed due to server overload.
+    /// - Since: 3.32.4
+    public func baseViewModelDidDelayConnection(
+        _ viewModel: SBUBaseViewModel,
+        retryAfter: UInt
+    ) { }
+    
+    /// This method is called when reconnection is successful.
+    /// - Since: 3.32.4
+    public func baseViewModelDidSucceedReconnection(_ viewModel: SBUBaseViewModel) { }
+    
+    /// This method is called when reconnection is failed.
+    /// - Since: 3.32.4
+    public func baseViewModelDidFailReconnection(_ viewModel: SBUBaseViewModel) { }
 }

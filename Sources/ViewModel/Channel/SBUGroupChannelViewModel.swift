@@ -151,6 +151,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         displaysLocalCachedListFirst: Bool = false
     ) {
         super.init()
+        self.commonDelegate = delegate
     
         self.delegate = delegate
         self.dataSource = dataSource

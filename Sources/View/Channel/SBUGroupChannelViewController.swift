@@ -1033,7 +1033,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     open override func baseChannelModule(_ headerComponent: SBUBaseChannelModule.Header, didTapRightItem rightItem: UIBarButtonItem) {
         super.baseChannelModule(headerComponent, didTapRightItem: rightItem)
-        
+
         self.showChannelSettings()
     }
     

@@ -1,5 +1,27 @@
 # Changelog
 
+### v3.32.4 (Nov 19, 2025)
+
+# SendbirdUIKit
+
+### New feature and interfaces 
+- Added connection-delayed handling: new dialog with live countdown and a new event (`didDelayConnection(retryAfter:)`) to observe retry timers.
+  -  Use below interfaces to customize dialog text.
+    - `SBUStringSet.Alert_Busy_Server_Title`
+    - `SBUStringSet.Alert_Busy_Server_Message`
+  - To use this feature, `SendbirdChatSDK 4.34.1` or above is required.
+
+### Changed
+- Updated dependency SDK versions to latest stable releases
+  - SendbirdChatSDK: v4.34.1
+
+# SendbirdUIMessageTemplate
+
+### Changed
+- Updated dependency SDK versions to latest stable releases
+  - SendbirdChatSDK: v4.34.1
+
+
 ### v3.32.3 (Oct 30, 2025)
 
 # SendbirdUIKit

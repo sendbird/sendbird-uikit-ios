@@ -18,7 +18,7 @@ protocol OpenChannelListViewEventDelegate: AnyObject {
 }
 #endif
 
-open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, SBUOpenChannelListModuleHeaderDelegate, SBUOpenChannelListModuleListDelegate, SBUOpenChannelListModuleListDataSource, SBUCommonViewModelDelegate, SBUOpenChannelListViewModelDelegate {
+open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, SBUOpenChannelListModuleHeaderDelegate, SBUOpenChannelListModuleListDelegate, SBUOpenChannelListModuleListDataSource, SBUOpenChannelListViewModelDelegate {
     
     // MARK: - UI Properties (Public)
     public var headerComponent: SBUOpenChannelListModule.Header? {
@@ -314,11 +314,11 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
         }
     }
     
-    open func shouldUpdateLoadingState(_ isLoading: Bool) {
+    open override func shouldUpdateLoadingState(_ isLoading: Bool) {
         self.showLoading(isLoading)
     }
     
-    open func didReceiveError(_ error: SBError?, isBlocker: Bool) {
+    open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
         self.errorHandler(error?.description ?? "")
         

@@ -85,6 +85,8 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
         channelListQuery: GroupChannelListQuery? = nil
     ) {
         super.init(delegate: delegate)
+        self.commonDelegate = delegate
+        
         self.baseDelegates.addDelegate(delegate, type: .uikit)
         
         self.initializeAndLoad(channelListQuery: channelListQuery)
