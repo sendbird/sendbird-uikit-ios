@@ -1157,7 +1157,8 @@ extension SBUBaseChannelModule.List {
     func scrollTableView(
         to row: Int,
         at position: UITableView.ScrollPosition = .top,
-        animated: Bool = false
+        animated: Bool = false,
+        shouldAutoScrollToTop: Bool = false
     ) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }

@@ -115,7 +115,7 @@ open class SBUBaseChannelSettingsViewModel: SBUBaseViewModel {
 // MARK: - BaseChannelDelegate
 extension SBUBaseChannelSettingsViewModel: BaseChannelDelegate {
     public func channelWasChanged(_ channel: BaseChannel) {
-        self.channel = channel
+        guard self.channelURL == channel.channelURL else { return }
         
         let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
         self.baseDelegates.forEach { $0.baseChannelSettingsViewModel(
@@ -125,6 +125,7 @@ extension SBUBaseChannelSettingsViewModel: BaseChannelDelegate {
         ) }
     }
     open func channelDidUpdateOperators(_ channel: BaseChannel) {
+        guard self.channelURL == channel.channelURL else { return }
         if let channel = self.channel as? GroupChannel {
             if channel.myRole != .operator {
                 self.baseDelegates.forEach { $0.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: channel) }
@@ -140,6 +141,7 @@ extension SBUBaseChannelSettingsViewModel: BaseChannelDelegate {
     }
     
     public func channel(_ channel: BaseChannel, userWasBanned user: RestrictedUser) {
+        guard self.channelURL == channel.channelURL else { return }
         guard let userId = SBUGlobals.currentUser?.userId,
               user.userId == userId else { return }
         
@@ -147,6 +149,7 @@ extension SBUBaseChannelSettingsViewModel: BaseChannelDelegate {
     }
     
     public func channelWasDeleted(_ channelURL: String, channelType: ChannelType) {
+        guard self.channelURL == channelURL else { return }
         self.baseDelegates.forEach { $0.baseChannelSettingsViewModel(self, shouldDismissForChannelSettings: nil) }
     }
 }

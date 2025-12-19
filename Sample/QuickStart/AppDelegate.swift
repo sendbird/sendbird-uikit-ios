@@ -173,5 +173,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         if #available(iOS 14, *) {
             SendbirdUI.config.groupChannel.channel.isMultipleFilesMessageEnabled = true
         }
+        
+        // SendbirdUI.config.groupChannel.channel.isAutoscrollMessageOverflowToTopEnabled = true
     }
 }

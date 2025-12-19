@@ -1,5 +1,23 @@
 # Changelog
 
+### v3.33.0 (Dec 19, 2025)
+
+# SendbirdUIKit
+
+## FIxed
+- Fixed a bug where the channel settings view was being updated with information from a different channel
+
+## Changed
+- Refactor internal authentication layer into a standalone Swift Package (SendbirdAuthSDK)
+- Updated the SDK build base to Xcode 26.0 to support `iOS 26.0+`.
+- 
+## New feature and interfaces
+Enable `SendbirdUI.config.groupChannel.channel.isAutoscrollMessageOverflowToTopEnabled` to `true` to automatically scroll to the top of a new message when that message height overflows the visible screen.
+- Added `isAutoscrollMessageOverflowToTopEnabled` in `SendbirdUI.config.groupChannel.channel`
+- Deprecated `SBUBaseChannelViewModel` method `sortAllMessageList(needReload: shouldUpdateFirstUnreadMessage:)`
+  - Renamed to `sortAllMessageList(needReload:shouldUpdateFirstUnreadMessage:isEventMessageReceived:)`
+- Deprecated `SBUBaseChannelViewModelDelegate` method `baseChannelViewModel(_:didChangeMessageList:needsToReload:initialLoad:)` 
+  - Renamed to `baseChannelViewModel(_:didChangeMessageList:needsToReload:initialLoad:isEventMessageReceived:)`
 ### v3.32.4 (Nov 19, 2025)
 
 # SendbirdUIKit

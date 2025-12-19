@@ -573,6 +573,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         
         let firstVisibleIndexPath = tableView.indexPathsForVisibleRows?.first
         ?? IndexPath(row: 0, section: 0)
+        
         self.lastSeenIndexPath = IndexPath(row: firstVisibleIndexPath.row + 1, section: 0)
         return true
     }
@@ -671,7 +672,8 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         _ viewModel: SBUBaseChannelViewModel,
         didChangeMessageList messages: [BaseMessage],
         needsToReload: Bool,
-        initialLoad: Bool
+        initialLoad: Bool,
+        isEventMessageReceived: Bool
     ) {
         guard let baseListComponent = baseListComponent else { return }
         let emptyViewType: EmptyViewType = (!initialLoad && viewModel.fullMessageList.isEmpty) ? .noMessages : .none
@@ -694,6 +696,15 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         let needsToLayout = self.isViewLoaded && (self.view.window != nil)
         baseListComponent.reloadTableView(needsToLayout: needsToLayout)
         
+        // Scroll to the "bottom" of the first cell if:
+        // - is groupchannel
+        // - `isAutoscrollMessageOverflowToTopEnabled` is enabled
+        // - if this method was triggered by `eventMessageReceived` message collection event
+        // - the cell height > tableview height
+        if self.baseViewModel?.channel is GroupChannel {
+            autoScrollMessageOverflow(isEventMessageReceived: isEventMessageReceived)
+        }
+        
         guard let lastSeenIndexPath = self.lastSeenIndexPath else {
             let hidden = baseListComponent.isScrollNearByBottom
             baseListComponent.setScrollBottomView(hidden: hidden)
@@ -701,15 +712,43 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             if baseListComponent.isScrollNearByBottom,
                 let fullMessageList = self.baseViewModel?.fullMessageList,
                !self.isTransformedList {
-                self.baseListComponent?.scrollTableView(to: fullMessageList.count - 1)
+                    autoScrollMessageOverflow(isEventMessageReceived: isEventMessageReceived)
             }
             
             return
         }
         
-        baseListComponent.scrollTableView(to: lastSeenIndexPath.row)
+        baseListComponent.scrollTableView(to: lastSeenIndexPath.row,  at: .bottom)
         let hidden = baseListComponent.isScrollNearByBottom
         baseListComponent.setScrollBottomView(hidden: hidden)
+    }
+    
+    public func autoScrollMessageOverflow(isEventMessageReceived: Bool) {
+        guard SendbirdUI.config.groupChannel.channel.isAutoscrollMessageOverflowToTopEnabled else {
+            return
+        }
+        guard let baseListComponent else { return }
+        
+        let visibleTableViewHeight = baseListComponent.tableView.bounds.height
+        
+        if self.isTransformedList {
+            // group channel view controller
+            let firstCellRect = baseListComponent.tableView.rectForRow(at: IndexPath(row: 0, section: 0))
+            if firstCellRect.height > visibleTableViewHeight {
+                baseListComponent.scrollTableView(to: 0, at: .bottom, animated: false)
+            }
+        } else {
+            // message thread view controller
+            guard let fullMessageList = self.baseViewModel?.fullMessageList else {
+                return
+            }
+            
+            let lastCellRect = baseListComponent.tableView.rectForRow(at: IndexPath(row: fullMessageList.count - 1, section: 0))
+            let shouldAutoScrollToTop = isEventMessageReceived &&
+                                        (lastCellRect.height > visibleTableViewHeight)
+            baseListComponent.scrollTableView(to: fullMessageList.count - 1, shouldAutoScrollToTop: shouldAutoScrollToTop)
+        }
+            
     }
     
     open func baseChannelViewModel(
@@ -726,10 +765,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         SBULog.info("Fetched : \(messages.count), keepScroll : \(keepsScroll)")
         guard let baseListComponent = baseListComponent else { return }
         
-        guard !messages.isEmpty else {
-            SBULog.info("Fetched empty messages.")
-            return
-        }
+        guard !messages.isEmpty else { return }
         
         if context?.source == .eventMessageSent {
             if !keepsScroll {

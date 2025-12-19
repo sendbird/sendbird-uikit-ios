@@ -51,12 +51,23 @@ public protocol SBUBaseChannelViewModelDelegate: SBUCommonViewModelDelegate {
         shouldDismissForChannel channel: BaseChannel?
     )
     
+    @available(*, deprecated, message: "Deprecated since 3.33.0", renamed: "baseChannelViewModel(_:didChangeMessageList:needsToReload:initialLoad:isEventMessageReceived:)")
     /// Called when the messages has been changed. If they're the first loaded messages, `initialLoad` is `true`.
     func baseChannelViewModel(
         _ viewModel: SBUBaseChannelViewModel,
         didChangeMessageList messages: [BaseMessage],
         needsToReload: Bool,
         initialLoad: Bool
+    )
+    
+    /// Called when the messages has been changed. If they're the first loaded messages, `initialLoad` is `true`.
+    /// - Since: 3.33.0
+    func baseChannelViewModel(
+        _ viewModel: SBUBaseChannelViewModel,
+        didChangeMessageList messages: [BaseMessage],
+        needsToReload: Bool,
+        initialLoad: Bool,
+        isEventMessageReceived: Bool
     )
     
     /// Called when the messages has been deleted.
@@ -80,6 +91,23 @@ public protocol SBUBaseChannelViewModelDelegate: SBUCommonViewModelDelegate {
         didUpdateReaction reaction: ReactionEvent,
         forMessage message: BaseMessage
     )
+}
+
+extension SBUBaseChannelViewModelDelegate {
+    public func baseChannelViewModel(
+        _ viewModel: SBUBaseChannelViewModel,
+        didChangeMessageList messages: [BaseMessage],
+        needsToReload: Bool,
+        initialLoad: Bool
+    ) {
+        baseChannelViewModel(
+            viewModel,
+            didChangeMessageList: messages,
+            needsToReload: needsToReload,
+            initialLoad: initialLoad,
+            isEventMessageReceived: false
+        )
+    }
 }
 
 open class SBUBaseChannelViewModel: SBUBaseViewModel {
@@ -673,7 +701,8 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
         messages: [BaseMessage]?,
         needUpdateNewMessage: Bool = false,
         needReload: Bool,
-        shouldUpdateFirstUnreadMessage: Bool = false
+        shouldUpdateFirstUnreadMessage: Bool = false,
+        isEventMessageReceived: Bool = false
     ) {
         SBULog.info("First : \(String(describing: messages?.first)), Last : \(String(describing: messages?.last))")
         
@@ -727,7 +756,11 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
         }
         
         let sortAllMessageListBlock = { [weak self] in
-            self?.sortAllMessageList(needReload: needReload, shouldUpdateFirstUnreadMessage: shouldUpdateFirstUnreadMessage)
+            self?.sortAllMessageList(
+                needReload: needReload,
+                shouldUpdateFirstUnreadMessage: shouldUpdateFirstUnreadMessage,
+                isEventMessageReceived: isEventMessageReceived
+            )
         }
         
         if needMarkAsRead,
@@ -853,6 +886,24 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
     /// - Parameter needReload: If set to `true`, the tableview will be call reloadData and, scroll to last seen index.
     /// - Since: 1.2.5
     public func sortAllMessageList(needReload: Bool, shouldUpdateFirstUnreadMessage: Bool = false) {
+        self.sortAllMessageList(
+            needReload: needReload,
+            shouldUpdateFirstUnreadMessage: shouldUpdateFirstUnreadMessage,
+            isEventMessageReceived: false
+        )
+    }
+    
+    /// This function sorts the all message list. (Included `presendMessages`, `messageList` and `resendableMessages`.)
+    /// - Parameters
+    ///     - needReload: If set to `true`, the tableview will be call reloadData and, scroll to last seen index.
+    ///     - shouldUpdateFirstUnreadMessage: If set to `true`, view model finds the first unread message.
+    ///     - isEventMessageReceived: If `true`, it means the call to this message was triggered by receiving a new message from other users.
+    /// - Since: 3.33.0
+    public func sortAllMessageList(
+        needReload: Bool,
+        shouldUpdateFirstUnreadMessage: Bool = false,
+        isEventMessageReceived: Bool
+    ) {
         // Generate full list for draw
         let pendingMessages = self.pendingMessageManager.getPendingMessages(
             channelURL: self.channel?.channelURL,
@@ -892,11 +943,21 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
         
         self.baseDelegates.forEach {
             $0.shouldUpdateLoadingState(false)
+            
+            // Call deprecated method for backward compatibility.
             $0.baseChannelViewModel(
                 self,
                 didChangeMessageList: self.fullMessageList,
                 needsToReload: needReload,
                 initialLoad: self.isInitialLoading
+            )
+
+            $0.baseChannelViewModel(
+                self,
+                didChangeMessageList: self.fullMessageList,
+                needsToReload: needReload,
+                initialLoad: self.isInitialLoading,
+                isEventMessageReceived: isEventMessageReceived
             )
         }
     }
