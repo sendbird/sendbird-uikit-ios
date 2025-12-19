@@ -910,7 +910,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
                                 channel: GroupChannel,
                                 addedMessages messages: [BaseMessage]) {
         // -> pending, -> receive new message
-        
+
         // message thread case exception
         var existInPendingMessage = false
         for addedMessage in messages {
@@ -930,8 +930,11 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
 
         SBULog.info("messageCollection addedMessages : \(messages.count)")
         
+        var isEventMessageReceived = false
+        
         switch context.source {
         case .eventMessageReceived:
+            isEventMessageReceived = true
             self.markAsReadIfAppropriate()
         default: break
         }
@@ -944,7 +947,12 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
                 keepsScroll: true
             )
         }
-        self.upsertMessagesInList(messages: messages, needReload: true)
+        
+        self.upsertMessagesInList(
+            messages: messages,
+            needReload: true,
+            isEventMessageReceived: isEventMessageReceived
+        )
     }
     
     open func messageCollection(

@@ -823,9 +823,12 @@ extension SBUMessageThreadModule.List {
     override func scrollTableView(
         to row: Int,
         at position: UITableView.ScrollPosition = .top,
-        animated: Bool = false) {
+        animated: Bool = false,
+        shouldAutoScrollToTop: Bool = false
+    ) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
+            
             if self.tableView.numberOfRows(inSection: 0) <= row ||
                 row < 0 {
                 return
@@ -837,8 +840,15 @@ extension SBUMessageThreadModule.List {
             
             if isScrollable {
                 if row+1 == self.fullMessageList.count {
+                    // Scrolls to last row
                     let indexPath = IndexPath(item: self.fullMessageList.count - 1, section: 0)
-                    self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
+                    var  scrollPosition: UITableView.ScrollPosition = .bottom
+                    
+                    // Scroll to the last cell's top.
+                    if shouldAutoScrollToTop && SendbirdUI.config.groupChannel.channel.isAutoscrollMessageOverflowToTopEnabled {
+                        scrollPosition = .top
+                    }
+                    self.tableView.scrollToRow(at: indexPath, at: scrollPosition, animated: false)
                 } else {
                     self.tableView.scrollToRow(
                         at: IndexPath(row: row, section: 0),

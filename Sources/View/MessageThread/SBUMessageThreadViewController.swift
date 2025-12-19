@@ -931,7 +931,8 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         _ viewModel: SBUBaseChannelViewModel,
         didChangeMessageList messages: [BaseMessage],
         needsToReload: Bool,
-        initialLoad: Bool
+        initialLoad: Bool,
+        isEventMessageReceived: Bool
     ) {
         var oldContentHeight: CGFloat = 0
         var oldOffsetY: CGFloat = 0
@@ -958,7 +959,8 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
             viewModel,
             didChangeMessageList: messages,
             needsToReload: needsToReload,
-            initialLoad: initialLoad
+            initialLoad: initialLoad,
+            isEventMessageReceived: isEventMessageReceived
         )
         
         // The message thread list does not display no messages on emptyView.

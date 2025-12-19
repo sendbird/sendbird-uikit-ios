@@ -168,6 +168,7 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
 // MARK: OpenChannelDelegate
 extension SBUOpenChannelSettingsViewModel: OpenChannelDelegate {
     open func channel(_ channel: OpenChannel, userDidEnter user: User) {
+        guard self.channelURL == channel.channelURL else { return }
         let context =  MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
         self.baseDelegates.forEach {
             $0.baseChannelSettingsViewModel(
@@ -179,6 +180,7 @@ extension SBUOpenChannelSettingsViewModel: OpenChannelDelegate {
     }
     
     open func channel(_ channel: OpenChannel, userDidExit user: User) {
+        guard self.channelURL == channel.channelURL else { return }
         let context =  MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
         self.baseDelegates.forEach {
             $0.baseChannelSettingsViewModel(

@@ -895,7 +895,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     }
     
     // MARK: - List
-    public override func sortAllMessageList(needReload: Bool, shouldUpdateFirstUnreadMessage: Bool = false) {
+    public override func sortAllMessageList(needReload: Bool, shouldUpdateFirstUnreadMessage: Bool = false, isEventMessageReceived: Bool = false) {
         // Generate full list for draw
         let pendingMessages = self.pendingMessageManager
             .getPendingMessages(
@@ -910,11 +910,21 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         
         self.baseDelegates.forEach {
             $0.shouldUpdateLoadingState(false)
+            
+            // Call deprecated method for backward compatibility.
             $0.baseChannelViewModel(
                 self,
                 didChangeMessageList: self.fullMessageList,
                 needsToReload: needReload,
                 initialLoad: self.isInitialLoading
+            )
+            
+            $0.baseChannelViewModel(
+                self,
+                didChangeMessageList: self.fullMessageList,
+                needsToReload: needReload,
+                initialLoad: self.isInitialLoading,
+                isEventMessageReceived: isEventMessageReceived
             )
         }
     }
@@ -1606,7 +1616,10 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
             )
         }
         
-        self.sortAllMessageList(needReload: true)
+        self.sortAllMessageList(
+            needReload: true,
+            isEventMessageReceived: context.source == .eventMessageReceived
+        )
         
         // Parent message
         self.updateParentMessage()

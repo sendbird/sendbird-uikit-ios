@@ -186,6 +186,7 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
 // MARK: GroupChannelDelegate
 extension SBUGroupChannelSettingsViewModel: GroupChannelDelegate {
     open func channel(_ channel: GroupChannel, userDidJoin user: User) {
+        guard self.channelURL == channel.channelURL else { return }
         let context =  MessageContext(source: .eventUserJoined, sendingStatus: .succeeded)
         self.baseDelegates.forEach {
             $0.baseChannelSettingsViewModel(
@@ -197,6 +198,7 @@ extension SBUGroupChannelSettingsViewModel: GroupChannelDelegate {
     }
     
     open func channel(_ channel: GroupChannel, userDidLeave user: User) {
+        guard self.channelURL == channel.channelURL else { return }
         let context =  MessageContext(source: .eventUserLeft, sendingStatus: .succeeded)
         self.baseDelegates.forEach {
             $0.baseChannelSettingsViewModel(
