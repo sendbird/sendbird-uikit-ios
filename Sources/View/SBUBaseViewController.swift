@@ -42,6 +42,15 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     /// - Since: 3.11.2
     public var needRollbackNavigationBarSetting: Bool = true
     
+    /// Caches previous navigation bar background color.
+    /// Used to check if navigation bar update is needed.
+    /// - Since: 3.33.1
+    var previousNavBarBackgroundColor = UIColor()
+    /// Caches previous navigation bar shadow color.
+    /// Used to check if navigation bar update is needed.
+    /// - Since: 3.33.1
+    var previousNavBarShadowColor = UIColor()
+    
     // MARK: - Lifecycle
     open override func loadView() {
         super.loadView()
@@ -110,6 +119,16 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
             self.prevNavigationBarSettings?.save(with: navigationController)
         }
         
+        // Check if navigation bar update is needed.
+        guard self.shouldUpdateNavigationBar(
+            backgroundColor: backgroundColor,
+            shadowColor: shadowColor
+        ) else { return }
+
+        // update
+        self.previousNavBarBackgroundColor = backgroundColor
+        self.previousNavBarShadowColor = shadowColor
+
         self.navigationController?.navigationBar.setBackgroundImage(
             UIImage.from(color: backgroundColor),
             for: .default
@@ -123,6 +142,15 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
             tintColor: backgroundColor,
             shadowColor: shadowColor
         )
+    }
+    
+    /// Checks if navigation bar update is needed.
+    /// - Since: 3.33.1
+    func shouldUpdateNavigationBar(
+        backgroundColor: UIColor,
+        shadowColor: UIColor
+    ) -> Bool {
+        backgroundColor != previousNavBarBackgroundColor || shadowColor != previousNavBarShadowColor
     }
     
     // MARK: - Actions

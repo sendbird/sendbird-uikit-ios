@@ -1,5 +1,33 @@
 # Changelog
 
+### v3.33.1 (Feb 03, 2026)
+
+# SendbirdUIKit
+
+## Improvements
+- Blocked navigation bar update when unnecessary for better performance 
+
+## Changes 
+- SendbirdUIKit now uses Xcode 26.2 as base Xcode version
+  
+## Deprecated
+  - `InitParams.isLocalCachingEnabled` can no longer be set to `false` in `SendbirdUI.initialize(applicationId:initParamsBuilder:startHandler:migrationHandler:completionHandler:)`. Local caching is now always enabled and managed internally by the SDK. If you attempt to set `isLocalCachingEnabled` to `false` via `initParamsBuilder`, the value will be overridden to `true`.
+
+    - Migration Guide: 
+      - Remove any code that sets isLocalCachingEnabled in your initParamsBuilder:
+      
+      // Before
+      SendbirdUI.initialize(applicationId: APP_ID) { params in
+          params?.isLocalCachingEnabled = true  // or false
+          // other settings...
+      }
+
+      // After
+      SendbirdUI.initialize(applicationId: APP_ID) { params in
+          // isLocalCachingEnabled is managed internally - do not set it
+          // other settings...
+      }
+
 ### v3.33.0 (Dec 19, 2025)
 
 # SendbirdUIKit

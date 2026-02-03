@@ -56,12 +56,14 @@ public class SendbirdUI {
     ///   - migrationHandler: Do something to display the progress of the DB migration.
     ///   - completionHandler: Do something to display the completion of the SendbirdChat initialization.
     ///
+    /// - Note: `isLocalCachingEnabled` is managed internally and cannot be set to `false`. Changes made through `initParamsBuilder` are ignored.
+    ///
     /// See the example below for builder setting.
     /// ```
     /// SendbirdUI.initialize(
     ///     applicationId: <APP_ID>
     /// ) { params in
-    ///     params?.isLocalCachingEnabled = true
+    ///     // isLocalCachingEnabled is managed internally.
     ///     params?.appVersion = SendbirdUI.versionString()
     ///     params?.needsSynchronous = true
     /// } startHandler: {
@@ -108,6 +110,12 @@ public class SendbirdUI {
         
         initParamsBuilder?(params)
         SBULog.info("Initialize state: initParamsBuilder called\n\(params)")
+        
+        // Since 3.33.1, isLocalCachingEnabled is no longer allowed to be set to false.
+        if params.isLocalCachingEnabled == false {
+            SBULog.error("`isLocalCachingEnabled` is managed internally and cannot be set to `false`. Please set it true.")
+        }
+        params.isLocalCachingEnabled = true
         
         startHandler?()
         SBULog.info("Initialize state: startHandler called")
