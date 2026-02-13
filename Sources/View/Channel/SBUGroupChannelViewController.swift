@@ -102,7 +102,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     
     // MARK: - Logic properties (Private)
-    
+
     // MARK: - Lifecycle
     
     /// If you have channel object, use this initialize function. And, if you have own message list params, please set it. If not set, it is used as the default value.
@@ -280,14 +280,29 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             tableViewLeftConstraint?.isActive = false
             tableViewRightConstraint?.isActive = false
             
+            let topAnchor: NSLayoutAnchor<NSLayoutYAxisAnchor>
+            if SendbirdUI.config.common.shouldApplyLiquidGlass {
+                topAnchor = self.view.topAnchor
+            } else {
+                topAnchor = self.self.view.safeAreaLayoutGuide.topAnchor
+            }
+            
             self.tableViewTopConstraint = listComponent.topAnchor.constraint(
-                equalTo: self.view.safeAreaLayoutGuide.topAnchor,
+                equalTo: topAnchor,
                 constant: 0
             )
+            
+            let bottomAnchor: NSLayoutAnchor<NSLayoutYAxisAnchor>
+            if SendbirdUI.config.common.shouldApplyLiquidGlass {
+                bottomAnchor = self.view.bottomAnchor
+            } else {
+                bottomAnchor = self.inputComponent?.topAnchor ?? self.view.bottomAnchor
+            }
             self.tableViewBottomConstraint = listComponent.bottomAnchor.constraint(
-                equalTo: self.inputComponent?.topAnchor ?? self.view.bottomAnchor,
+                equalTo: bottomAnchor,
                 constant: 0
             )
+            
             self.tableViewLeftConstraint = listComponent.leftAnchor.constraint(
                 equalTo: self.view.leftAnchor, constant: 0
             )
@@ -299,8 +314,22 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             tableViewBottomConstraint?.isActive = true
             tableViewLeftConstraint?.isActive = true
             tableViewRightConstraint?.isActive = true
+
+            // For liquid glass mode: position scrollBottomView above the input component
+            if SendbirdUI.config.common.shouldApplyLiquidGlass,
+               let scrollBottomView = listComponent.scrollBottomView {
+                if let inputComponent = self.inputComponent {
+                    scrollBottomView.translatesAutoresizingMaskIntoConstraints = false
+                    scrollBottomView.bottomAnchor.constraint(
+                        equalTo: inputComponent.topAnchor,
+                        constant: -8
+                    ).isActive = true
+                } else {
+                    scrollBottomView.sbu_constraint(equalTo: listComponent, bottom: 8)
+                }
+            }
         }
-        
+
         if let inputComponent = self.inputComponent {
             inputComponent.translatesAutoresizingMaskIntoConstraints = false
             
@@ -315,7 +344,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             )
             self.messageInputViewBottomConstraint = inputComponent.bottomAnchor.constraint(
                 equalTo: self.view.bottomAnchor,
-                constant: 0
+                constant: -SBUConstant.messageInputViewBottomSpacing
             )
             self.messageInputViewLeftConstraint = inputComponent.leftAnchor.constraint(
                 equalTo: self.view.leftAnchor,
@@ -326,7 +355,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
                 constant: 0
             )
             
-            messageInputViewTopConstraint?.isActive = true
+            if !SendbirdUI.config.common.shouldApplyLiquidGlass {
+                messageInputViewTopConstraint?.isActive = true
+            }
             messageInputViewBottomConstraint?.isActive = true
             messageInputViewLeftConstraint?.isActive = true
             messageInputViewRightConstraint?.isActive = true
@@ -350,6 +381,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     open override func updateStyles() {
         self.updateStyles(needsToLayout: true)
     }
+
+    // MARK: - Liquid Glass Layout Updates
+
 
     // MARK: - New message count
 
@@ -1360,9 +1394,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     open override func baseChannelModule(_ listComponent: SBUBaseChannelModule.List, didScroll scrollView: UIScrollView) {
         guard let channel = self.channel else { return }
         super.baseChannelModule(listComponent, didScroll: scrollView)
-        
+
         self.lastSeenIndexPath = nil
-        
+
         if listComponent.isScrollNearByBottom {
             self.newMessagesCount = 0
             self.updateNewMessageInfo(hidden: true)

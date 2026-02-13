@@ -151,13 +151,23 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     public lazy var textView: UITextView? = {
         let textView = UITextView()
-        textView.textContainerInset = UIEdgeInsets(top: 10, left: 9, bottom: 10, right: 16)
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            textView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            // remove the default spacing between the UITextView box & starting text position
+            textView.textContainer.lineFragmentPadding = 0
+        } else {
+            textView.textContainerInset = UIEdgeInsets(top: 10, left: 9, bottom: 10, right: 16)
+            textView.layer.cornerRadius = 20
+        }
         textView.layer.borderWidth = 1
-        textView.layer.cornerRadius = 20
         textView.delegate = self
         return textView
     }()
-    
+
+    /// The glass effect view that wraps the text view for iOS 26+.
+    /// - Since: 3.34.0
+    public var glassEffectView: UIVisualEffectView?
+
     public lazy var sendButton: UIButton? = {
         let button = UIButton()
         button.layer.cornerRadius = 4
@@ -210,7 +220,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     public lazy var inputHStackView: UIStackView = {
         let stackView = SBUStackView(
             axis: .horizontal,
-            alignment: .bottom,
+            alignment: SendbirdUI.config.common.shouldApplyLiquidGlass ? .center : .bottom,
             spacing: 0
         )
         stackView.distribution = .fill
@@ -236,12 +246,49 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     // MARK: - Property values (Public)
     /// The leading spacing for message input view
-    public var leadingSpacing: CGFloat = 12
+    @available(*, deprecated, renamed: "leadingSpacingAdaptive")
+    public var leadingSpacing: CGFloat = 12 {
+        didSet {
+            self._leadingSpacingAdaptive = SBUAdaptive(
+                base: leadingSpacing,
+                liquidGlass: leadingSpacing
+            )
+        }
+    }
     /// The trailing spacing for message input view
-    public var trailingSpacing: CGFloat = 12
+    @available(*, deprecated, renamed: "trailingSpacingAdaptive")
+    public var trailingSpacing: CGFloat = 12 {
+        didSet {
+            self._trailingSpacingAdaptive = SBUAdaptive(
+                base: trailingSpacing,
+                liquidGlass: trailingSpacing
+            )
+        }
+    }
+    
+    /// - Since: 3.34.0
+    @SBUAdaptive(base: 12, liquidGlass: 8)
+    public var leadingSpacingAdaptive: CGFloat
+    
+    /// - Since: 3.34.0
+    @SBUAdaptive(base: 12, liquidGlass: 16)
+    public var trailingSpacingAdaptive: CGFloat
     
     /// Textview's minimum height value.
-    public var textViewMinHeight: CGFloat = 38
+    @available(*, deprecated, renamed: "textViewMinHeightAdaptive")
+    public var textViewMinHeight: CGFloat = 38 {
+        didSet {
+            self._textViewMinHeightAdaptive = SBUAdaptive(
+                base: textViewMinHeight,
+                liquidGlass: textViewMinHeight
+            )
+        }
+    }
+    
+    /// - Since: 3.34.0
+    @SBUAdaptive(base: 38, liquidGlass: 20)
+    public var textViewMinHeightAdaptive: CGFloat
+    
     /// Textview's maximum height value.
     public var textViewMaxHeight: CGFloat = 87
     /// Whether to always show the send button. Default is `false`.
@@ -252,10 +299,41 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     /// Leading spacing value for `textView`.
     /// If `addButton` is available, this will be spacing between the `addButton` and the `textView`.
-    public var textViewLeadingSpacing: CGFloat = 12
+    @available(*, deprecated, renamed: "textViewLeadingSpacingAdaptive")
+    public var textViewLeadingSpacing: CGFloat = 12 {
+        didSet {
+            self._textViewLeadingSpacingAdaptive = SBUAdaptive(
+                base: textViewLeadingSpacing,
+                liquidGlass: textViewLeadingSpacing
+            )
+        }
+    }
+    
     /// Trailing spacing value for `textView`.
     /// If `sendButton` or `voiceMessageButton` is available, this will be spacing between the `textView` and the `sendButton` or `voiceMessageButton`.
     public var textViewTrailingSpacing: CGFloat = 12
+    
+    /// - Since: 3.34.0
+    @SBUAdaptive(base: 12, liquidGlass: 8)
+    public var textViewLeadingSpacingAdaptive: CGFloat
+    
+    /// - Since: 3.34.0
+    @SBUAdaptive(
+        base: 32,
+        liquidGlass: SBUIconSetType.Metric.iconSizeLiquidGlass + 2*SBUIconSetType.Metric.iconPaddingLiquidGlass
+    )
+    public var buttonIconWidth
+    
+    /// - Since: 3.34.0
+    @SBUAdaptive(
+        base: 38,
+        liquidGlass: SBUIconSetType.Metric.iconSizeLiquidGlass + 2*SBUIconSetType.Metric.iconPaddingLiquidGlass
+    )
+    public var buttonIconHeight
+    
+    /// - Since: 3.34.0
+    @SBUAdaptive(base: 10, liquidGlass: 8)
+    public var inputVStackViewSpacing: CGFloat
     
     /// The padding values for the input view.
     /// This value will be relative to the `safeAreaLayoutGuide` if available.
@@ -322,9 +400,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         return SBUStackView(axis: .vertical, alignment: .fill, spacing: 0)
     }()
     
-    // + ------------------ + --------------- + ------------------ +
-    // | leadingPaddingView | inputVStackView | trailingPaddinView |
-    // + ------------------ + --------------- + ------------------ +
+    // + ------------------ + --------------- + ------------------- +
+    // | leadingPaddingView | inputVStackView | trailingPaddingView |
+    // + ------------------ + --------------- + ------------------- +
     
     lazy var contentHStackView: SBUStackView = {
         return SBUStackView(axis: .horizontal, alignment: .fill, spacing: 0)
@@ -341,14 +419,22 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     // + --------------------- +
     
     private lazy var inputVStackView: SBUStackView = {
-        let stackView = SBUStackView(axis: .vertical, alignment: .fill, spacing: 10)
+        let stackView = SBUStackView(
+            axis: .vertical,
+            alignment: .fill,
+            spacing: inputVStackViewSpacing
+        )
         stackView.distribution = .fill
         return stackView
     }()
     
     /// Space above the input fields.
     var inputViewTopSpacer = UIView()
-    
+
+    /// Height constraint for inputViewTopSpacer (used to adjust spacing in edit mode)
+    /// - Since: 3.34.0
+    var inputViewTopSpacerHeightConstraint: NSLayoutConstraint?
+
     /// Text view + placeholder label.
     var inputContentView = UIView()
     
@@ -430,6 +516,11 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     var channelType: SendbirdChatSDK.ChannelType {
         self.datasource?.channelForMessageInputView(self)?.channelType ?? .group
     }
+    
+    ///- Since: 3.34.0
+    private let iconSizeLiquidGlass: CGFloat = 22
+    ///- Since: 3.34.0
+    private let iconPaddingLiquidGlass: CGFloat = 3
     
     /// - Since: 1.1.0 (SendbirdSwiftUI)
     var isQuoteReplyingMode = false
@@ -551,41 +642,83 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.quoteMessageView?.isHidden = true
         self.divider.isHidden = true
         
-        // baseStackView
-        // + ---------------------------------------------------------------- +
-        // | divider                                                          |
-        // + ---------------------------------------------------------------- +
-        // | + ------------------------------------------------------------ + |
-        // | | quoteMessageView                                             | |
-        // | + ------------------------------------------------------------ + |
-        // + ------------------ + --------------------- + ------------------- +
-        // |                    | inputViewTopSpacer    |                     |
-        // |                    + --------------------- +                     |
-        // |                    | inputHStackView       |                     |
-        // | leadingPaddingView + --------------------- + trailingPaddingView |
-        // |                    | editView              |                     |
-        // |                    + --------------------- +                     |
-        // |                    | inputViewBottomSpacer |                     |
-        // + ------------------ + --------------------- + ------------------- +
-        
-        // inputHStackView
-        // + --------- + ------- + ---------------- + ------- + ---------- + ----------------- +
-        // | addButton | tvLP(*) | inputContentView | tvTP(*) | sendButton | voiceRecordButton |
-        // + --------- + ------- + ---------------- + ------- + ---------- + ----------------- +
+        // SBUMessageInputView (self)
+        // + ===================================================================== +
+        // |                                                                       |
+        // |  baseStackView (VStack)                                               |
+        // |  + ---------------------------------------------------------------- + |
+        // |  + glassEffectView (background, iOS 26+)                           + |
+        // |  + ---------------------------------------------------------------- + |
+        // |  | divider                                                          | |
+        // |  + ---------------------------------------------------------------- + |
+        // |  |                                                                  | |
+        // |  |  contentView                                                     | |
+        // |  |  + ----------------------------------------------------------- + | |
+        // |  |  |                                                             | | |
+        // |  |  |  contentVStackView (VStack)                                 | | |
+        // |  |  |  + ------------------------------------------------------ + | | |
+        // |  |  |  |                                                        | | | |
+        // |  |  |  |  topStackView (VStack)                                 | | | |
+        // |  |  |  |  + ------------------------------------------------- + | | | |
+        // |  |  |  |  | quoteMessageView                                  | | | | |
+        // |  |  |  |  + ------------------------------------------------- + | | | |
+        // |  |  |  |                                                        | | | |
+        // |  |  |  + ------------------------------------------------------ + | | |
+        // |  |  |  |                                                        | | | |
+        // |  |  |  |  contentHStackView (HStack)                            | | | |
+        // |  |  |  |  + ------------------------------------------------- + | | | |
+        // |  |  |  |  |                 |                   |             | | | | |
+        // |  |  |  |  |                 | inputVStackView   |             | | | | |
+        // |  |  |  |  |                 | (VStack)          |             | | | | |
+        // |  |  |  |  |                 | + ------------- + |             | | | | |
+        // |  |  |  |  |                 | |inputViewTop-  | |             | | | | |
+        // |  |  |  |  |                 | |Spacer         | |             | | | | |
+        // |  |  |  |  |                 | + ------------- + |             | | | | |
+        // |  |  |  |  | leadingPadding- | | inputHStack-  | | trailing-   | | | | |
+        // |  |  |  |  | View            | | View          | | PaddingView | | | | |
+        // |  |  |  |  |                 | + ------------- + |             | | | | |
+        // |  |  |  |  |                 | | editView      | |             | | | | |
+        // |  |  |  |  |                 | + ------------- + |             | | | | |
+        // |  |  |  |  |                 | |inputViewBottom| |             | | | | |
+        // |  |  |  |  |                 | |Spacer         | |             | | | | |
+        // |  |  |  |  |                 | + ------------- + |             | | | | |
+        // |  |  |  |  |                 |                   |             | | | | |
+        // |  |  |  |  + ------------------------------------------------- + | | | |
+        // |  |  |  |                                                        | | | |
+        // |  |  |  + ------------------------------------------------------ + | | |
+        // |  |  |                                                             | | |
+        // |  |  + ----------------------------------------------------------- + | |
+        // |  |                                                                  | |
+        // |  + ---------------------------------------------------------------- + |
+        // |                                                                       |
+        // + ===================================================================== +
+
+        // inputHStackView (HStack, alignment: .bottom)
+        // + --------- + ------- + ---------------- + ------- + ---------- + ------------------- +
+        // | addButton | tvLP(*) | inputContentView | tvTP(*) | sendButton | voiceMessageButton  |
+        // + --------- + ------- + ---------------- + ------- + ---------- + ------------------- +
         // * tvLP: textViewLeadingPaddingView
-        // * tvTP: textViewTrailingPaddinView
-        
+        // * tvTP: textViewTrailingPaddingView
+
+        // inputContentView
+        // + ----------------------------------------- +
+        // |  textView (fills)                         |
+        // |  + ------------------------------------ + |
+        // |  | placeholderLabel                     | |
+        // |  + ------------------------------------ + |
+        // + ----------------------------------------- +
+
         // editView
         // + ------------ + -------------- + ---------- +
         // | cancelButton | editMarginView | saveButton |
         // + ------------ + -------------- + ---------- +
         
-        // Add views
+        // Add views - textView and placeholder to inputContentView
         if let textView = self.textView {
             self.inputContentView.addSubview(textView)
             self.inputContentView.addSubview(self.placeholderLabel)
         }
-        
+
         self.editView.addSubview(
             self.editStackView.setHStack([
                 self.cancelButton,
@@ -593,7 +726,17 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
                 self.saveButton
             ])
         )
-        
+
+        // Setup inputHStackView
+        self.inputHStackView.setHStack([
+            self.addButton,
+            self.textViewLeadingPaddingView,
+            self.inputContentView,
+            self.textViewTrailingPaddingView,
+            self.sendButton,
+            self.voiceMessageButton,
+        ])
+
         self.contentView.addSubview(
             self.contentVStackView.setVStack([
                 self.topStackView.setVStack([
@@ -624,6 +767,13 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             self.contentView
         ])
         
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            if let glassEffectView = SBULiquidGlassUtils.createGlassEffectView() {
+                self.baseStackView.insertSubview(glassEffectView, at: 0)
+                self.glassEffectView = glassEffectView
+            }
+        }
+        
         self.addSubview(self.baseStackView)
         
         #if SWIFTUI
@@ -647,37 +797,40 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             .sbu_constraint(height: 32)
         
         // Subviews in InputVStackView
-        self.inputViewTopSpacer
-            .sbu_constraint(height: 0)
+        self.inputViewTopSpacerHeightConstraint = self.inputViewTopSpacer.heightAnchor.constraint(equalToConstant: 0)
+        self.inputViewTopSpacerHeightConstraint?.isActive = true
         
         self.inputViewBottomSpacer
             .sbu_constraint(height: 0)
         
         // Subviews in InputHStackView
         self.addButton?
-            .sbu_constraint(width: 32, height: 38)
+            .sbu_constraint(width: buttonIconWidth, height: buttonIconHeight)
         
         // leading/trailing spacing for textview
         self.textViewLeadingPaddingView
-            .sbu_constraint(width: self.textViewLeadingSpacing)
+            .sbu_constraint(width: self.textViewLeadingSpacingAdaptive)
         
         self.textViewTrailingPaddingView
             .sbu_constraint(width: self.textViewTrailingSpacing)
         
+        // sendButton
         self.sendButton?
-            .sbu_constraint(width: 32, height: 38)
-        
+            .sbu_constraint(width: buttonIconWidth, height: buttonIconHeight)
+
         self.voiceMessageButton?
-            .sbu_constraint(width: 32, height: 38)
+            .sbu_constraint(width: buttonIconWidth, height: buttonIconHeight)
         
-        // Subivews in InputContentView
+        // Subviews in InputContentView
         self.textView?
             .sbu_constraint(equalTo: self.inputContentView, leading: 0, trailing: 0, top: 0, bottom: 0)
-        
+
         if let textView = self.textView {
-            let leading: CGFloat = self.currentLayoutDirection.isRTL ? 22 : 14
+            let tempLeading: CGFloat = self.currentLayoutDirection.isRTL ? 22 : 14
+            let leading: CGFloat = SendbirdUI.config.common.shouldApplyLiquidGlass ? 0 : tempLeading
+            
             self.placeholderLabel
-                .sbu_constraint(equalTo: textView, leading: leading, top: 10)
+                .sbu_constraint(equalTo: textView, leading: leading, centerY: 0)
             self.setupTextViewHeight(textView: textView)
         }
         
@@ -690,28 +843,49 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         // Subviews in ContentHStackView
         self.leadingPaddingView
-            .sbu_constraint(width: self.leadingSpacing)
+            .sbu_constraint(width: self.leadingSpacingAdaptive)
         
         self.trailingPaddingView
-            .sbu_constraint(width: self.trailingSpacing)
+            .sbu_constraint(width: self.trailingSpacingAdaptive)
         
         // ContentVStackView
-        self.contentVStackView.sbu_constraint_equalTo(
-            leadingAnchor: self.safeAreaLayoutGuide.leadingAnchor,
-            leading: 0
-        )
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            self.contentVStackView.sbu_constraint_equalTo(
+                leadingAnchor: self.contentView.leadingAnchor,
+                leading: 16
+            )
+            self.contentVStackView.sbu_constraint_equalTo(
+                trailingAnchor: self.contentView.trailingAnchor,
+                trailing: -16
+            )
+        } else {
+            // TODO: `self.contentVStackView` should be constrained to `self.contentView`
+            self.contentVStackView.sbu_constraint_equalTo(
+                leadingAnchor: self.safeAreaLayoutGuide.leadingAnchor,
+                leading: 0
+            )
+            self.contentVStackView.sbu_constraint_equalTo(
+                trailingAnchor: self.safeAreaLayoutGuide.trailingAnchor,
+                trailing: 0
+            )
+        }
+        
         self.contentVStackView.sbu_constraint_equalTo(
             topAnchor: self.safeAreaLayoutGuide.topAnchor,
             top: layoutInsets.top
         )
         self.contentVStackView.sbu_constraint_equalTo(
-            trailingAnchor: self.safeAreaLayoutGuide.trailingAnchor,
-            trailing: 0
-        )
-        self.contentVStackView.sbu_constraint_equalTo(
-            bottomAnchor: self.safeAreaLayoutGuide.bottomAnchor,
+            bottomAnchor: SendbirdUI.config.common.shouldApplyLiquidGlass
+                ? self.bottomAnchor
+                : self.safeAreaLayoutGuide.bottomAnchor,
             bottom: layoutInsets.bottom
         )
+        
+        // glassView - constrain to fill baseStackView
+         if SendbirdUI.config.common.shouldApplyLiquidGlass {
+             self.glassEffectView?
+                 .sbu_constraint(equalTo: self.baseStackView, leading: 16, trailing: -16, top: 0, bottom: 0)
+         }
         
         // baseStackView
         self.baseStackView
@@ -725,10 +899,26 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     }
     
     /// This function handles the initialization of styles.
-    open override func setupStyles() {
+    open override func setupStyles() {  
         let theme = self.isOverlay ? self.overlayTheme : self.theme
         
-        self.backgroundColor = theme.backgroundColor
+        self.backgroundColor = theme.backgroundColorAdaptive
+        
+        // For liquid glass only (shadow + liquid glass effect)
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            // Shadow on baseStackView
+            self.baseStackView.layer.shadowColor = theme.inputViewShadowColor.cgColor
+            self.baseStackView.layer.shadowOffset = CGSize(width: 0, height: 2.18)
+            self.baseStackView.layer.shadowRadius = 10.91  // Figma blur 21.82 / 2
+            self.baseStackView.layer.shadowOpacity = 0.08
+
+            // Corner radius on glassEffectView
+            self.glassEffectView?.setupStyles(
+                cornerRadius: 22,
+                cornerCurve: .continuous,
+                clipsToBounds: true
+            )
+        }
         
         // placeholderLabel
         self.placeholderLabel.font = theme.textFieldPlaceholderFont
@@ -759,9 +949,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         }
         
         // textView
-        self.textView?.backgroundColor = theme.textFieldBackgroundColor
+        self.textView?.backgroundColor = theme.textFieldBackgroundColorAdaptive
+        self.textView?.layer.borderColor = theme.textFieldBorderColorAdaptive.cgColor
         self.textView?.tintColor = theme.textFieldTintColor
-        self.textView?.layer.borderColor = theme.textFieldBorderColor.cgColor
         self.textView?.typingAttributes = defaultAttributes
         
         // support rtl layout
@@ -774,18 +964,32 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         }
         
         // addButton
-        let iconAdd = SBUIconSetType.iconAdd
-            .image(with: (self.isFrozen || self.isMuted || self.isDisabledByServer || self.isDisabled)
-                   ? theme.buttonDisabledTintColor
-                   : theme.buttonTintColor,
-                   to: SBUIconSetType.Metric.defaultIconSize)
-        self.addButton?.setImage(iconAdd, for: .normal)
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            let iconPlus = SBUIconSetType.iconPlus
+                .image(with: (self.isFrozen || self.isMuted || self.isDisabledByServer || self.isDisabled)
+                       ? theme.buttonDisabledTintColor
+                       : theme.buttonTintColor,
+                       to: CGSize(value: SBUIconSetType.Metric.iconSizeLiquidGlass))
+                .sbu_addCircularBackgroundPadding(
+                    SBUIconSetType.Metric.iconPaddingLiquidGlass,
+                    color: UIColor(red: 0, green: 0, blue: 0, alpha: 0.03)
+                )
+            self.addButton?.setImage(iconPlus, for: .normal)
+        } else {
+            let iconAdd = SBUIconSetType.iconAdd
+                .image(with: (self.isFrozen || self.isMuted || self.isDisabledByServer || self.isDisabled)
+                       ? theme.buttonDisabledTintColor
+                       : theme.buttonTintColor,
+                       to: SBUIconSetType.Metric.defaultIconSizeAdaptive
+                )
+            self.addButton?.setImage(iconAdd, for: .normal)
+        }
         
         // IconSend
         self.sendButton?.setImage(
             SBUIconSetType.iconSend.image(
                 with: theme.buttonTintColor,
-                to: SBUIconSetType.Metric.defaultIconSize
+                to: SBUIconSetType.Metric.defaultIconSizeAdaptive
             ),
             for: .normal)
         
@@ -795,7 +999,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
                 with: (self.isFrozen || self.isMuted || self.isDisabledByServer || self.isDisabled)
                 ? theme.buttonDisabledTintColor
                 : theme.buttonTintColor,
-                to: SBUIconSetType.Metric.defaultIconSize
+                to: SBUIconSetType.Metric.defaultIconSizeAdaptive
             ),
             for: .normal)
         
@@ -823,7 +1027,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         )
         Self.cancelItem.color = theme.buttonTintColor
         
-        self.divider.backgroundColor = theme.channelViewDividerColor
+        self.divider.backgroundColor = theme.channelViewDividerColorAdaptive
     }
     
     public override func layoutSubviews() {
@@ -845,7 +1049,12 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         self.editView.isHidden = false
         self.editView.alpha = 1
-        
+
+        // Add extra top spacing in edit mode for liquid glass
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            self.inputViewTopSpacerHeightConstraint?.constant = 14
+        }
+
         self.updateTextViewHeight()
         let bottom = NSRange(location: (self.textView?.text.count ?? 0) - 1, length: 1)
         self.textView?.scrollRangeToVisible(bottom)
@@ -877,7 +1086,12 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         
         self.editView.isHidden = true
         self.editView.alpha = 0
-        
+
+        // Reset top spacing when exiting edit mode
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            self.inputViewTopSpacerHeightConstraint?.constant = 0
+        }
+
         self.updateTextViewHeight()
         
         self.layoutIfNeeded()
@@ -1005,7 +1219,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     /// - Since: 2.1.1
     public func setupTextViewHeight(textView: UIView) {
         self.textViewHeightConstraint?.isActive = false
-        self.textViewHeightConstraint = textView.heightAnchor.constraint(equalToConstant: self.textViewMinHeight)
+        self.textViewHeightConstraint = textView.heightAnchor.constraint(equalToConstant: self.textViewMinHeightAdaptive)
         self.textViewHeightConstraint?.isActive = true
     }
     
@@ -1016,8 +1230,8 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         guard let textViewContentHeight = self.textView?.contentSize.height else { return }
         
         switch textViewContentHeight {
-        case ..<self.textViewMinHeight:
-            self.textViewHeightConstraint?.constant = self.textViewMinHeight
+        case ..<self.textViewMinHeightAdaptive:
+            self.textViewHeightConstraint?.constant = self.textViewMinHeightAdaptive
         case self.textViewMaxHeight...:
             self.textViewHeightConstraint?.constant = self.textViewMaxHeight
         default:

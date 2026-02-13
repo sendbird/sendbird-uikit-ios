@@ -36,9 +36,17 @@ public class SBUColorSet {
     public static var background600 = UIColor(white: 22.0 / 255.0, alpha: 1.0)
     public static var background700 = UIColor(white: 0.0, alpha: 1.0)
     
+    public static var background0 = UIColor.clear  // 3.34.0
+    public static var buttonBackgroundLight = UIColor(red: 120.0 / 255.0, green: 120.0 / 255.0, blue: 128.0 / 255.0, alpha: 0.16)
+    public static var buttonHighlightedBackgroundLight = UIColor(red: 120.0 / 255.0, green: 120.0 / 255.0, blue: 128.0 / 255.0, alpha: 0.16)
+    public static var buttonBackgroundDark = UIColor(red: 120.0 / 255.0, green: 120.0 / 255.0, blue: 128.0 / 255.0, alpha: 0.16)
+    public static var buttonHighlitedBackgroundDark = UIColor(red: 120.0 / 255.0, green: 120.0 / 255.0, blue: 128.0 / 255.0, alpha: 0.16)
+    
     // MARK: - Overlay
     public static var overlayDark = UIColor(white: 0.0, alpha: 0.55)
     public static var overlayLight = UIColor(white: 0.0, alpha: 0.32)
+    
+    public static var overlayDarkLiquidGlass = UIColor(red: 41.0 / 255.0, green: 41.0 / 255.0, blue: 58.0 / 255.0, alpha: 0.23)
     
     // MARK: - On Light
     public static var onLightTextHighEmphasis = UIColor(white: 0.0, alpha: 0.88)
@@ -68,6 +76,21 @@ public class SBUColorSet {
 
     // MARK: - Highlight
     public static var highlight = UIColor(red: 1.0, green: 242.0 / 255.0, blue: 182.0 / 255.0, alpha: 1.0)
+    
+    // MARK: - Liquid glass
+    /// - Since: 3.34.0
+    public static var liquidGlassMenuViewShadowLight = SBUColorSet.background50.withAlphaComponent(0.08)
+    /// - Since: 3.34.0
+    public static var liquidGlassMenuViewShadowDark = SBUColorSet.background700.withAlphaComponent(0.08)
+    
+    /// - Since: 3.34.0
+    public static var liquidGlassButtonHighlightLight = SBUColorSet.background50.withAlphaComponent(0.7)
+    public static var liquidGlassButtonHighlightDark = SBUColorSet.background700.withAlphaComponent(0.35)
+    
+    /// - Since: 3.34.0
+    public static var liquidGlassInputButtonBackgroundLight = UIColor(red: 0, green: 0, blue: 0, alpha: 0.03)
+    /// - Since: 3.34.0
+    public static var liquidGlassInputButtonBackgroundDark = UIColor(white: 1.0, alpha: 0.03)
 }
 
 extension SBUColorSet {

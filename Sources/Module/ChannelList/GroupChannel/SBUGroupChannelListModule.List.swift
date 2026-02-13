@@ -112,6 +112,13 @@ extension SBUGroupChannelListModule {
             }
             self.tableView.backgroundColor = self.theme?.backgroundColor
             
+            #if compiler(>=6.2)
+            if SendbirdUI.config.common.shouldApplyLiquidGlass, #available(iOS 26.0, *) {
+                self.tableView.topEdgeEffect.isHidden = true
+                self.tableView.bottomEdgeEffect.isHidden = false
+            }
+            #endif
+            
             (self.emptyView as? SBUEmptyView)?.setupStyles()
         }
         

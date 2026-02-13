@@ -77,14 +77,34 @@ class SBUMenuView: NSObject {
     
     var window: UIWindow?
     var baseView = UIView()
+    var glassEffectView = UIVisualEffectView() // 3.34.0
     var backgroundView = UIButton()
     
-    let itemWidth: CGFloat = 180.0
+    @SBUAdaptive(base: 10.0, liquidGlass: 22.0)
+    var cornerRadius: CGFloat
+    
+    @SBUAdaptive(base: 180.0, liquidGlass: 198.0)
+    var itemWidth: CGFloat
+    
     let itemHeight: CGFloat = 40.0
-    let leftMargin: CGFloat = 14.0
-    let midMargin: CGFloat = 8.0
-    let rightMargin: CGFloat = 18.0
-    let topBottomMargin: CGFloat = 8.0
+    
+    @SBUAdaptive(base: 14.0, liquidGlass: 24.0)
+    var leftMargin: CGFloat
+    
+    @SBUAdaptive(base: 8.0, liquidGlass: 14.0)
+    var midMargin: CGFloat
+    
+    @SBUAdaptive(base: 18.0, liquidGlass: 24.0)
+    var rightMargin: CGFloat
+    
+    @SBUAdaptive(base: 8.0, liquidGlass: 10.0)
+    var imageTopBottomMargin: CGFloat
+    
+    @SBUAdaptive(base: 0.0, liquidGlass: 10.0)
+    var topBottomMargin: CGFloat
+    
+    @SBUAdaptive(base: 24.0, liquidGlass: 16.0)
+    var iconSize: CGFloat
     
     let bufferVerticalMargin: CGFloat = 15.0
     let bufferHorizontalMargin: CGFloat = 36.0
@@ -146,11 +166,12 @@ class SBUMenuView: NSObject {
         self.backgroundView.frame = self.window?.bounds ?? .zero
         self.backgroundView.backgroundColor = .clear
         self.backgroundView.addTarget(self, action: #selector(dismiss), for: .touchUpInside)
-        
-        let totalHeight = CGFloat(items.count) * itemHeight
+
+        let totalHeight = CGFloat(items.count) * itemHeight + (topBottomMargin * 2)
+        print("++ DEBUG: items.count=\(items.count), itemHeight=\(itemHeight), topBottomMargin=\(topBottomMargin), totalHeight=\(totalHeight)")
         var originY: CGFloat = 0.0
         var originX: CGFloat = 0.0
-        
+
         if point.y + totalHeight + bufferHorizontalMargin + itemHeight > window.frame.height {
             originY = window.frame.height - totalHeight - bufferHorizontalMargin - itemHeight
         } else if point.y < bufferHorizontalMargin {
@@ -166,17 +187,26 @@ class SBUMenuView: NSObject {
         } else {
             originX = point.x
         }
-        
+
         self.baseView.frame = CGRect(
             origin: CGPoint(x: originX, y: originY),
             size: CGSize(width: self.itemWidth, height: totalHeight)
         )
+
+        // Liquid glass
+        if SendbirdUI.config.common.shouldApplyLiquidGlass,
+            let visualEffectView = createGlassEffectView() {
+            self.glassEffectView = visualEffectView
+            self.baseView.insertSubview(self.glassEffectView, at: 0)
+        }
         
-        var itemOriginY: CGFloat = 0.0
+        let showSeparator = !SendbirdUI.config.common.shouldApplyLiquidGlass
+
+        var itemOriginY: CGFloat = topBottomMargin
         for index in 0..<items.count {
             let button = self.makeItems(
                 item: items[index],
-                separator: (index != items.count-1),
+                separator: showSeparator && (index != items.count-1),
                 isTop: (index == 0),
                 isBottom: (index == items.count-1),
                 theme: oneTimetheme ?? self.theme
@@ -185,7 +215,7 @@ class SBUMenuView: NSObject {
             var buttonFrame = button.frame
             buttonFrame.origin = CGPoint(x: 0, y: itemOriginY)
             button.frame = buttonFrame
-            button.backgroundColor = oneTimetheme?.backgroundColor ?? theme.backgroundColor
+            button.backgroundColor = oneTimetheme?.backgroundColorAdaptive ?? theme.backgroundColorAdaptive
             
             self.baseView.addSubview(button)
             
@@ -196,8 +226,8 @@ class SBUMenuView: NSObject {
 
         window.addSubview(self.backgroundView)
         window.addSubview(self.baseView)
-        
         self.baseView.alpha = 0.0
+        
         self.isShowing = true
         UIView.animate(withDuration: 0.2, animations: {
             self.baseView.alpha = 1.0
@@ -237,18 +267,16 @@ class SBUMenuView: NSObject {
         isBottom: Bool,
         theme: SBUComponentTheme
     ) -> UIButton {
-        
         let itemButton = UIButton(
             frame: CGRect(
                 origin: .zero,
-                size: CGSize(width: self.itemWidth, height: self.itemHeight)
+                size: CGSize(width: itemWidth, height: self.itemHeight)
             )
         )
-        
-        itemButton.setBackgroundImage(UIImage.from(color: theme.backgroundColor), for: .normal)
+
+        itemButton.setBackgroundImage(UIImage.from(color: theme.backgroundColorAdaptive), for: .normal)
         itemButton.setBackgroundImage(UIImage.from(color: theme.highlightedColor), for: .highlighted)
         itemButton.addTarget(self, action: #selector(onClickMenuButton), for: .touchUpInside)
-        let imageSize: CGFloat = 24.0
         
         let titleLabel = UILabel()
         
@@ -267,12 +295,23 @@ class SBUMenuView: NSObject {
         var titleLabelPosX: CGFloat = 0
         var titleLabelWidth: CGFloat = 0
         var textAlignment: NSTextAlignment = .left
-        if UIView.getCurrentLayoutDirection().isLTR == true {
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            // Liquid glass: Image on LEFT, Title on RIGHT
+            textAlignment = .left
+            imageViewPosX = leftMargin
+            if item.image != nil {
+                titleLabelPosX = leftMargin + iconSize + midMargin
+                titleLabelWidth = itemWidth - leftMargin - iconSize - midMargin - rightMargin
+            } else {
+                titleLabelPosX = leftMargin
+                titleLabelWidth = itemWidth - leftMargin - rightMargin
+            }
+        } else if UIView.getCurrentLayoutDirection().isLTR == true {
             textAlignment = .left
             titleLabelPosX = leftMargin
             if item.image != nil {
-                imageViewPosX = itemWidth - rightMargin - imageSize
-                titleLabelWidth = itemWidth - leftMargin - midMargin - imageSize - rightMargin
+                imageViewPosX = itemWidth - rightMargin - iconSize
+                titleLabelWidth = itemWidth - leftMargin - midMargin - iconSize - rightMargin
             } else {
                 titleLabelWidth = itemWidth - leftMargin - rightMargin
             }
@@ -280,11 +319,11 @@ class SBUMenuView: NSObject {
             textAlignment = .right
             imageViewPosX = leftMargin
             if item.image != nil {
-                titleLabelPosX = leftMargin + imageSize + midMargin
-                titleLabelWidth = itemWidth - leftMargin - imageSize - midMargin - rightMargin
+                titleLabelPosX = leftMargin + iconSize + midMargin
+                titleLabelWidth = itemWidth - leftMargin - iconSize - midMargin - rightMargin
             } else {
                 titleLabelPosX = leftMargin
-                titleLabelWidth = itemWidth - leftMargin - rightMargin
+                titleLabelWidth = itemWidth - leftMargin - midMargin
             }
         }
         
@@ -300,10 +339,10 @@ class SBUMenuView: NSObject {
         let imageView = UIImageView()
         if let image = item.image {
             imageView.frame = CGRect(
-                origin: CGPoint(x: imageViewPosX, y: topBottomMargin),
-                size: CGSize(width: imageSize, height: imageSize)
+                origin: CGPoint(x: imageViewPosX, y: imageTopBottomMargin),
+                size: CGSize(width: iconSize, height: iconSize)
             )
-            
+
             imageView.image = image
         }
         
@@ -341,7 +380,7 @@ class SBUMenuView: NSObject {
         rectShape.path = UIBezierPath(
             roundedRect: itemButton.bounds,
             byRoundingCorners: optionSet,
-            cornerRadii: CGSize(width: 10, height: 10)
+            cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
         ).cgPath
         itemButton.layer.mask = rectShape
         return itemButton
@@ -353,11 +392,30 @@ class SBUMenuView: NSObject {
             roundedRect: self.baseView.bounds,
             cornerRadius: self.baseView.layer.cornerRadius
         ).cgPath
-        self.baseView.layer.shadowColor = theme.shadowColor.withAlphaComponent(0.5).cgColor
+        self.baseView.layer.shadowColor = theme.shadowColorAdaptive.cgColor
         self.baseView.layer.shadowOffset = CGSize(width: 5, height: 5)
         self.baseView.layer.shadowOpacity = 0.5
         self.baseView.layer.shadowRadius = 5
         self.baseView.layer.masksToBounds = false
+    }
+    
+    /// - Since: 3.34.0
+    private func createGlassEffectView() -> UIVisualEffectView? {
+        if let glassEffectView = SBULiquidGlassUtils.createGlassEffectView() {
+            glassEffectView.setupLayouts(
+                frame: baseView.bounds,
+                autoresizingMask: [.flexibleWidth, .flexibleHeight]
+            )
+            
+            glassEffectView.setupStyles(
+                cornerRadius: cornerRadius,
+                cornerCurve: nil,
+                clipsToBounds: true
+            )
+            
+            return glassEffectView
+        }
+        return nil
     }
     
     // MARK: Button action

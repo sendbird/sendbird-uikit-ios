@@ -65,4 +65,16 @@ class SBUConstant {
     // For typing indicator bubble.
     static let maxNumberOfProfileImages: Int = 3
     static let maxNumberOfTypers: Int = 102
+    
+    // For message input bottom spacing
+    
+    /// MessageInputView bottom edge <-> ViewController bottom edge
+    /// - Since: 3.34.0
+    @SBUAdaptive(base: 0, liquidGlass: 20)
+    static var messageInputViewBottomSpacing: CGFloat
+    
+    /// MessageInputView bottom edge <-> keyboard top edge
+    /// - Since: 3.34.0
+    @SBUAdaptive(base: 0, liquidGlass: 10)
+    static var messageInputViewKeyboardSpacing: CGFloat
 }

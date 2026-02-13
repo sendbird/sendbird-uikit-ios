@@ -77,6 +77,7 @@
 		24A5AE640B6515C62919F289 /* SBUOpenChannelUnknownMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A67C47244DA26ACA2C1379F /* SBUOpenChannelUnknownMessageCell.swift */; };
 		24B9B0D5DB8619080A104320 /* CustomEmptyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE6549CE553EFCA6E649E6F /* CustomEmptyView.swift */; };
 		25555C45F39E5B3FF531DDA0 /* SBUModerationsViewModel.Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F543820720E0E370AF1A80 /* SBUModerationsViewModel.Deprecated.swift */; };
+		2608A3A8438EED2589A2E613 /* SBULiquidGlassUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01788854AA2E72A56D48343 /* SBULiquidGlassUtils.swift */; };
 		26E4610C458D4977952E3BBB /* UIViewController+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1E1A219E09610EE8505C8D5 /* UIViewController+SBUIKit.swift */; };
 		2711AD316AE0C638DBFBCF70 /* SBUOpenChannelSettingsModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A715F917D8AE61996FAD75F /* SBUOpenChannelSettingsModule.swift */; };
 		275B5DD48EF10994D39ADD4B /* SBUMessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E964FBEE2748E71B6F01AC9 /* SBUMessageInputView.swift */; };
@@ -421,6 +422,7 @@
 		C8F78FC3E5368E0F50609DDF /* SBUMessageCellProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC5A06ADD6946C8BF00324 /* SBUMessageCellProtocol.swift */; };
 		C8FE517E396D40081B5ADA00 /* SBUGroupChannelSettingsModule.List.swift in Sources */ = {isa = PBXBuildFile; fileRef = F450F6B99019EB9DC6BFDDB9 /* SBUGroupChannelSettingsModule.List.swift */; };
 		C96C938EB6943338326CEEAA /* AIChatBotSignInViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FBCECAC20501BC1FA624C11C /* AIChatBotSignInViewController.xib */; };
+		CA95FA81F95B2ADDAF2E3843 /* UIBarButtonItem+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = B87CA06988032A7CACD7FC98 /* UIBarButtonItem+SBUIKit.swift */; };
 		CAC62317F3638B33C39E643B /* SBUContentBaseMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1D5CF4D3833B6FB84EBFAB /* SBUContentBaseMessageCell.swift */; };
 		CBA903BC5423000FF3A2B6A5 /* ChannelVC_MessageParam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39ED93546A3FDE91D6A3EF6F /* ChannelVC_MessageParam.swift */; };
 		CC170FDE95832FD90177CB31 /* SBUOpenChannelListModule.Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8DEA5DC72F4F466A859911 /* SBUOpenChannelListModule.Deprecated.swift */; };
@@ -494,6 +496,7 @@
 		E3FD533D822BAE4E52099705 /* SBUTypingIndicatorBubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED15BE91F7D6B5947C325A54 /* SBUTypingIndicatorBubbleView.swift */; };
 		E477B7A6A612AB534869F6A5 /* SBUUserNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F80A3F363B14916DD1409A /* SBUUserNameView.swift */; };
 		E5507EBC7A1938E8D4759445 /* SBUExtendedMessagePayload.swift in Sources */ = {isa = PBXBuildFile; fileRef = B162DB9A0ECD130CF46DCC2E /* SBUExtendedMessagePayload.swift */; };
+		E6175B1E6A816C0625F975D5 /* UIVisualEffectView+SBUIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261AAED35A67B41ED1188DCE /* UIVisualEffectView+SBUIKit.swift */; };
 		E68BDB1C096C0BF93C8EA3D9 /* SBUInviteUserViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A714261310094C634F64A8C /* SBUInviteUserViewModel.swift */; };
 		E76209DE1873B4FB76B34983 /* ChannelVC_Overriding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F7C1654C625423EEF5E5B64 /* ChannelVC_Overriding.swift */; };
 		E7BC49C23E88D53C736C0380 /* SBUOpenChannelListModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7492A0683583120AF0A9E9A /* SBUOpenChannelListModule.swift */; };
@@ -662,6 +665,7 @@
 		247831C3DF2D28C309632F55 /* UIScrollView+SBUIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+SBUIKit.swift"; sourceTree = "<group>"; };
 		254D891AE9CDFE3A829B3DC7 /* FeedChannelListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedChannelListViewController.swift; sourceTree = "<group>"; };
 		2567BDE4720A6C46C81282D5 /* SBUChannelSettingItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUChannelSettingItem.swift; sourceTree = "<group>"; };
+		261AAED35A67B41ED1188DCE /* UIVisualEffectView+SBUIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIVisualEffectView+SBUIKit.swift"; sourceTree = "<group>"; };
 		2628AA835EFFD20C7225B817 /* SBUNotificationTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUNotificationTimelineView.swift; sourceTree = "<group>"; };
 		268FDB1348A09BE4D0F8E284 /* SBUContentBaseMessageCell.Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUContentBaseMessageCell.Deprecated.swift; sourceTree = "<group>"; };
 		26B3A0BDFAE02540461DFD20 /* SBUChannelInfoHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUChannelInfoHeaderView.swift; sourceTree = "<group>"; };
@@ -980,6 +984,7 @@
 		B6F6D268A4007EB509EF9AF3 /* SBUFeedbackViewParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUFeedbackViewParams.swift; sourceTree = "<group>"; };
 		B7336ED3EEE080DDF052F158 /* LiveStreamChannelCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStreamChannelCell.swift; sourceTree = "<group>"; };
 		B843A0434E093A9F5B7FF7C9 /* SBUVoiceRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUVoiceRecorder.swift; sourceTree = "<group>"; };
+		B87CA06988032A7CACD7FC98 /* UIBarButtonItem+SBUIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBarButtonItem+SBUIKit.swift"; sourceTree = "<group>"; };
 		B943C8F50DD6CA3985E33CF6 /* GeneralSignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSignInViewController.swift; sourceTree = "<group>"; };
 		B975A667F21E2131BCF0BD88 /* SBUViewModelDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUViewModelDelegate.swift; sourceTree = "<group>"; };
 		B9B83184330EB69949766896 /* SBUAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUAlertView.swift; sourceTree = "<group>"; };
@@ -1025,6 +1030,7 @@
 		CE734900FAB830172C9AC91B /* SBUBaseChannelSettingsViewController.Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelSettingsViewController.Deprecated.swift; sourceTree = "<group>"; };
 		CF0978D8366FFC1C1505AEC4 /* UIImage+SBUIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+SBUIKit.swift"; sourceTree = "<group>"; };
 		CF9A846392BBAAD801EE5844 /* SBUQuotedFileMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUQuotedFileMessageView.swift; sourceTree = "<group>"; };
+		D01788854AA2E72A56D48343 /* SBULiquidGlassUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBULiquidGlassUtils.swift; sourceTree = "<group>"; };
 		D0E72BA73F5F535E85BA2187 /* SBUChatNotificationChannelModule.Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUChatNotificationChannelModule.Deprecated.swift; sourceTree = "<group>"; };
 		D20874B23A811B56CB760379 /* SBUBaseSelectUserModule.List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUBaseSelectUserModule.List.swift; sourceTree = "<group>"; };
 		D22C301C4940E6DCA7C64C8D /* BasicUsagesView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BasicUsagesView.xib; sourceTree = "<group>"; };
@@ -2320,6 +2326,7 @@
 			children = (
 				73117A4E25609D7F0330EB6D /* BlockingOperation.swift */,
 				3263794888EC7E1A2E8E57B9 /* SBUDebouncer.swift */,
+				D01788854AA2E72A56D48343 /* SBULiquidGlassUtils.swift */,
 				0F761A114B237606F8044C82 /* SBULogger.swift */,
 				9CBD97006461735D039F9AEC /* SBUMentionManager.swift */,
 				113481A67B467FA354146A3E /* SBUPropertyWrapper.swift */,
@@ -2568,6 +2575,7 @@
 				AE6A829159D54B056985C36F /* String+SBUIKit.swift */,
 				841EF97C03733C94215BA84B /* Thread+SBUIKit.swift */,
 				C53E83DBE3CAEACD71D845C6 /* UIApplication+SBUIKit.swift */,
+				B87CA06988032A7CACD7FC98 /* UIBarButtonItem+SBUIKit.swift */,
 				16160F715B15DD731A2DC946 /* UIColor+SBUIKit.swift */,
 				CF0978D8366FFC1C1505AEC4 /* UIImage+SBUIKit.swift */,
 				2E617446DE7DFE58F1AC62FA /* UIImageView+SBUIKit.swift */,
@@ -2798,6 +2806,7 @@
 				E5EA0243169F0C368F1E3446 /* UITableView+SBUIKit.swift */,
 				423C436B860E07BBEF78BE8C /* UITextField+SBUIKit.swift */,
 				B1E1A219E09610EE8505C8D5 /* UIViewController+SBUIKit.swift */,
+				261AAED35A67B41ED1188DCE /* UIVisualEffectView+SBUIKit.swift */,
 				382CD1F786A2D39C69D42BC6 /* URL+SBUIKit.swift */,
 				6A4225413BACFBCC503290A1 /* ChatSDK */,
 				A88DE179B2DDF42F66CAEEFE /* Shared */,
@@ -3566,6 +3575,7 @@
 				39C7465C48799AB15F61D705 /* SBULabel.swift in Sources */,
 				C163F4689021B06762CD0645 /* SBULayoutableButton.swift in Sources */,
 				6B4AB61D836E0B30A9FD2950 /* SBULinkClickableTextView.swift in Sources */,
+				2608A3A8438EED2589A2E613 /* SBULiquidGlassUtils.swift in Sources */,
 				A239F462DB4AB885C0CD3A51 /* SBULoading.swift in Sources */,
 				51C45CE30D4211ED127A9084 /* SBULogger.swift in Sources */,
 				2193672786394505EDEBAAA7 /* SBUMarginView.swift in Sources */,
@@ -3784,6 +3794,7 @@
 				D8F51A2D59160ED7E53137EC /* StringProtocol+SBUIKit.swift in Sources */,
 				C8A352346B8A1B7530A1A7D4 /* Thread+SBUIKit.swift in Sources */,
 				BD9991935895BC94F1882B8B /* UIApplication+SBUIKit.swift in Sources */,
+				CA95FA81F95B2ADDAF2E3843 /* UIBarButtonItem+SBUIKit.swift in Sources */,
 				079D10006B04CCDEBA6CB7AB /* UIButton+SBUIKit.swift in Sources */,
 				16AFBC90566C39F6AA629311 /* UICollectionView+SBUIKit.swift in Sources */,
 				E070F2F1374C1A6E8AC712A0 /* UIColor+SBUIKit.swift in Sources */,
@@ -3800,6 +3811,7 @@
 				EAB9B1A42F4598FC8A9141CC /* UIView+Ext.swift in Sources */,
 				DFB94B0DA7E034C037A5145E /* UIView+SBUIKit.swift in Sources */,
 				26E4610C458D4977952E3BBB /* UIViewController+SBUIKit.swift in Sources */,
+				E6175B1E6A816C0625F975D5 /* UIVisualEffectView+SBUIKit.swift in Sources */,
 				A0875C861E06C0E0796252CE /* UIcolor+Ext.swift in Sources */,
 				F857C6562F46F665A4C788BF /* URL+SBUIKit.swift in Sources */,
 				E022C39DAE8F104CB09DD281 /* UserDefaults+Ext.swift in Sources */,
@@ -3857,7 +3869,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.33.1;
+				MARKETING_VERSION = 3.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -3885,7 +3897,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.33.1;
+				MARKETING_VERSION = 3.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4030,7 +4042,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.33.1;
+				MARKETING_VERSION = 3.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4058,7 +4070,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.33.1;
+				MARKETING_VERSION = 3.34.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4107,7 +4119,7 @@
 			repositoryURL = "https://github.com/sendbird/sendbird-uikit-ios-spm";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 3.33.1;
+				minimumVersion = 3.34.0;
 			};
 		};
 		A4CD81EE92C875D0E22463C6 /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */ = {

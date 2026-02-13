@@ -164,7 +164,11 @@ extension SBUOpenChannelModule {
                         height: SBUConstant.scrollBottomButtonSize.height
                     )
                     .sbu_constraint(equalTo: self, trailing: -16)
-                    .sbu_constraint(equalTo: self, bottom: 8)
+
+                // For liquid glass mode, bottom constraint is set in SBUOpenChannelViewController
+                if !SendbirdUI.config.common.shouldApplyLiquidGlass {
+                    scrollBottomView.sbu_constraint(equalTo: self, bottom: 8)
+                }
             }
         }
         

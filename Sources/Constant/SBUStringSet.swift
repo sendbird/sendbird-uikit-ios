@@ -344,6 +344,10 @@ public class SBUStringSet {
     public static var ChannelType_SuperGroup = "Super group"
     public static var ChannelType_Broadcast = "Broadcast"
     
+    public static var ChannelType_GroupChannel = "Group channel"
+    public static var ChannelType_SuperGroupChannel = "Super group channel"
+    public static var ChannelType_BroadcastChannel = "Broadcast channel"
+    
     // MARK: - form type
     public static var FormType_Optional = "(optional)" // 3.11.0
     public static var FormType_Error_Default = "Please check the value" // 3.11.0

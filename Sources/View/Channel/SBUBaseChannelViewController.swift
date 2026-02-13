@@ -228,6 +228,24 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
     }
     
+    open override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateListContentInsetForLiquidGlass()
+    }
+
+    func updateListContentInsetForLiquidGlass() {
+        guard SendbirdUI.config.common.shouldApplyLiquidGlass,
+              let inputComponent = self.baseInputComponent else { return }
+
+        let inputTopInView = inputComponent.frame.minY
+        let padding: CGFloat = 16
+        let bottomInset = self.view.frame.height - inputTopInView + padding
+        let topInset = self.view.safeAreaInsets.top
+
+        let insets = UIEdgeInsets(top: bottomInset, left: 0, bottom: topInset, right: 0)
+        baseListComponent?.updateTableViewContentInset(insets: insets)
+    }
+    
     /// Called when the application will resign activity.
     open func applicationWillResignActivity() { }
     
@@ -335,6 +353,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     func setupStyles(theme: SBUChannelTheme) {
         self.setupNavigationBar(
             backgroundColor: self.theme.navigationBarTintColor,
+            gradientBackgroundTint: self.theme.navigationBarGradientTint,
             shadowColor: self.theme.navigationBarShadowColor
         )
         

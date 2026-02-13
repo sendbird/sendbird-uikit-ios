@@ -40,10 +40,21 @@ open class SBUBaseChannelListViewController: SBUBaseViewController {
     open override func setupViews() {
         self.navigationItem.titleView = self.baseHeaderComponent?.titleView
         self.navigationItem.leftBarButtonItem = self.baseHeaderComponent?.leftBarButton
-        self.navigationItem.rightBarButtonItem = self.baseHeaderComponent?.rightBarButton
-        
+
+        if let rightBarButton = self.baseHeaderComponent?.rightBarButton, !rightBarButton.isEmpty {
+            self.navigationItem.rightBarButtonItem = rightBarButton
+        } else {
+            self.navigationItem.rightBarButtonItem = nil
+        }
+
         self.navigationItem.leftBarButtonItems = self.baseHeaderComponent?.leftBarButtons
-        self.navigationItem.rightBarButtonItems = self.baseHeaderComponent?.rightBarButtons
+
+        if let rightBarButtons = self.baseHeaderComponent?.rightBarButtons,
+           !rightBarButtons.allSatisfy({ $0.isEmpty }) {
+            self.navigationItem.rightBarButtonItems = rightBarButtons
+        } else {
+            self.navigationItem.rightBarButtonItems = nil
+        }
         
         if let listComponent = self.baseListComponent {
             self.view.addSubview(listComponent)
@@ -51,13 +62,20 @@ open class SBUBaseChannelListViewController: SBUBaseViewController {
     }
     
     open override func setupLayouts() {
+        let useSafeArea: Bool
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            useSafeArea = false
+        } else {
+            useSafeArea = true
+        }
+        
         self.baseListComponent?.sbu_constraint(
             equalTo: self.view,
             left: 0,
             right: 0,
             top: 0,
             bottom: 0,
-            useSafeArea: true
+            useSafeArea: useSafeArea
         )
     }
     

@@ -450,8 +450,9 @@ extension SBUGroupChannelModule {
         open override func setupLayouts() {
             super.setupLayouts()
             
+            var userSafeArea = SendbirdUI.config.common.shouldApplyLiquidGlass
             self.topStackView
-                .sbu_constraint(equalTo: self, leading: 8, trailing: -8, top: 8)
+                .sbu_constraint(equalTo: self, leading: 8, trailing: -8, top: 8, useSafeArea: userSafeArea)
             
             channelStateBanner?.sbu_constraint(height: 24)
             channelStateBanner?.sbu_constraint(equalTo: topStackView, leading: 0, trailing: 0)
@@ -466,7 +467,13 @@ extension SBUGroupChannelModule {
                     width: SBUConstant.scrollBottomButtonSize.width,
                     height: SBUConstant.scrollBottomButtonSize.height
                 )
-                .sbu_constraint(equalTo: self, trailing: -16, bottom: 8)
+                .sbu_constraint(equalTo: self, trailing: -16)
+
+            // For liquid glass mode, bottom constraint is set in SBUGroupChannelViewController
+            // relative to the input component
+            if !SendbirdUI.config.common.shouldApplyLiquidGlass {
+                self.scrollBottomView?.sbu_constraint(equalTo: self, bottom: 8)
+            }
         }
         
         /// Updates styles of the views in the list component with the `theme`.

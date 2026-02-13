@@ -13,10 +13,12 @@ import UIKit
 open class SBUBarButtonItem: UIBarButtonItem {
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
+        self.disableLiquidGlassIfNeeded()
     }
-    
+
     required public override init() {
         super.init()
+        self.disableLiquidGlassIfNeeded()
     }
 
     static func backButton(target: Any, selector: Selector) -> UIBarButtonItem {
@@ -35,5 +37,26 @@ open class SBUBarButtonItem: UIBarButtonItem {
             target: target,
             action: selector
         )
+    }
+}
+
+extension UIBarButtonItem {
+    /// Hides the shared liquid glass background when liquid glass is disabled.
+    /// - Since: 3.34.0
+    func disableLiquidGlassIfNeeded() {
+        guard !SendbirdUI.config.common.shouldApplyLiquidGlass else { return }
+        #if compiler(>=6.2)
+        if #available(iOS 26.0, *) {
+            self.hidesSharedBackground = true
+        }
+        #endif
+    }
+}
+
+extension Array where Element == UIBarButtonItem {
+    /// Hides the shared liquid glass background on all items when liquid glass is disabled.
+    /// - Since: 3.34.0
+    func disableLiquidGlassIfNeeded() {
+        self.forEach { $0.disableLiquidGlassIfNeeded() }
     }
 }

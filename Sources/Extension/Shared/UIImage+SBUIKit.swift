@@ -107,10 +107,30 @@ public extension UIImage {
     ///
     /// - Parameter color: The color to fill the image with.
     /// - Returns: A `UIImage` object filled with the specified color.
-    /// 
+    ///
     /// - Since: 3.22.0
     static func sbu_from(color: UIColor) -> UIImage {
         UIImage.from(color: color)
+    }
+
+    /// Adds a circular background around the image by extending the canvas size.
+    ///
+    /// Unlike `sbu_withBackground` which keeps the canvas size and shrinks the icon,
+    /// this method EXPANDS the canvas by adding padding around the original image,
+    /// keeping the icon at its original size.
+    ///
+    /// - Parameters:
+    ///   - color: The background color for the circular area.
+    ///   - padding: The padding to add around all sides of the image. The final image size will be `(originalSize + padding * 2)`.
+    /// - Returns: A new image with the circular background added around the original image.
+    ///
+    /// Example: A 22x22 icon with padding of 3 results in a 28x28 image with:
+    /// - A 28pt diameter circle as background
+    /// - The original 22x22 icon centered inside
+    ///
+    /// - Since: 3.34.0
+    func sbu_addCircularBackgroundPadding(_ padding: CGFloat, color: UIColor) -> UIImage {
+        self.addCircularBackgroundPadding(padding, color: color)
     }
 }
 
@@ -191,10 +211,10 @@ extension UIImage {
     
     func withBackground(color: UIColor, margin: CGFloat, circle: Bool = false) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
-        
+
         guard let context = UIGraphicsGetCurrentContext(), let image = cgImage else { return self }
         defer { UIGraphicsEndImageContext() }
-        
+
         let backgroundRect = CGRect(origin: .zero, size: size)
         context.setFillColor(color.cgColor)
 
@@ -214,7 +234,43 @@ extension UIImage {
             size: .init(width: self.size.width - margin*2, height: self.size.height - margin*2)
         )
         context.draw(image, in: imageRect)
-        
+
+        return UIGraphicsGetImageFromCurrentImageContext() ?? self
+    }
+    
+    /// For documentation, see ``sbu_addCircularBackgroundPadding(_:color:)``
+    /// 3.34.0
+    func addCircularBackgroundPadding(_ padding: CGFloat, color: UIColor) -> UIImage {
+        let expandedSize = CGSize(
+            width: size.width + padding * 2,
+            height: size.height + padding * 2
+        )
+
+        UIGraphicsBeginImageContextWithOptions(expandedSize, false, scale)
+
+        guard let context = UIGraphicsGetCurrentContext(), let image = cgImage else { return self }
+        defer { UIGraphicsEndImageContext() }
+
+        // Draw circular background on the expanded canvas
+        let backgroundRect = CGRect(origin: .zero, size: expandedSize)
+        context.setFillColor(color.cgColor)
+
+        let radiusSize = min(expandedSize.width, expandedSize.height)
+        let clipPath = UIBezierPath(roundedRect: backgroundRect, cornerRadius: radiusSize / 2).cgPath
+        context.addPath(clipPath)
+        context.closePath()
+        context.fillPath()
+
+        // Flip the coordinate system for drawing the image
+        context.concatenate(CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: expandedSize.height))
+
+        // Draw the original image centered (with padding offset)
+        let imageRect = CGRect(
+            origin: CGPoint(x: padding, y: padding),
+            size: size
+        )
+        context.draw(image, in: imageRect)
+
         return UIGraphicsGetImageFromCurrentImageContext() ?? self
     }
     

@@ -10,8 +10,36 @@ import UIKit
 import SwiftUI
 import SendbirdChatSDK
 
+/// Represents the type of group channel to create from the channel list.
+/// - Since: 3.34.0
+public enum SBUCreateGroupChannelType {
+    /// A standard group channel.
+    case group
+    /// A super group channel that supports a large number of members.
+    case superGroup
+    /// A broadcast channel where only operators can send messages.
+    case broadcast
+}
+
 /// Event methods for the views updates and performing actions from the header component in group channel list module.
-public protocol SBUGroupChannelListModuleHeaderDelegate: SBUBaseChannelListModuleHeaderDelegate {}
+public protocol SBUGroupChannelListModuleHeaderDelegate: SBUBaseChannelListModuleHeaderDelegate {
+    /// Method that gets called when user selects a channel type from the create channel context menu.
+    /// - Parameters:
+    ///   - headerComponent: The header component where the selection was made.
+    ///   - type: The type of channel to create.
+    /// - Since: 3.34.0
+    func groupChannelListModule(
+        _ headerComponent: SBUBaseChannelListModule.Header,
+        didSelectCreateChannelType type: SBUCreateGroupChannelType
+    )
+}
+
+extension SBUGroupChannelListModuleHeaderDelegate {
+    func groupChannelListModule(
+        _ headerComponent: SBUBaseChannelListModule.Header,
+        didSelectCreateChannelType type: SBUCreateGroupChannelType
+    ) { }
+}
 
 extension SBUGroupChannelListModule {
     /// A module component that represents the header of `SBUGroupChannelListModule`.
@@ -48,13 +76,56 @@ extension SBUGroupChannelListModule {
         }
         
         override func createDefaultRightButton() -> SBUBarButtonItem {
-            SBUModuleSet.GroupChannelListModule.HeaderComponent.RightBarButton.init(
+            let buttonAction: Selector?
+            if SendbirdUI.config.common.shouldApplyLiquidGlass {
+                buttonAction = nil
+            } else {
+                buttonAction = #selector(onTapRightBarButton)
+            }
+            
+            return SBUModuleSet.GroupChannelListModule.HeaderComponent.RightBarButton.init(
                 image: SBUIconSetType.iconCreate.image(to: SBUIconSetType.Metric.defaultIconSize),
                 landscapeImagePhone: nil,
                 style: .plain,
                 target: self,
-                action: #selector(onTapRightBarButton)
+                action: buttonAction
             )
+        }
+        
+        /// - Since: 3.34.0
+        @available(iOS 26, *)
+        func makeCreateChannelTypeContextMenu() -> UIMenu? {
+            let tintColor = theme?.channelTypeSelectorItemTintColor
+
+            let group = UIAction(
+                title: SBUStringSet.ChannelType_GroupChannel,
+                image: SBUIconSetType.iconChat.image(
+                    with: tintColor,
+                    to: SBUIconSetType.Metric.defaultIconSizeSmall
+                )
+            ) { _ in
+                self.delegate?.groupChannelListModule(self, didSelectCreateChannelType: .group)
+            }
+            let superGroup = UIAction(
+                title: SBUStringSet.ChannelType_SuperGroupChannel,
+                image: SBUIconSetType.iconSupergroup.image(
+                    with: tintColor,
+                    to: SBUIconSetType.Metric.defaultIconSizeSmall
+                )
+            ) { _ in
+                self.delegate?.groupChannelListModule(self, didSelectCreateChannelType: .superGroup)
+            }
+            let broadcast = UIAction(
+                title: SBUStringSet.ChannelType_BroadcastChannel,
+                image: SBUIconSetType.iconBroadcast.image(
+                    with: tintColor,
+                    to: SBUIconSetType.Metric.defaultIconSizeSmall
+                )
+            ) { _ in
+                self.delegate?.groupChannelListModule(self, didSelectCreateChannelType: .broadcast)
+            }
+
+            return UIMenu(title: "Channel type", children: [group, superGroup, broadcast])
         }
         
         // MARK: - LifeCycle
@@ -92,6 +163,11 @@ extension SBUGroupChannelListModule {
             
             // uikit 
             super.setupViews()
+            
+            
+            if #available(iOS 26, *), SendbirdUI.config.common.shouldApplyLiquidGlass {
+                rightBarButton?.menu = self.makeCreateChannelTypeContextMenu()
+            }
         }
         
         /// Sets up style with theme. If the `theme` is `nil`, it uses the stored theme.

@@ -95,6 +95,15 @@ public enum SBUIconSetType: String, Hashable {
         public static let iconUserProfileInChat = CGSize(value: 15)
         public static let iconChevronDown = CGSize(value: 22)
         public static let iconVoiceMessageSize = CGSize(value: 20)
+        
+        /// - Since: 3.34.0
+        @SBUAdaptive(base: CGSize(value: 24), liquidGlass: CGSize(value: 22))
+        public static var defaultIconSizeAdaptive
+        
+        /// - Since: 3.34.0
+        public static let iconPaddingLiquidGlass: CGFloat = 3
+        /// - Since: 3.34.0
+        public static let iconSizeLiquidGlass: CGFloat = 22
     }
     
     // MARK: - Image handling
