@@ -186,6 +186,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     open override func setupStyles() {
         self.setupNavigationBar(
             backgroundColor: self.theme.navigationBarTintColor,
+            gradientBackgroundTint: self.theme.navigationBarGradientTint,
             shadowColor: self.theme.navigationBarShadowColor
         )
         
@@ -363,6 +364,20 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
         didTapRightItem rightItem: UIBarButtonItem
     ) {
         self.showCreateChannelOrTypeSelector()
+    }
+    
+    open func groupChannelListModule(
+        _ headerComponent: SBUBaseChannelListModule.Header,
+        didSelectCreateChannelType type: SBUCreateGroupChannelType
+    ) {
+        switch type {
+        case .group:
+            self.didSelectCreateGroupChannel()
+        case .superGroup:
+            self.didSelectCreateSuperGroupChannel()
+        case .broadcast:
+            self.didSelectCreateBroadcastChannel()
+        }
     }
     
     // MARK: - SBUGroupChannelListModuleListDelegate

@@ -50,6 +50,20 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     /// Used to check if navigation bar update is needed.
     /// - Since: 3.33.1
     var previousNavBarShadowColor = UIColor()
+    /// Caches previous liquid glass navigation bar background tint color.
+    /// Used to check if navigation bar update is needed.
+    /// - Since: 3.34.0
+    var previousLiquidGlassNavBarBackgroundTint = UIColor()
+
+    /// Container view for the liquid glass navigation bar gradient.
+    /// Stored to prevent creating multiple views on repeated calls.
+    /// - Since: 3.34.0
+    var liquidGlassGradientContainerView: UIView?
+
+    /// Gradient layer for the liquid glass navigation bar.
+    /// Stored to allow updating colors without recreating the layer.
+    /// - Since: 3.34.0
+    var liquidGlassGradientLayer: CAGradientLayer?
     
     // MARK: - Lifecycle
     open override func loadView() {
@@ -109,18 +123,60 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     
     /// This function updates styles with boolean parameter value that represents whether layout or not
     open func updateStyles(needsToLayout: Bool) { }
+
+    /// Checks if non-liquid glass navigation bar update is needed.
+    /// - Since: 3.34.0
+    func shouldUpdateNonLiquidGlassNavigationBar(
+        backgroundColor: UIColor,
+        shadowColor: UIColor
+    ) -> Bool {
+        backgroundColor != previousNavBarBackgroundColor || shadowColor != previousNavBarShadowColor
+    }
+    
+    /// Checks if liquid glass navigation bar update is needed.
+    /// - Since: 3.34.0
+    func shouldUpdateLiquidGlassNavigationBar(gradientBackgroundTint: UIColor) -> Bool {
+        gradientBackgroundTint != previousLiquidGlassNavBarBackgroundTint
+    }
     
     /// This function setups navigationBar's background color and shadow color.
     /// - Parameters:
     ///   - backgroundColor: background color
     ///   - shadowColor: shadow color
     open func setupNavigationBar(backgroundColor: UIColor, shadowColor: UIColor) {
+        self.setupNavigationBar(
+            backgroundColor: backgroundColor,
+            gradientBackgroundTint: backgroundColor,
+            shadowColor: shadowColor
+        )
+    }
+    
+    open func setupNavigationBar(
+        backgroundColor: UIColor,
+        gradientBackgroundTint: UIColor,
+        shadowColor: UIColor
+    ) {
         if let navigationController = self.navigationController {
             self.prevNavigationBarSettings?.save(with: navigationController)
         }
+
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            guard self.shouldUpdateLiquidGlassNavigationBar(
+                gradientBackgroundTint: gradientBackgroundTint
+            ) else { return }
+            
+            #if compiler(>=6.2)
+            if #available(iOS 26.0, *) {
+                // update
+                self.previousLiquidGlassNavBarBackgroundTint = gradientBackgroundTint
+                
+                self.setupLiquidGlassNavigationBar(gradientBackgroundTint: gradientBackgroundTint)
+            }
+            #endif
+            return
+        }
         
-        // Check if navigation bar update is needed.
-        guard self.shouldUpdateNavigationBar(
+        guard self.shouldUpdateNonLiquidGlassNavigationBar(
             backgroundColor: backgroundColor,
             shadowColor: shadowColor
         ) else { return }
@@ -128,7 +184,7 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
         // update
         self.previousNavBarBackgroundColor = backgroundColor
         self.previousNavBarShadowColor = shadowColor
-
+        
         self.navigationController?.navigationBar.setBackgroundImage(
             UIImage.from(color: backgroundColor),
             for: .default
@@ -136,7 +192,7 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
         self.navigationController?.navigationBar.shadowImage = UIImage.from(
             color: shadowColor
         )
-        
+
         // For iOS 13
         self.navigationController?.sbu_setupNavigationBarAppearance(
             tintColor: backgroundColor,
@@ -215,6 +271,58 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
                 SBULoading.stop()
             }
         }
+    }
+    
+    // MARK: - Liquid Glass (iOS 26+)
+    
+    @available(iOS 26.0, *)
+    open func setupLiquidGlassNavigationBar(gradientBackgroundTint: UIColor) {
+        SBULog.info("gradientBackgroundTint: \(gradientBackgroundTint)")
+
+        // If container view already exists, just update the gradient colors
+        if let gradientLayer = self.liquidGlassGradientLayer {
+            gradientLayer.colors = [
+                gradientBackgroundTint.withAlphaComponent(1.0).cgColor,
+                gradientBackgroundTint.withAlphaComponent(0.0).cgColor
+            ]
+            return
+        }
+
+        // Create container view
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+
+        // Add to view hierarchy
+        self.view.addSubview(containerView)
+
+        // Setup constraints - height 110, full width, at screen top (ignoring safe area)
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            containerView.heightAnchor.constraint(equalToConstant: 110)
+        ])
+
+        // Create gradient layer
+        let gradientLayer = CAGradientLayer()
+        gradientLayer.colors = [
+            gradientBackgroundTint.withAlphaComponent(1.0).cgColor,
+            gradientBackgroundTint.withAlphaComponent(0.0).cgColor
+        ]
+        gradientLayer.locations = [0.0, 1.0]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0)
+
+        // Add gradient to container
+        containerView.layer.addSublayer(gradientLayer)
+
+        // Set gradient frame after layout
+        containerView.layoutIfNeeded()
+        gradientLayer.frame = containerView.bounds
+
+        // Store references for reuse
+        self.liquidGlassGradientContainerView = containerView
+        self.liquidGlassGradientLayer = gradientLayer
     }
     
     func showBusyServerCountdownAlert(retryAfter: UInt) {

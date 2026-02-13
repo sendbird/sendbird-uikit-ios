@@ -153,6 +153,7 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
     open override func setupStyles() {
         self.setupNavigationBar(
             backgroundColor: self.theme.navigationBarTintColor,
+            gradientBackgroundTint: self.theme.navigationBarGradientTint,
             shadowColor: self.theme.navigationBarShadowColor
         )
         

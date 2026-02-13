@@ -138,3 +138,102 @@ public struct SBUPrioritizedConfig<T>: Codable where T: Codable {
         try container.encode(self.value)
     }
 }
+
+// MARK: - Liquid Glass
+
+/// `SBUAdaptive` is a generic property wrapper that provides different values
+/// depending on whether liquid glass mode is enabled.
+///
+/// When `SendbirdUI.config.common.shouldApplyLiquidGlass` is `true`, returns `liquidGlassValue`.
+/// Otherwise, returns `baseValue`.
+///
+/// This wrapper only accepts types conforming to ``SBUAdaptiveCompatible``.
+/// Currently supported types: `UIColor`, `UIFont`, `CGFloat`.
+///
+/// **Usage:**
+/// ```swift
+/// @SBUAdaptive
+/// public var backgroundColor: UIColor
+///
+/// @SBUAdaptive
+/// public var titleFont: UIFont
+///
+/// @SBUAdaptive
+/// public var cornerRadius: CGFloat
+///
+/// // In init:
+/// self._backgroundColor = SBUAdaptive(
+///     base: SBUColorSet.background50,
+///     liquidGlass: .clear
+/// )
+///
+/// // Access (returns appropriate value based on liquid glass mode):
+/// view.backgroundColor = theme.backgroundColor
+/// ```
+///
+/// - Since: 3.34.0
+@propertyWrapper
+public struct SBUAdaptive<T: SBUAdaptiveCompatible> {
+    /// The value used when liquid glass mode is disabled (default mode).
+    private var baseValue: T
+
+    /// The value used when liquid glass mode is enabled.
+    private var liquidGlassValue: T
+
+    /// Returns the appropriate value based on the current liquid glass mode setting.
+    /// - Returns: `liquidGlassValue` if liquid glass mode is enabled, otherwise `baseValue`.
+    public var wrappedValue: T {
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            return liquidGlassValue
+        } else {
+            return baseValue
+        }
+    }
+
+    /// Provides access to the wrapper itself for calling mutating methods.
+    /// Use the `$` prefix to access this value (e.g., `$backgroundColor`).
+    public var projectedValue: Self {
+        get { self }
+        set { self = newValue }
+    }
+
+    /// Initializes the adaptive value with separate values for each mode.
+    /// - Parameters:
+    ///   - base: The value to use when liquid glass mode is disabled.
+    ///   - liquidGlass: The value to use when liquid glass mode is enabled.
+    public init(base: T, liquidGlass: T) {
+        self.baseValue = base
+        self.liquidGlassValue = liquidGlass
+    }
+
+    /// Updates one or both values.
+    /// - Parameters:
+    ///   - base: The new base value. If `nil`, the current base value is unchanged.
+    ///   - liquidGlass: The new liquid glass value. If `nil`, the current liquid glass value is unchanged.
+    public mutating func updateValues(base: T? = nil, liquidGlass: T? = nil) {
+        if let base {
+            baseValue = base
+        }
+        if let liquidGlass {
+            liquidGlassValue = liquidGlass
+        }
+    }
+}
+
+/// A marker protocol that restricts which types can be used with ``SBUAdaptive``.
+///
+/// Only types conforming to this protocol can be wrapped by `SBUAdaptive`.
+/// This ensures type safety and prevents misuse with incompatible types.
+///
+/// **Supported types:**
+/// - `UIColor` — For adaptive colors
+/// - `UIFont` — For adaptive fonts
+/// - `CGFloat` — For adaptive sizes and dimensions
+///
+/// - Since: 3.34.0
+public protocol SBUAdaptiveCompatible {}
+
+extension UIColor: SBUAdaptiveCompatible {}
+extension UIFont: SBUAdaptiveCompatible {}
+extension CGFloat: SBUAdaptiveCompatible {}
+extension CGSize: SBUAdaptiveCompatible {}

@@ -38,6 +38,7 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
     public var parentView: UIView? = UIApplication.shared.currentWindow
     public private(set) var backgroundView = UIButton()
     public private(set) var containerView = UIView()
+    private var glassEffectView: UIVisualEffectView = UIVisualEffectView()
     public private(set) var titleLabel = UILabel()
     public private(set) var messageLabel: UILabel?
     public private(set) var inputField: UITextField?
@@ -53,7 +54,14 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
     
     public private(set) var centerYRatio: CGFloat = 1.0
     
-    public var containerCornerRadius: CGFloat = 10.0
+    public var containerCornerRadius: CGFloat = 10.0 {
+        didSet {
+            self._containerCornerRadiusAdaptive = SBUAdaptive(base: containerCornerRadius, liquidGlass: containerCornerRadius)
+        }
+    }
+    
+    @SBUAdaptive(base: 10.0, liquidGlass: 34)
+    public var containerCornerRadiusAdaptive: CGFloat
     
     // MARK: Private properties
     /// Timer for countdown.
@@ -79,14 +87,22 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
     private var dismissHandler: (() -> Void)?
     
     // TODO: static var?
-    let itemWidth: CGFloat = 270.0
+    let sideMarginLiquidGlass: CGFloat = 14.0
+
     let textInsideMargin: CGFloat = 3.0
     let textTopBottomMargin: CGFloat = 20.0
     let inputAreaHeight: CGFloat = 32.0
     let inputAreaMargin: CGFloat = 20.0
     let inputBottomMargin: CGFloat = 16
-    let buttonHeight: CGFloat = 44.0
-    let sideMargin: CGFloat = 16.0
+    
+    @SBUAdaptive(base: 270.0, liquidGlass: 300.0)
+    var itemWidth: CGFloat
+    
+    @SBUAdaptive(base: 16.0, liquidGlass: 14.0)
+    var sideMargin: CGFloat
+    
+    @SBUAdaptive(base: 44.0, liquidGlass: 48.0)
+    var buttonHeight: CGFloat
     
     var prevOrientation: UIDeviceOrientation = .unknown
     
@@ -206,7 +222,14 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
             origin: .zero,
             size: CGSize(width: self.itemWidth, height: self.calculateTotalHeight())
         )
-        
+
+        // Create glass effect for Liquid Glass mode.
+        if SendbirdUI.config.common.shouldApplyLiquidGlass,
+           let glassView = createGlassEffectView() {
+            self.glassEffectView = glassView
+            containerView.insertSubview(self.glassEffectView, at: 0)
+        }
+
         // title
         self.titleLabel = self.createTitleLabel()
         self.containerView.addSubview(self.titleLabel)
@@ -236,28 +259,18 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
         }
         
         // separator
-        self.separator = self.createSeparator(originY: originY)
-        self.containerView.addSubview(self.separator)
+        if SendbirdUI.config.common.shouldApplyLiquidGlass == false {
+            self.separator = self.createSeparator(originY: originY)
+            self.containerView.addSubview(self.separator)
+        }
 
         // Buttons
-        var buttonOriginX: CGFloat = 0.0
-        let buttonWidth = (cancelButtonItem == nil) ? itemWidth : itemWidth/2
-
-        if let cancelButton = self.createCancelButton(
-            originY: originY,
-            buttonOriginX: buttonOriginX
-        ) {
-            self.cancelButton = cancelButton
-            self.containerView.addSubview(cancelButton)
-            buttonOriginX += buttonWidth
-        }
-        
-        if let confirmButton = self.createConfirmButton(
-            originY: originY,
-            buttonOriginX: buttonOriginX
-        ) {
-            self.confirmButton = confirmButton
-            self.containerView.addSubview(confirmButton)
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            // Liquid glass: Buttons are stacked vertically
+            configureButtonsForLiquidGlass(originY: originY)
+        } else {
+            // Non-liquid glass: Buttons are placed side by side horizontally
+            configureButtonsForNonLiquidGlass(originY: originY)
         }
     }
     
@@ -272,11 +285,11 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
     
     /// This function updates styles.
     open func updateStyles() {
-        self.backgroundView.backgroundColor = theme.overlayColor
-        self.containerView.backgroundColor = theme.backgroundColor
+        self.backgroundView.backgroundColor = theme.overlayColorAdaptive
+        self.containerView.backgroundColor = theme.backgroundColorAdaptive
         
         self.titleLabel.numberOfLines = 0
-        self.titleLabel.font = theme.alertTitleFont
+        self.titleLabel.font = theme.alertTitleFontAdaptive
         self.titleLabel.textColor = theme.alertTitleColor
         self.titleLabel.textAlignment = .center
         
@@ -299,13 +312,15 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
         self.cancelButton?.titleLabel?.font = theme.alertButtonFont
         self.cancelButton?.titleLabel?.textColor = theme.alertButtonColor
         self.cancelButton?.setTitleColor(self.cancelButtonItem?.color ?? theme.alertButtonColor, for: .normal)
-        self.cancelButton?.setBackgroundImage(UIImage.from(color: theme.backgroundColor), for: .normal)
-        self.cancelButton?.setBackgroundImage(UIImage.from(color: theme.highlightedColor), for: .highlighted)
-        
+
         self.confirmButton.titleLabel?.font = theme.alertButtonFont
         self.confirmButton.setTitleColor(self.confirmButtonItem?.color ?? theme.alertButtonColor, for: .normal)
-        self.confirmButton.setBackgroundImage(UIImage.from(color: theme.backgroundColor), for: .normal)
-        self.confirmButton.setBackgroundImage(UIImage.from(color: theme.highlightedColor), for: .highlighted)
+
+        // button background color
+        self.cancelButton?.setBackgroundImage(UIImage.from(color: theme.alertButtonBackgroundColorAdaptive), for: .normal)
+        self.cancelButton?.setBackgroundImage(UIImage.from(color: theme.highlightedColorAdaptive), for: .highlighted)
+        self.confirmButton.setBackgroundImage(UIImage.from(color: theme.alertButtonBackgroundColorAdaptive), for: .normal)
+        self.confirmButton.setBackgroundImage(UIImage.from(color: theme.highlightedColorAdaptive), for: .highlighted)
     }
     
     /// This function handles the initialization of autolayouts.
@@ -318,7 +333,7 @@ open class SBUAlertView: NSObject, SBUViewLifeCycle {
 
         self.backgroundView.frame = parentView.bounds
         self.containerView.layer.masksToBounds = true
-        
+
         setRoundRectOnContainerView()
         
         // inputField: RoundRect
@@ -361,13 +376,13 @@ extension SBUAlertView {
     /// This function calculates the total height of the alert.
     public func calculateTotalHeight() -> CGFloat {
         var totalHeight: CGFloat = 0.0
-        
+
         totalHeight += self.titleHeight
 
         if self.message != nil {
             totalHeight += (self.textInsideMargin + self.messageHeight)
         }
-        
+
         if self.needInputField {
              // top, text-input, input, input-button
             totalHeight += (inputAreaMargin + inputAreaMargin + inputAreaHeight + inputBottomMargin)
@@ -375,9 +390,19 @@ extension SBUAlertView {
              // top, text-button
             totalHeight += (textTopBottomMargin + textTopBottomMargin)
         }
-        
+
         if confirmButtonItem != nil || cancelButtonItem != nil {
-            totalHeight += self.buttonHeight
+            if SendbirdUI.config.common.shouldApplyLiquidGlass {
+                // Liquid glass: Buttons are stacked vertically
+                let buttonCount = (cancelButtonItem != nil) ? 2 : 1
+                totalHeight += self.buttonHeight * CGFloat(buttonCount)
+                if cancelButtonItem != nil {
+                    totalHeight += 10 // spacing between buttons
+                }
+                totalHeight += self.sideMargin // bottom padding
+            } else {
+                totalHeight += self.buttonHeight
+            }
         }
         
         return totalHeight
@@ -405,7 +430,7 @@ extension SBUAlertView {
         self.getTextHeight(
             text: title,
             maxSize: CGSize(width: insideItemWidth, height: CGFloat.greatestFiniteMagnitude),
-            font: theme.alertTitleFont
+            font: theme.alertTitleFontAdaptive
         )
     }
     
@@ -424,8 +449,8 @@ extension SBUAlertView {
         setRoundRect(
             on: self.containerView,
             cornerRadii: CGSize(
-                width: containerCornerRadius,
-                height: containerCornerRadius
+                width: containerCornerRadiusAdaptive,
+                height: containerCornerRadiusAdaptive
             )
         )
     }
@@ -771,7 +796,8 @@ extension SBUAlertView {
         for subView in self.containerView.subviews {
             subView.removeFromSuperview()
         }
-        
+
+        self.glassEffectView.removeFromSuperview()
         self.inputField = UITextField()
         self.backgroundView.removeFromSuperview()
         self.containerView.removeFromSuperview()
@@ -831,6 +857,17 @@ extension SBUAlertView {
     }
     
     // MARK: Create items
+    private func createGlassEffectView() -> UIVisualEffectView? {
+        if let glassEffectView = SBULiquidGlassUtils.createGlassEffectView() {
+            glassEffectView.setupLayouts(
+                frame: containerView.bounds,
+                autoresizingMask: [.flexibleWidth, .flexibleHeight]
+            )
+            return glassEffectView
+        }
+        return nil
+    }
+    
     /// This function creates a title label.
     /// - Since: 3.28.0
     private func createTitleLabel() -> UILabel {
@@ -945,49 +982,113 @@ extension SBUAlertView {
     /// - Since: 3.28.0
     private func createCancelButton(
         originY: CGFloat,
-        buttonOriginX: CGFloat = 0.0
+        buttonOriginX: CGFloat = 0.0,
+        buttonWidth: CGFloat? = nil
     ) -> UIButton? {
-        let buttonWidth = (cancelButtonItem == nil) ? itemWidth : itemWidth/2
-        
-        if let cancelButtonItem = cancelButtonItem {
-            let cancelButton = UIButton(
-                frame: CGRect(
-                    origin: CGPoint(x: buttonOriginX, y: originY),
-                    size: CGSize(width: buttonWidth, height: buttonHeight)
-                )
+        guard let cancelButtonItem = cancelButtonItem else { return nil }
+
+        let width = buttonWidth ?? (itemWidth / 2)
+
+        let cancelButton = UIButton(
+            frame: CGRect(
+                origin: CGPoint(x: buttonOriginX, y: originY),
+                size: CGSize(width: width, height: buttonHeight)
             )
-            cancelButton.setTitle(cancelButtonItem.title, for: .normal)
-            cancelButton.addTarget(self, action: #selector(onClickAlertButton), for: .touchUpInside)
-            cancelButton.tag = 0
-            
+        )
+        cancelButton.setTitle(cancelButtonItem.title, for: .normal)
+        cancelButton.addTarget(self, action: #selector(onClickAlertButton), for: .touchUpInside)
+        cancelButton.tag = 0
+
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            cancelButton.layer.cornerRadius = 24
+            cancelButton.clipsToBounds = true
+        } else {
+            // Non-liquid glass: Add vertical separator line (horizontal layout)
             let separatorLine = UIView(frame: CGRect(
                 origin: CGPoint(x: cancelButton.bounds.maxX - 0.5, y: 0),
                 size: CGSize(width: 5, height: buttonHeight))
             )
             separatorLine.backgroundColor = theme.separatorColor
             cancelButton.addSubview(separatorLine)
-            
-            return cancelButton
         }
-        
-        return nil
+
+        return cancelButton
     }
     
     /// This function creates a confirm button.
     /// - Since: 3.28.0
     private func createConfirmButton(
         originY: CGFloat,
-        buttonOriginX: CGFloat = 0.0
+        buttonOriginX: CGFloat = 0.0,
+        buttonWidth: CGFloat? = nil
     ) -> UIButton? {
-        let buttonWidth = (cancelButtonItem == nil) ? itemWidth : itemWidth/2
+        let width = buttonWidth ?? ((cancelButtonItem == nil) ? itemWidth : itemWidth / 2)
         let confirmButton = UIButton(frame: CGRect(
             origin: CGPoint(x: buttonOriginX, y: originY),
-            size: CGSize(width: buttonWidth, height: buttonHeight))
+            size: CGSize(width: width, height: buttonHeight))
         )
         confirmButton.setTitle(confirmButtonItem?.title, for: .normal)
         confirmButton.addTarget(self, action: #selector(onClickAlertButton), for: .touchUpInside)
         confirmButton.tag = 1
+
+        if SendbirdUI.config.common.shouldApplyLiquidGlass {
+            confirmButton.layer.cornerRadius = 24
+            confirmButton.clipsToBounds = true
+        }
+
         return confirmButton
+    }
+    
+    /// - Since: 3.34.0
+    private func configureButtonsForNonLiquidGlass(originY: CGFloat) {
+        var buttonOriginX: CGFloat = 0.0
+        let buttonWidth = (cancelButtonItem == nil) ? itemWidth : itemWidth / 2
+
+        if let cancelButton = self.createCancelButton(
+            originY: originY,
+            buttonOriginX: buttonOriginX,
+            buttonWidth: buttonWidth
+        ) {
+            self.cancelButton = cancelButton
+            self.containerView.addSubview(cancelButton)
+            buttonOriginX += buttonWidth
+        }
+
+        if let confirmButton = self.createConfirmButton(
+            originY: originY,
+            buttonOriginX: buttonOriginX,
+            buttonWidth: buttonWidth
+        ) {
+            self.confirmButton = confirmButton
+            self.containerView.addSubview(confirmButton)
+        }
+    }
+    
+    /// - Since: 3.34.0
+    private func configureButtonsForLiquidGlass(originY: CGFloat) {
+        var originYcopied = originY
+        
+        let buttonWidth = self.insideItemWidth
+        let buttonOriginX = sideMargin // sideMarginLiquidGlass
+
+        if let confirmButton = self.createConfirmButton(
+            originY: originYcopied,
+            buttonOriginX: buttonOriginX,
+            buttonWidth: buttonWidth
+        ) {
+            self.confirmButton = confirmButton
+            self.containerView.addSubview(confirmButton)
+            originYcopied += buttonHeight + 10 // 10pt spacing between buttons
+        }
+
+        if let cancelButton = self.createCancelButton(
+            originY: originYcopied,
+            buttonOriginX: buttonOriginX,
+            buttonWidth: buttonWidth
+        ) {
+            self.cancelButton = cancelButton
+            self.containerView.addSubview(cancelButton)
+        }
     }
     
     // MARK: Orientation

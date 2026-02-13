@@ -453,6 +453,17 @@ extension SBUBaseChannelModule {
                 self.theme = theme
             }
             
+            // Liquid glass support
+            #if compiler(>=6.2)
+            if #available(iOS 26.0, *), SendbirdUI.config.common.shouldApplyLiquidGlass {
+                self.tableView.topEdgeEffect.isHidden = true
+                self.tableView.bottomEdgeEffect.isHidden = true
+                
+                self.tableView.contentInsetAdjustmentBehavior = .never
+                self.tableView.showsVerticalScrollIndicator = false
+            }
+            #endif
+            
             switch self.channelStateBanner {
             case let banner as SBUChannelStateBanner:
                 banner.setupStyles(theme: theme)
@@ -511,6 +522,10 @@ extension SBUBaseChannelModule {
         }
         
         // MARK: - TableView
+        public func updateTableViewContentInset(insets: UIEdgeInsets) {
+            self.tableView.contentInset = insets
+        }
+        
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
         public func reloadTableView(needsToLayout: Bool = true) {
             if let gropuChannelModuleList = self as? SBUGroupChannelModule.List {
@@ -943,10 +958,12 @@ extension SBUBaseChannelModule {
         }
         
         // MARK: - UITableViewDelegate, UITableViewDataSource
+        
         /// Called when the `scrollView` has been scrolled.
         open func scrollViewDidScroll(_ scrollView: UIScrollView) {
             guard scrollView == self.tableView else { return }
             self.baseDelegate?.baseChannelModule(self, didScroll: scrollView)
+            
         }
         
         open func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -1150,7 +1167,7 @@ extension SBUBaseChannelModule.List: SBUUserProfileViewDelegate {
 extension SBUBaseChannelModule.List {
     /// This property checks if the scroll is near the bottom of the screen.
     public var isScrollNearByBottom: Bool {
-        tableView.contentOffset.y < 10
+        tableView.contentOffset.y + tableView.contentInset.top < 10
     }
     
     /// To keep track of which scrolls tableview.

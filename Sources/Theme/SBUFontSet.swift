@@ -30,7 +30,8 @@ public class SBUFontSet {
             .paragraphStyle: style
         ]
     }()
-    /// Bold, 16pt
+    
+    /// For iOS below 26.0: bold, 16
     public static var h3 = UIFont.systemFont(ofSize: 16.0, weight: .bold)
     
     // MARK: - Body

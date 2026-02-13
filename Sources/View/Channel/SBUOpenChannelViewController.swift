@@ -422,10 +422,19 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
                 equalTo: self.headerComponent?.bottomAnchor ?? self.view.topAnchor,
                 constant: 0
             )
+            
+            // Liquid glass support
+            let bottomAnchor: NSLayoutAnchor<NSLayoutYAxisAnchor>
+            if SendbirdUI.config.common.shouldApplyLiquidGlass {
+                bottomAnchor = self.view.bottomAnchor
+            } else {
+                bottomAnchor = self.inputComponent?.topAnchor ?? self.view.bottomAnchor
+            }
             self.tableViewBottomConstraint = listComponent.bottomAnchor.constraint(
-                equalTo: self.inputComponent?.topAnchor ?? self.view.bottomAnchor,
+                equalTo: bottomAnchor,
                 constant: 0
             )
+            
             self.tableViewLeftConstraint = listComponent.leftAnchor.constraint(
                 equalTo: self.headerComponent?.leftAnchor ?? self.view.leftAnchor,
                 constant: 0
@@ -439,8 +448,19 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
             tableViewLeftConstraint?.isActive = true
             tableViewRightConstraint?.isActive = true
             tableViewBottomConstraint?.isActive = true
+
+            // For liquid glass mode: position scrollBottomView above the input component
+            if SendbirdUI.config.common.shouldApplyLiquidGlass,
+               let scrollBottomView = listComponent.scrollBottomView,
+               let inputComponent = self.inputComponent {
+                scrollBottomView.translatesAutoresizingMaskIntoConstraints = false
+                scrollBottomView.bottomAnchor.constraint(
+                    equalTo: inputComponent.topAnchor,
+                    constant: -8
+                ).isActive = true
+            }
         }
-        
+
         if let inputComponent = inputComponent {
             inputComponent
                 .sbu_constraint(equalTo: self.listComponent ?? self.view, left: 0, right: 0)
@@ -454,10 +474,12 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
             )
             self.messageInputViewBottomConstraint = self.inputComponent?.bottomAnchor.constraint(
                 equalTo: self.view.bottomAnchor,
-                constant: 0
+                constant: -SBUConstant.messageInputViewBottomSpacing
             )
             
-            self.messageInputViewTopConstraint?.isActive = true
+            if !SendbirdUI.config.common.shouldApplyLiquidGlass {
+                self.messageInputViewTopConstraint?.isActive = true
+            }
             self.messageInputViewBottomConstraint?.isActive = true
         }
     }
@@ -707,6 +729,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     
     // MARK: - ScrollView
     public func configureOffset() {
+        if SendbirdUI.config.common.shouldApplyLiquidGlass { return }
         guard let tableView = self.listComponent?.tableView else { return }
         guard tableView.contentOffset.y < 0,
               let tableViewTopConstraint = self.tableViewTopConstraint,

@@ -105,7 +105,7 @@ extension SBUBaseChannelViewController {
             self.setKeyboardWindowFrame(origin: CGPoint(x: 0, y: 50))
             
             if let messageInputViewBottomConstraint = self.messageInputViewBottomConstraint {
-                messageInputViewBottomConstraint.constant = 0
+                messageInputViewBottomConstraint.constant = -SBUConstant.messageInputViewBottomSpacing
             }
         case false:
             // When the keyboard will show
@@ -137,12 +137,18 @@ extension SBUBaseChannelViewController {
             
             let keyboardHeight = getAdjustedKeyboardHeight(with: keyboardFrame.cgRectValue)
             let tabBarHeight = getTabBarHeight()
-            
-            self.messageInputViewBottomConstraint?.constant = -(keyboardHeight-tabBarHeight)
+
+            self.messageInputViewBottomConstraint?.constant = -(keyboardHeight-tabBarHeight+SBUConstant.messageInputViewKeyboardSpacing)
+
+            // For liquid glass mode: update content inset and scroll to bottom when keyboard shows
+            if SendbirdUI.config.common.shouldApplyLiquidGlass,
+               self.baseListComponent?.isScrollNearByBottom == true {
+                self.baseListComponent?.scrollTableView(to: 0)
+            }
         }
         self.view.layoutIfNeeded()
     }
-    
+
     @objc
     private func dismissKeyboardIfTouchInput(sender: UIPanGestureRecognizer) {
         guard let tableView = self.baseListComponent?.tableView else { return }
@@ -184,7 +190,7 @@ extension SBUBaseChannelViewController {
             // defense code to prevent bottom constant to be set as some other value
             self.messageInputViewBottomConstraint?.constant = self.isKeyboardShowing
             ? initialMessageInputBottomConstraint
-            : 0
+            : -SBUConstant.messageInputViewBottomSpacing
         default:
             break
         }

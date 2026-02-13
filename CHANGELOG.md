@@ -1,5 +1,28 @@
 # Changelog
 
+### v3.34.0 (Feb 13, 2026)
+
+# SendbirdUIKit
+
+## New Feature
+### Liquid Glass Support (iOS 26+)
+
+SendbirdUIKit now supports Apple's Liquid Glass design introduced in iOS 26. When running on iOS 26+, liquid glass styling is applied automatically across navigation bars, message input views, alert views, menus, and channel list headers.
+
+**Opting Out**
+
+Liquid glass is enabled by default on iOS 26+. To disable it and use the classic appearance:
+```swift
+  SendbirdUI.config.common.isLiquidGlassEnabled = false
+```
+
+**What's Affected**
+The below components have been updated to support liquid glass styling:
+- Navigation bars
+- Message input view
+- Alert views
+- Menu views (for when long-pressing messages)
+- "Create channel" context menu in GroupChannelList Header
 ### v3.33.1 (Feb 03, 2026)
 
 # SendbirdUIKit
