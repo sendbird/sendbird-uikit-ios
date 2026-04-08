@@ -53,7 +53,7 @@ open class SBUOpenChannelAdminMessageCell: SBUOpenChannelBaseMessageCell {
             _ = heightConstraintSettingClosure()
         }
         #else
-        heightConstraintSettingClosure()
+        _ = heightConstraintSettingClosure()
         #endif
         
         self.messageLabel.sbu_constraint(

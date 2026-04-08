@@ -772,7 +772,7 @@ extension SBUMessageThreadModule {
         
         open override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
             guard let fileMessageCell = cell as? SBUFileMessageCell,
-                  fileMessageCell.baseFileContentView as? SBUVoiceContentView != nil else { return }
+                  fileMessageCell.baseFileContentView is SBUVoiceContentView else { return }
         }
         
         /// Generates identifier of message cell.

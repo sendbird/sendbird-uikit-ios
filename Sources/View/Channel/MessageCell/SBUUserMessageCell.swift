@@ -50,6 +50,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// The boolean value whether the ``messageFormView`` instance should appear or not. The default is `true`
     /// - Important: If it's true, ``messageFormView`` never appears even if the ``userMessage`` has `forms`.
     /// - Since: 3.11.0
+    @available(*, deprecated, message: "This property is deprecated in 3.34.1")
     public private(set) var shouldHideFormTypeMessage: Bool = true
     
     /// The array of ``SBUFormView`` instance.
@@ -61,6 +62,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// The array of ``SBUMessageFormView`` instance.
     /// If you want to override that view, override the ``createMessageFormView()`` constructor function.
     /// - Since: 3.27.0
+    @available(*, deprecated, message: "This property is deprecated in 3.34.1")
     public private(set) var messageFormView: SBUMessageFormView?
     
     /// This is a user message custom cell factory type
@@ -206,7 +208,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         
         self.useThreadInfo = configuration.useThreadInfo
         self.shouldHideSuggestedReplies = configuration.shouldHideSuggestedReplies
-        self.shouldHideFormTypeMessage = configuration.shouldHideFormTypeMessage
 
         // Configure Content base message cell
         super.configure(with: configuration)
@@ -215,12 +216,6 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
         self.suggestedReplyView?.removeFromSuperview()
         self.suggestedReplyView = nil
         self.updateSuggestedReplyView(with: message.suggestedReplies)
-        
-        // MARK: Message Form View
-        self.messageFormView?.removeFromSuperview()
-        self.messageFormView = nil
-        let hasForms = self.updateMessageFormView(with: message)
-        self.mainContainerView.isHidden = hasForms && configuration.useOnlyFromView
         
         // Set up message position of additionContainerView(reactionView)
         self.additionContainerView.position = self.position
@@ -396,40 +391,11 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// - since: 3.11.0
     @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
     public func updateFormView(with message: BaseMessage?) -> Bool { false }
-    
+
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     public func updateMessageFormView(with message: BaseMessage?) -> Bool {
-        guard SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled else { return false }
-        guard shouldHideFormTypeMessage == false else { return false }
-        
-        guard let message = message else { return false }
-        guard let messageForm = message.messageForm else { return false }
-        
-        let messageId = message.messageId
-        
-        if messageForm.isValidVersion == false {
-            let fallbackView = SBUMessageFormFallbackView()
-            self.mainContainerVStackView.addArrangedSubview(fallbackView)
-            self.messageFormView = fallbackView
-            self.layoutIfNeeded()
-            
-            return true
-        }
-        
-        let messageFormView = createMessageFormView()
-        let configuration = SBUMessageFormViewParams(
-            messageId: messageId,
-            messageForm: messageForm,
-            isSubmitting: message.isFormSubmitting,
-            itemValidationStatus: message.formItemValidationStatus
-        )
-        messageFormView.configure(with: configuration, delegate: self)
-
-        self.mainContainerVStackView.addArrangedSubview(messageFormView)
-
-        self.messageFormView = messageFormView
-        self.layoutIfNeeded()
-        
-        return true
+        SBULog.info("[Deprecated] MessageForm feature is deprecated in 3.34.1")
+        return false
     }
     
     /// Methods to use when you want to fully customize the design of the ``SBUFormView``.
@@ -445,6 +411,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     /// NOTE: The default view is ``SBUSimpleMessageFormView``, which is a vertically organized form view.
     /// - Returns: Views that inherit from ``SBUMessageFormView``.
     /// - since: 3.27.0
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     open func createMessageFormView() -> SBUMessageFormView { SBUSimpleMessageFormView() }
     
     /// - Since: 3.21.0
@@ -478,18 +445,13 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
     
     @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
     public func formView(_ view: SBUFormView, didSubmit form: SendbirdChatSDK.MessageForm) { }
-    
-    public func messageFormView(_ view: SBUMessageFormView, didSubmit form: SendbirdChatSDK.MessageForm) {
-        if self.message?.isFormSubmitting == true { return }
-        self.message?.isFormSubmitting = true
-        self.submitMessageFormHandler?(form, self)
-    }
-    
-    public func messageFormView(_ view: SBUMessageFormView, didUpdateValidationStatus status: [Int64: Bool]) {
-        self.message?.formItemValidationStatus = status
-    }
-    
-    public func messageFormView(_ view: SBUMessageFormView, didUpdateViewFrame: CGRect) {
-        self.invalidateIntrinsicContentSize()
-    }
+
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
+    public func messageFormView(_ view: SBUMessageFormView, didSubmit form: SendbirdChatSDK.MessageForm) { }
+
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
+    public func messageFormView(_ view: SBUMessageFormView, didUpdateValidationStatus status: [Int64: Bool]) { }
+
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
+    public func messageFormView(_ view: SBUMessageFormView, didUpdateViewFrame: CGRect) { }
 }

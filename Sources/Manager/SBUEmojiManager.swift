@@ -108,7 +108,7 @@ public class SBUEmojiManager {
         }
         
         let filteredEmojiCategories = categories.filter { categoryIds.contains($0.cid) }
-        let filteredEmojis = filteredEmojiCategories.reduce([]) { $0 + $1.emojis}
+        let filteredEmojis = filteredEmojiCategories.reduce([]) { $0 + $1.emojis }
         
         if filteredEmojis.isEmpty {
             SBULog.warning("Emojis for emojiCategoryIds is empty.")

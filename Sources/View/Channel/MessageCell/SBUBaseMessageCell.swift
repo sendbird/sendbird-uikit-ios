@@ -60,11 +60,13 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     /// The boolean value whether the ``feedbackView`` instance should appear or not. The default is `true`
     /// - Important: If it's true, ``feedbackView`` never appears even if the ``userMessage`` has valid status of `myFeedbackStatus`.
     /// - Since: 3.11.0
+    @available(*, deprecated, message: "This property is deprecated in 3.34.1")
     public private(set) var shouldHideFeedback: Bool = true
     
     /// The array of ``SBUFeedbackView`` instance.
     /// If you want to override that view, override the ``createFeedbackView()`` constructor function.
     /// - Since: 3.15.0
+    @available(*, deprecated, message: "This property is deprecated in 3.34.1")
     public internal(set) var feedbackView: SBUFeedbackView?
     
     /// If this flag is set to true,
@@ -95,19 +97,6 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     ///  - Since: 3.16.0
     @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
     var submitFormHandler: ((_ form: SendbirdChatSDK.Form, _ messageCell: SBUBaseMessageCell) -> Void)?
-    
-    /// The action of ``SBUMessageFormView`` that is called when a ``SendbirdChatSDK.MessageForm`` is submitted.
-    /// - Parameters:
-    ///    - messageForm: The current ``MessageForm`` object.
-    ///    - messageCell: The current ``SBUBaseMessageCell`` object.
-    ///  - Since: 3.27.0
-    var submitMessageFormHandler: ((_ messageForm: SendbirdChatSDK.MessageForm, _ messageCell: SBUBaseMessageCell) -> Void)?
-    
-    /// The action of ``SBUFeedbackView`` that is called when a `Feedback` is updated.
-    /// - Parameters:
-    ///    - feedbackAnswer: The ``SBUFeedbackAnswer`` object that will be submitted.
-    ///    - messageCell: The current ``SBUBaseMessageCell`` object.
-    var updateFeedbackHandler: ((_ feedbackAnswer: SBUFeedbackAnswer, _ messageCell: SBUBaseMessageCell) -> Void)?
     
     // MARK: - message template handlers
     var messageTemplateActionHandler: ((_ action: SBUMessageTemplate.Action) -> Void)?
@@ -188,8 +177,7 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
         self.groupPosition = configuration.groupPosition
         self.dateView.isHidden = configuration.hideDateView
         self.receiptState = configuration.receiptState
-        self.shouldHideFeedback = configuration.shouldHideFeedback
-        
+
         // MARK: Set up Unread Message Mark View
         self.unreadMessageNewLine?.isHidden = (configuration.isFirstUnreadMessage == false)
         
@@ -208,8 +196,6 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
                 dateView.configure(timestamp: message.createdAt)
             }
             
-            // MARK: Feedback Views
-            self.updateFeedbackView(with: self.message)
         }
     }
     
@@ -253,10 +239,9 @@ open class SBUBaseMessageCell: SBUTableViewCell, SBUMessageCellProtocol, SBUFeed
     }
     
     // MARK: - feedback view delegate
-    
-    open func feedbackView(_ view: SBUFeedbackView, didAnswer answer: SBUFeedbackAnswer) {
-        self.updateFeedbackHandler?(answer, self)
-    }
+
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
+    open func feedbackView(_ view: SBUFeedbackView, didAnswer answer: SBUFeedbackAnswer) { }
     
     // MARK: - common
     

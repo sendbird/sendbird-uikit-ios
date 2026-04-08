@@ -685,7 +685,7 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
     ) {
         self.viewModel?.loadUncachedTemplate(
             keys: templateKeys
-        ) { [weak self] success in
+        ) { [weak self] _ in
             self?.listComponent?.reloadTableView()
         }
     }

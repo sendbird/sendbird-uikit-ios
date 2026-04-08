@@ -603,7 +603,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
               let message = messageCell.message else { return }
         
         let shouldSelect = message.reactions.first { $0.key == emojiKey }?
-            .userIds.contains(currentUser.userId) == false
+            .sampledUserIds.contains(currentUser.userId) == false
         self.viewModel?.setReaction(message: message, emojiKey: emojiKey, didSelect: shouldSelect)
     }
     

@@ -169,7 +169,7 @@ open class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegat
 
     /// This function handles the initialization of styles.
     open override func setupStyles() {
-        self.view.backgroundColor = theme.backgroundColor
+        self.view.backgroundColor = theme.backgroundColorAdaptive
         self.lineView.backgroundColor = theme.reactionMenuLineColor
         self.tableView.backgroundColor = .clear
         self.collectionView.backgroundColor = .clear
@@ -194,7 +194,7 @@ open class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegat
     open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         guard let selectedReaction = self.selectedReaction,
-              selectedReaction.userIds.count > 0 else { return }
+              selectedReaction.sampledUserIds.count > 0 else { return }
         self.tableView.scrollToRow(at: .init(row: 0, section: 0), at: .top, animated: true)
     }
 
@@ -243,8 +243,8 @@ open class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegat
     /// - Since: 3.28.0
     public func getUser(with indexPath: IndexPath) -> SBUUser? {
         guard let selectedReaction = self.selectedReaction,
-              indexPath.row < selectedReaction.userIds.count else { return nil }
-        let userId = selectedReaction.userIds[indexPath.row]
+              indexPath.row < selectedReaction.sampledUserIds.count else { return nil }
+        let userId = selectedReaction.sampledUserIds[indexPath.row]
         let user = memberList
             .first { $0.userId == userId }
             .map { SBUUser(user: $0) } ?? SBUUser(
@@ -270,7 +270,7 @@ open class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegat
     open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let selectedReaction = self.selectedReaction else { return 0 }
         
-        return selectedReaction.userIds.count
+        return selectedReaction.sampledUserIds.count
     }
 
     open func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -325,13 +325,13 @@ open class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegat
         cell.configure(
             type: .reactions,
             url: emoji?.url,
-            count: reaction.userIds.count
+            count: reaction.sampledUserIds.count
         )
         return cell
     }
 
     open func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return self.getCellSize(count: self.reactionList[indexPath.row].userIds.count)
+        return self.getCellSize(count: self.reactionList[indexPath.row].sampledUserIds.count)
     }
 
     open func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -345,7 +345,7 @@ open class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegat
               let cell = collectionView.cellForItem(at: indexPath)
                 as? SBUReactionCollectionViewCell else { return }
         
-        cell.setCount(self.reactionList[indexPath.row].userIds.count)
+        cell.setCount(self.reactionList[indexPath.row].sampledUserIds.count)
     }
 
     // MARK: - SBUBottomSheetControllerDelegate

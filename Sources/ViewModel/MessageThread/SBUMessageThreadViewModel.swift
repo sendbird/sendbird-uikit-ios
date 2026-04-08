@@ -910,7 +910,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         
         self.baseDelegates.forEach {
             $0.shouldUpdateLoadingState(false)
-            
+
             // Call deprecated method for backward compatibility.
             $0.baseChannelViewModel(
                 self,
@@ -918,7 +918,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 needsToReload: needReload,
                 initialLoad: self.isInitialLoading
             )
-            
+
             $0.baseChannelViewModel(
                 self,
                 didChangeMessageList: self.fullMessageList,
@@ -928,7 +928,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             )
         }
     }
-    
+
     // MARK: - Last Updated timestamp
     private func updateLastUpdatedTimestamp(messages: [BaseMessage]) {
         SBULog.info("""
@@ -986,10 +986,10 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         /// Prevent loadNext being called if changelog is called
         guard self.nextLock.try() else { return }
         
-        let changeLogsParams = MessageChangeLogsParams(
-            includeThreadInfo: true,
-            replyType: .all
-        )
+        let changeLogsParams = MessageChangeLogsParams {
+            $0.includeThreadInfo = true
+            $0.replyType = .all
+        }
         
         var completion: (([BaseMessage]?, [Int64]?, Bool, String?, SBError?) -> Void)!
         completion = { [weak self] updatedMessages, deletedMessageIds, hasMore, nextToken, error in

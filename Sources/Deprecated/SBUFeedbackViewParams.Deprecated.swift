@@ -1,5 +1,5 @@
 //
-//  SBUFeedbackViewParams.swift
+//  SBUFeedbackViewParams.Deprecated.swift
 //  SendbirdUIKit
 //
 //  Created by Damon Park on 2024/01/09.
@@ -11,6 +11,7 @@ import SendbirdChatSDK
 
 /// The data model used for configuring ``SBUFeedbackView``.
 /// - Since: 3.15.0
+@available(*, deprecated, message: "This struct is deprecated in 3.34.1")
 public struct SBUFeedbackViewParams {
     // MARK: - Properties
     /// The ID of the message that provides feedback.

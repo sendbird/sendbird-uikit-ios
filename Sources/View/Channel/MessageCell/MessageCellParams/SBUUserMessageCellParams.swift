@@ -28,7 +28,8 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
     /// The boolean value to indicates that the message cell should hide form type message.
     /// If it's `true`, never show the form type message view even the `BaseMessage/ExtendedMessagePayload` has the `forms` values.
     /// - Since: 3.11.0
-    public let shouldHideFormTypeMessage: Bool
+    @available(*, deprecated, message: "This property is deprecated in 3.34.1")
+    public let shouldHideFormTypeMessage: Bool = true
 
     public init(
         message: UserMessage,
@@ -49,7 +50,6 @@ public class SBUUserMessageCellParams: SBUBaseMessageCellParams {
         self.useReaction = useReaction
         self.withTextView = withTextView
         self.shouldHideSuggestedReplies = shouldHideSuggestedReplies
-        self.shouldHideFormTypeMessage = shouldHideFormTypeMessage
         self.enableEmojiLongPress = enableEmojiLongPress
         
         var messagePosition: MessagePosition = .left

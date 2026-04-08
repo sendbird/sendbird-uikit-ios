@@ -89,8 +89,7 @@ extension SBUScrollBottomView {
         guard let viewType = viewType else { return nil }
         let view = viewType.init(frame: frame)
         view.channelType = channelType
-        
-        
+
         var didApplyViewConverter = false
         #if SWIFTUI
         switch channelType {

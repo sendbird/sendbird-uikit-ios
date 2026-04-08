@@ -33,7 +33,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     public var userList: [SBUUser] { viewModel?.userList ?? [] }
     public var selectedUserList: Set<SBUUser> { viewModel?.selectedUserList ?? [] }
     
-    private var users: [SBUUser]? = nil
+    private var users: [SBUUser]?
     private var type: ChannelCreationType = .group
     
     // MARK: - SwiftUI
@@ -337,6 +337,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
 
 #if SWIFTUI
 extension SBUCreateChannelViewController {
+    /// Handles the event when a user is selected from the create channel module list.
     public func createChannelModule(
         _ listComponent: SBUCreateChannelModule.List,
         didSelectUser user: SBUUser

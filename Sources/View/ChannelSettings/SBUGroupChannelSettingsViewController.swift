@@ -129,7 +129,7 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
             let height = headerView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
             var headerFrame = headerView.frame
 
-            //Comparison necessary to avoid infinite loop
+            // Comparison necessary to avoid infinite loop
             if height != headerFrame.size.height {
                 headerFrame.size.height = height
                 headerView.frame = headerFrame

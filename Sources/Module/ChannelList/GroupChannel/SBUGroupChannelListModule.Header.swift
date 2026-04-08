@@ -161,10 +161,9 @@ extension SBUGroupChannelListModule {
             // We are not using `...buttons` in SwiftUI
             #endif
             
-            // uikit 
+            // uikit
             super.setupViews()
-            
-            
+
             if #available(iOS 26, *), SendbirdUI.config.common.shouldApplyLiquidGlass {
                 rightBarButton?.menu = self.makeCreateChannelTypeContextMenu()
             }

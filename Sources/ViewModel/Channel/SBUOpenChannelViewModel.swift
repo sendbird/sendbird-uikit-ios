@@ -149,8 +149,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         self.setupSendUserMessageCompletionHandlers()
         self.setupSendFileMessageCompletionHandlers()
     }
-    
-    
+
     deinit {
         SBULog.info("")
         

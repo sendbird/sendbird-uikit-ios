@@ -100,8 +100,6 @@ extension SBUInviteUserModule {
             self.register(userCell: Self.UserCell.init())
         }
         
-        // swiftlint:disable missing_docs 
-        
         // MARK: - UITableView relations
         
         public override func reloadTableView() {
@@ -140,8 +138,6 @@ extension SBUInviteUserModule {
                             forRowAt indexPath: IndexPath) {
             self.delegate?.inviteUserModule(self, didDetectPreloadingPosition: indexPath)
         }
-        
-        // swiftlint:enable missing_docs
     }
 }
 

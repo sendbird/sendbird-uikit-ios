@@ -149,7 +149,7 @@ open class SBUChannelInfoHeaderView: SBUView {
         
         self.lineView.backgroundColor = theme.separatorColor
         
-        self.backgroundColor = theme.backgroundColor
+        self.backgroundColor = theme.backgroundColorAdaptive
         
         self.setupInfoButtonStyle()
     }

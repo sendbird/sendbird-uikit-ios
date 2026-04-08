@@ -138,7 +138,7 @@ extension SBUMessageTemplateCell: TemplateViewGeneratorDelegate {
     
     public func templateView(_ templateView: TemplateSyntax.TemplateView, didDrawPartialItem item: TemplateSyntax.Item, in view: UIView, with identifier: String) {
         switch item {
-        case .carouselView(_):
+        case .carouselView:
             self.message?.messageTemplateCarouselView = view
         default:
             break
@@ -161,7 +161,7 @@ extension SBUMessageTemplateCell: TemplateViewGeneratorDataSource {
     
     public func templateView(_ templateView: TemplateSyntax.TemplateView, viewForPartialItem item: TemplateSyntax.Item, with identifier: String) -> UIView? {
         switch item {
-        case .carouselView(_):
+        case .carouselView:
             return self.message?.messageTemplateCarouselView
         default:
             return nil

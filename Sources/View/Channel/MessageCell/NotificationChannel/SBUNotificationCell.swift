@@ -322,8 +322,6 @@ class SBUNotificationCell: SBUBaseMessageCell {
     func setupNotificationTemplate() {
         let subType = Int(self.message?.extendedMessage["sub_type"] as? String ?? "0")
         guard subType == 0 else { return } // subType: 0 is template type
-        let subData = self.message?.extendedMessage["sub_data"] as? String
-        
         let template = SBUMessageTemplate.Coordinator.execute(
             type: .notification,
             message: self.message,

@@ -82,6 +82,7 @@ open class SBUUserMessageTextView: SBUView {
     var textHeightConstraint: NSLayoutConstraint?
     var textMinWidthConstraint: NSLayoutConstraint?
     
+    @available(*, deprecated, message: "`containerType` has been deprecated since 3.27.2.")
     var containerType: SBUMessageContainerType = .default
     
     public override init() {
@@ -201,8 +202,6 @@ open class SBUUserMessageTextView: SBUView {
             .foregroundColor: model.textColor,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
-        self.containerType = model.message?.asUiSettingContainerType ?? .default
-        
         if model.hasMentionedMessage, SendbirdUI.config.groupChannel.channel.isMentionEnabled {
             guard let mentionedMessageTemplate = model.message?.mentionedMessageTemplate,
                   let mentionedUsers = model.message?.mentionedUsers,

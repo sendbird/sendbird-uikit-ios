@@ -18,6 +18,7 @@ public class SBUMessageReactionViewParams {
     let enableEmojiLongPress: Bool
     let message: BaseMessage?
     
+    /// Initializes a new `SBUMessageReactionView` with the given configuration.
     public init(
         maxWidth: CGFloat,
         useReaction: Bool,
@@ -175,7 +176,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         
         let hasMoreEmoji = hasMoreEmoji()
         let cellSizes = reactions.reduce(0) {
-            $0 + self.getCellSize(count: $1.userIds.count).width
+            $0 + self.getCellSize(count: $1.sampledUserIds.count).width
         }
         
         var width: CGFloat = cellSizes
@@ -266,7 +267,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         cell.configure(
             type: .messageReaction,
             url: selectedEmoji?.url,
-            count: reaction.userIds.count,
+            count: reaction.sampledUserIds.count,
             needsSideMargin: self.sameCellWidth
         )
         cell.emojiImageViewRatioConstraint?.isActive = true
@@ -277,7 +278,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         
         guard let currentUser = SBUGlobals.currentUser else { return cell }
         DispatchQueue.main.async {
-            cell.isSelected = reaction.userIds.contains(currentUser.userId)
+            cell.isSelected = reaction.sampledUserIds.contains(currentUser.userId)
         }
         
         return cell
@@ -321,7 +322,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         guard !self.hasMoreEmoji(at: indexPath) else { return self.getCellSize(count: 0) }
         guard !reactions.isEmpty else { return self.getCellSize(count: 0) }
 
-        let count = reactions[indexPath.row].userIds.count
+        let count = reactions[indexPath.row].sampledUserIds.count
         return self.getCellSize(count: count)
     }
     

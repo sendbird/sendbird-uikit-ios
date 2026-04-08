@@ -10,6 +10,7 @@ import UIKit
 import SendbirdChatSDK
 
 #if SWIFTUI
+// swiftlint:disable:next type_name
 protocol GroupChannelPushSettingsViewEventDelegate: AnyObject {
     
 }

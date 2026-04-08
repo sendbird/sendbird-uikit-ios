@@ -51,8 +51,8 @@ public protocol SBUBaseChannelViewModelDelegate: SBUCommonViewModelDelegate {
         shouldDismissForChannel channel: BaseChannel?
     )
     
-    @available(*, deprecated, message: "Deprecated since 3.33.0", renamed: "baseChannelViewModel(_:didChangeMessageList:needsToReload:initialLoad:isEventMessageReceived:)")
     /// Called when the messages has been changed. If they're the first loaded messages, `initialLoad` is `true`.
+    @available(*, deprecated, message: "Deprecated since 3.33.0", renamed: "baseChannelViewModel(_:didChangeMessageList:needsToReload:initialLoad:isEventMessageReceived:)")
     func baseChannelViewModel(
         _ viewModel: SBUBaseChannelViewModel,
         didChangeMessageList messages: [BaseMessage],
@@ -94,6 +94,7 @@ public protocol SBUBaseChannelViewModelDelegate: SBUCommonViewModelDelegate {
 }
 
 extension SBUBaseChannelViewModelDelegate {
+    /// Provides a default implementation for backward compatibility with the deprecated ``baseChannelViewModel(_:didChangeMessageList:needsToReload:initialLoad:)`` method.
     public func baseChannelViewModel(
         _ viewModel: SBUBaseChannelViewModel,
         didChangeMessageList messages: [BaseMessage],
@@ -771,7 +772,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
             if SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled {
                 sortAllMessageListBlock()
             } else {
-                channel.markAsRead { error in
+                channel.markAsRead { _ in
                     sortAllMessageListBlock()
                 }
             }
@@ -943,7 +944,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
         
         self.baseDelegates.forEach {
             $0.shouldUpdateLoadingState(false)
-            
+
             // Call deprecated method for backward compatibility.
             $0.baseChannelViewModel(
                 self,
@@ -961,7 +962,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
             )
         }
     }
-    
+
     /// This functions clears current message lists
     ///
     /// - Since: 2.1.0

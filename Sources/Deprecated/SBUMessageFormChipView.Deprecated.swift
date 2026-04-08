@@ -1,5 +1,5 @@
 //
-//  SBUMesageFormChipView.swift
+//  SBUMesageFormChipView.Deprecated.swift
 //  SendbirdUIKit
 //
 //  Created by Damon Park on 7/3/24.
@@ -9,29 +9,31 @@ import UIKit
 import SendbirdChatSDK
 
 /// - Since: 3.27.0
+@available(*, deprecated, message: "This protocol is deprecated in 3.34.1")
 protocol SBUMesageFormChipViewDelegate: AnyObject {
     func messageFormChipView(_ chip: SBUMesageFormChipView, didSelect value: String)
 }
 
 /// Chip view A view that displays items
 /// - Since: 3.27.0
+@available(*, deprecated, message: "This class is deprecated in 3.34.1")
 public class SBUMesageFormChipView: SBUView, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     /// The theme for ``SBUMessageFormItemView`` that is type of ``SBUMessageCellTheme``.
     var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
-    
+
     /// chip items
     public var chips: [String] = []
-    
+
     var status: SBUMessageFormItemView.StatusType = .unknown
-    
+
     weak var delegate: SBUMesageFormChipViewDelegate?
-    
+
     lazy var collectionView: UICollectionView = {
         let layout = LeftAlignedCollectionViewFlowLayout()
         layout.minimumInteritemSpacing = 4
         layout.minimumLineSpacing = 4
         layout.sectionInset = .zero
-        
+
         let collectionView = SBUWrappingCollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -41,32 +43,32 @@ public class SBUMesageFormChipView: SBUView, UICollectionViewDataSource, UIColle
             SBUMesageFormChipCell.self,
             forCellWithReuseIdentifier: SBUMesageFormChipCell.sbu_className
         )
-        
+
         return collectionView
     }()
-    
+
     func update(chips: [String], status: SBUMessageFormItemView.StatusType) {
         self.status = status
         self.chips = chips
         self.collectionView.reloadData()
     }
-    
+
     public override func setupViews() {
         super.setupViews()
-        
+
         self.addSubview(self.collectionView)
     }
-    
+
     public override func setupLayouts() {
         super.setupLayouts()
-        
+
         self.collectionView.sbu_constraint(equalTo: self, leading: 0, trailing: 0, top: 0, bottom: 0)
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        self.chips.count 
+        self.chips.count
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: SBUMesageFormChipCell.sbu_className,
@@ -79,12 +81,12 @@ public class SBUMesageFormChipView: SBUView, UICollectionViewDataSource, UIColle
         cell.configure(value: value, state: state)
         return cell
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard self.status.isEditable == true else { return }
         self.delegate?.messageFormChipView(self, didSelect: self.chips[indexPath.row])
     }
-    
+
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let value = self.chips[indexPath.row]
         let size = (value as NSString).size(withAttributes: [NSAttributedString.Key.font: theme.formChipTextFont])
@@ -97,6 +99,7 @@ public class SBUMesageFormChipView: SBUView, UICollectionViewDataSource, UIColle
 }
 
 /// - Since: 3.27.0
+@available(*, deprecated, message: "This class is deprecated in 3.34.1")
 class SBUMesageFormChipCell: SBUCollectionViewCell {
     /// The theme for ``SBUMessageFormItemView`` that is type of ``SBUMessageCellTheme``.
     var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
@@ -106,45 +109,45 @@ class SBUMesageFormChipCell: SBUCollectionViewCell {
     var inputIconView = UIImageView()
     /// A horizontal stack view to configure layouts of `title` and `icon`.
     var stackView = SBUStackView(axis: .horizontal, alignment: .center, spacing: 3)
-    
+
     var state: ChipState = .submitted(true) {
         didSet { updateAppearance() }
     }
-    
+
     func configure(value: String, state: ChipState) {
         self.titleView.text = value
         self.state = state
-        
+
         self.updateAppearance()
     }
-    
+
     override func setupViews() {
         self.stackView.setHStack([self.titleView, self.inputIconView])
         self.contentView.addSubview(self.stackView)
     }
-    
+
     override func setupLayouts() {
         self.stackView
             .sbu_constraint(height: 32, priority: .defaultLow)
             .sbu_constraint(equalTo: self.contentView, left: 12, top: 0)
             .sbu_constraint(equalTo: self.contentView, right: 12, bottom: 0)
-        
+
         self.inputIconView
             .sbu_constraint(width: 20, height: 20)
     }
-    
+
     override func setupStyles() {
         self.titleView.textAlignment = .center
         self.titleView.numberOfLines = 1
         self.titleView.font = theme.formChipTextFont
         self.titleView.lineBreakMode = .byTruncatingTail
-        
+
         self.layer.cornerRadius = 16
-        
+
         self.inputIconView.image = SBUIconSet.iconDone.sbu_with(tintColor: theme.formInputIconColor)
         self.updateAppearance()
     }
-    
+
     private func updateAppearance() {
         switch state {
         case .selected(false):
@@ -175,12 +178,13 @@ class SBUMesageFormChipCell: SBUCollectionViewCell {
     }
 }
 
+@available(*, deprecated, message: "This extension is deprecated in 3.34.1")
 extension SBUMesageFormChipCell {
     /// - Since: 3.27.0
     enum ChipState {
         case selected(Bool)
         case submitted(Bool)
-        
+
         var isSubmitted: Bool {
             switch self {
             case .submitted(true): return true
@@ -189,7 +193,8 @@ extension SBUMesageFormChipCell {
         }
     }
 }
- 
+
+@available(*, deprecated, message: "This extension is deprecated in 3.34.1")
 extension SBUMesageFormChipCell.ChipState {
     init(status: SBUMessageFormItemView.StatusType, value: String) {
         switch status {

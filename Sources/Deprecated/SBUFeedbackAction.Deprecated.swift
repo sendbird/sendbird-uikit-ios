@@ -1,5 +1,5 @@
 //
-//  SBUFeedbackAction.swift
+//  SBUFeedbackAction.Deprecated.swift
 //  SendbirdUIKit
 //
 //  Created by Damon Park on 2024/01/10.
@@ -13,13 +13,14 @@ import UIKit
 /// Feedback answer data.
 /// This model is used by SBUIKit when exchanging data and handling interactions.
 /// - Since: 3.15.0
+@available(*, deprecated, message: "This struct is deprecated in 3.34.1")
 public struct SBUFeedbackAnswer {
     let action: SBUFeedbackAnswer.Action
-    
+
     let original: Feedback?
     let rating: Feedback.Rating?
     let comment: String?
-    
+
     func updateComment(_ new: String?) -> SBUFeedbackAnswer {
         return SBUFeedbackAnswer(action: action,
                                  original: original,
@@ -28,21 +29,24 @@ public struct SBUFeedbackAnswer {
     }
 }
 
+@available(*, deprecated, message: "This extension is deprecated in 3.34.1")
 extension SBUFeedbackAnswer {
     /// internal Feedback interaction action status.
     /// - Since: 3.15.0
+    @available(*, deprecated, message: "This enum is deprecated in 3.34.1")
     public enum Action {
         /// Represents the rating action in the feedback system.
         case rating
         /// Represents the modify action in the feedback system.
         case modify
     }
-    
+
     /// Methods to expose an alert view that can update the comment.
     /// - Parameters:
     ///   - answer: Feedback answer
     ///   - handler: Update handle (not called on cancellation.)
     /// - Since: 3.15.0
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     public static func showCommentPopup(
         answer: SBUFeedbackAnswer,
         handler: @escaping ((SBUFeedbackAnswer) -> Void)
@@ -56,7 +60,7 @@ extension SBUFeedbackAnswer {
             SBULog.info("[Request] submit message: \(String(describing: message))")
             handler(answer.updateComment(message))
         }
-        
+
         let cancelButton = SBUAlertButtonItem(title: SBUStringSet.Cancel) { _ in }
         SBUAlertView.show(
             title: SBUStringSet.Feedback_Comment_Title,
@@ -67,7 +71,7 @@ extension SBUFeedbackAnswer {
             cancelButtonItem: cancelButton
         )
     }
-    
+
     /// Methods that expose the flow for modifying the feedback answer.
     /// If you choose to update the comment, the alert view is also automatically exposed.
     /// - Parameters:
@@ -76,6 +80,7 @@ extension SBUFeedbackAnswer {
     ///   - updateHandler: Update event handler
     ///   - deleteHandler: Delete event handler
     /// - Since: 3.15.0
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     public static func showModifications(
         theme: SBUChannelTheme?,
         answer: SBUFeedbackAnswer,
@@ -91,19 +96,19 @@ extension SBUFeedbackAnswer {
                 updateHandler(updateAnswer)
             }
         }
-        
+
         let deleteItem = SBUActionSheetItem(
             title: SBUStringSet.Feedback_Remove,
             color: theme?.deleteItemColor
         ) {
             deleteHandler(answer)
         }
-        
+
         let cancelItem = SBUActionSheetItem(
             title: SBUStringSet.Cancel,
             completionHandler: nil
         )
-        
+
         SBUActionSheet.show(
             items: [updateItem, deleteItem],
             cancelItem: cancelItem

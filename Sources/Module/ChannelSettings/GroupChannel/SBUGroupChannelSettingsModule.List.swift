@@ -97,7 +97,7 @@ extension SBUGroupChannelSettingsModule {
             
             self.setupViews()
             #if SWIFTUI
-            applyViewConverter(.channelInfo)
+            _ = applyViewConverter(.channelInfo)
             #endif
             
             self.setupLayouts()

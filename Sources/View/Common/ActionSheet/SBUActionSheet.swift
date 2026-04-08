@@ -374,7 +374,7 @@ extension SBUActionSheet {
         )
         
         itemButton.setBackgroundImage(
-            UIImage.from(color: theme.backgroundColor),
+            UIImage.from(color: theme.backgroundColorAdaptive),
             for: .normal
         )
         

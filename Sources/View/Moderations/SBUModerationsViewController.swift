@@ -383,25 +383,25 @@ extension SBUModerationsViewController {
             switch userListType {
             case .muted:
                 guard let openMutedParticipantListViewBuilder else { return false }
-                var view = openMutedParticipantListViewBuilder(channel.channelURL)
+                let view = openMutedParticipantListViewBuilder(channel.channelURL)
                 let listVC = UIHostingController(rootView: view)
                 self.navigationController?.pushViewControllerNonFlickering(listVC, animated: true)
                 return true
             case .banned:
                 guard let openBannedUserListViewBuilder else { return false }
-                var view = openBannedUserListViewBuilder(channel.channelURL)
+                let view = openBannedUserListViewBuilder(channel.channelURL)
                 let listVC = UIHostingController(rootView: view)
                 self.navigationController?.pushViewControllerNonFlickering(listVC, animated: true)
                 return true
             case .operators:
                 guard let openOperatorListViewBuilder else { return false }
-                var view = openOperatorListViewBuilder(channel.channelURL)
+                let view = openOperatorListViewBuilder(channel.channelURL)
                 let listVC = UIHostingController(rootView: view)
                 self.navigationController?.pushViewControllerNonFlickering(listVC, animated: true)
                 return true
             case .participants:
                 guard let openParticipantListViewBuilder else { return false }
-                var view = openParticipantListViewBuilder(channel.channelURL)
+                let view = openParticipantListViewBuilder(channel.channelURL)
                 let listVC = UIHostingController(rootView: view)
                 self.navigationController?.pushViewControllerNonFlickering(listVC, animated: true)
                 return true
@@ -412,25 +412,25 @@ extension SBUModerationsViewController {
             switch userListType {
             case .muted:
                 guard let groupMutedMemberListViewBuilder else { return false }
-                var view = groupMutedMemberListViewBuilder(channel.channelURL)
+                let view = groupMutedMemberListViewBuilder(channel.channelURL)
                 let listVC = UIHostingController(rootView: view)
                 self.navigationController?.pushViewControllerNonFlickering(listVC, animated: true)
                 return true
             case .banned:
                 guard let groupBannedUserListViewBuilder else { return false }
-                var view = groupBannedUserListViewBuilder(channel.channelURL)
+                let view = groupBannedUserListViewBuilder(channel.channelURL)
                 let listVC = UIHostingController(rootView: view)
                 self.navigationController?.pushViewControllerNonFlickering(listVC, animated: true)
                 return true
             case .operators:
                 guard let groupOperatorListViewBuilder else { return false }
-                var view = groupOperatorListViewBuilder(channel.channelURL)
+                let view = groupOperatorListViewBuilder(channel.channelURL)
                 let listVC = UIHostingController(rootView: view)
                 self.navigationController?.pushViewControllerNonFlickering(listVC, animated: true)
                 return true
             case .members:
                 guard let groupMemberListViewBuilder else { return false }
-                var view = groupMemberListViewBuilder(channel.channelURL)
+                let view = groupMemberListViewBuilder(channel.channelURL)
                 let listVC = UIHostingController(rootView: view)
                 self.navigationController?.pushViewControllerNonFlickering(listVC, animated: true)
                 return true
