@@ -1300,6 +1300,7 @@ extension UIView {
 
 // Shadows
 extension UIView {
+    // swiftlint:disable:next large_tuple
     func applyMultipleShadows(cornerRadius: CGFloat = 20, backgroundColor: UIColor, shadowConfigs: [(radius: CGFloat, offset: CGSize, color: UIColor)]) {
         // Clear existing shadow sublayers
         self.layer.sublayers?.removeAll { $0.name == "shadowLayer" }

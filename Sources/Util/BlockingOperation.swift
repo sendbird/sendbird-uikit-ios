@@ -13,7 +13,7 @@ import Foundation
  No two tasks are run at the same time, and the order of tasks inserted to a `OperationQueue` is guaranteed.
  */
 @objc(SBUBlockingOperation)
-class BlockingOperation: Operation {
+class BlockingOperation: Operation, @unchecked Sendable {
     let identifier: String
     
     enum State: String {

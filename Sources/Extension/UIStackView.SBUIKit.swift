@@ -77,6 +77,7 @@ extension UIStackView {
         return self
     }
     
+    /// Removes all arranged subviews from the stack view.
     public func removeAllSubviews() {
         for subview in self.arrangedSubviews {
             self.removeArrangedSubview(subview)

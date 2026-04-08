@@ -11,7 +11,7 @@ import SendbirdChatSDK
 
 struct BindedTemplate {
     enum TemplateType {
-        case ui
+        case ui // swiftlint:disable:this identifier_name
         case data
         case unknown
     }

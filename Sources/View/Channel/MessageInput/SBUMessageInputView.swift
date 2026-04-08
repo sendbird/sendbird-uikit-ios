@@ -517,9 +517,9 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         self.datasource?.channelForMessageInputView(self)?.channelType ?? .group
     }
     
-    ///- Since: 3.34.0
+    /// - Since: 3.34.0
     private let iconSizeLiquidGlass: CGFloat = 22
-    ///- Since: 3.34.0
+    /// - Since: 3.34.0
     private let iconPaddingLiquidGlass: CGFloat = 3
     
     /// - Since: 1.1.0 (SendbirdSwiftUI)

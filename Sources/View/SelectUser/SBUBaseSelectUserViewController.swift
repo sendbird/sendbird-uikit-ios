@@ -177,8 +177,7 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
             self.baseListComponent?.reloadTableView()
         }
     }
-    
-    
+
     // MARK: - SBUBaseSelectUserViewModelDataSource
     /// When creating and using a user list directly, overriding this function and return the next user list.
     /// Make this function return the next list each time it is called.

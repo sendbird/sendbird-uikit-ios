@@ -240,7 +240,7 @@ extension SBUGroupChannelListModule {
             let inspectAction = UIContextualAction(
                 style: .normal,
                 title: ""
-            ) { [weak self] _, _, actionHandler in
+            ) { [weak self] _, _, _ in
                 guard let self = self else { return }
                 channel.inspect()
             }

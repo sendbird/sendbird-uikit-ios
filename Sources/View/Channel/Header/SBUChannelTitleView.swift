@@ -175,7 +175,7 @@ open class SBUChannelTitleView: UIView {
         }
         
         // Title label
-        var didApplyTitleLabelViewConverter = false
+        let didApplyTitleLabelViewConverter = false
         #if SWIFTUI
         switch self.channel?.channelType {
         case .group:

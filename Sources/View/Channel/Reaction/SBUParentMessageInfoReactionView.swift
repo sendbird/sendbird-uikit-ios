@@ -50,7 +50,7 @@ open class SBUParentMessageInfoReactionView: SBUMessageReactionView {
 
         let hasMoreEmoji = self.hasMoreEmoji()
         let cellSizes = reactions.reduce(0) {
-            $0 + self.getCellSize(count: $1.userIds.count).width
+            $0 + self.getCellSize(count: $1.sampledUserIds.count).width
         }
 
         var width: CGFloat = cellSizes

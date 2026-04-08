@@ -445,6 +445,7 @@ extension SBUAlertView {
         )
     }
     
+    /// Sets a round rect mask on the container view.
     public func setRoundRectOnContainerView() {
         setRoundRect(
             on: self.containerView,
@@ -455,6 +456,7 @@ extension SBUAlertView {
         )
     }
     
+    /// Sets a round rect mask on the specified view with the given corner radii.
     public func setRoundRect(
         on targetView: UIView,
         cornerRadii: CGSize

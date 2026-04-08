@@ -83,7 +83,6 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
         self.loadChannel(channelURL: channelURL)
     }
 
-    
     deinit {
         SendbirdChat.removeChannelDelegate(
             forIdentifier: "\(SBUConstant.groupChannelDelegateIdentifier).\(self.description)"

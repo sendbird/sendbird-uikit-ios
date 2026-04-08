@@ -37,7 +37,13 @@ public class SBUBottomSheetController: UIPresentationController {
     private let gap: CGFloat = 30
     /// The top margin of the modal.
     private var topMargin: CGFloat {
-        20 + UIApplication.shared.statusBarFrame.height
+        let statusBarHeight: CGFloat
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            statusBarHeight = windowScene.statusBarManager?.statusBarFrame.height ?? 0
+        } else {
+            statusBarHeight = 0
+        }
+        return 20 + statusBarHeight
     }
 
     /// The content height of the modal.

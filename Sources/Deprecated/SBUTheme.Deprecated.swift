@@ -53,6 +53,49 @@ extension SBUTheme {
         )
     }
     
+    @available(*, deprecated, message: "Use `init(groupChannelListTheme:groupChannelCellTheme:openChannelListTheme:openChannelCellTheme:channelTheme:messageInputTheme:messageCellTheme:userListTheme:userCellTheme:channelSettingsTheme:userProfileTheme:componentTheme:overlayTheme:messageSearchTheme:messageSearchResultCellTheme:createOpenChannelTheme:voiceMessageInputTheme:)` instead.") // 3.34.1
+    public convenience init(
+        groupChannelListTheme: SBUGroupChannelListTheme = .light,
+        groupChannelCellTheme: SBUGroupChannelCellTheme = .light,
+        openChannelListTheme: SBUOpenChannelListTheme = .light,
+        openChannelCellTheme: SBUOpenChannelCellTheme = .light,
+        channelTheme: SBUChannelTheme = .light,
+        messageInputTheme: SBUMessageInputTheme = .light,
+        messageCellTheme: SBUMessageCellTheme = .light,
+        messageTemplateTheme: SBUMessageTemplateTheme,
+        userListTheme: SBUUserListTheme = .light,
+        userCellTheme: SBUUserCellTheme = .light,
+        channelSettingsTheme: SBUChannelSettingsTheme = .light,
+        userProfileTheme: SBUUserProfileTheme = .light,
+        componentTheme: SBUComponentTheme = .light,
+        overlayTheme: SBUOverlayTheme = .init(),
+        messageSearchTheme: SBUMessageSearchTheme = .light,
+        messageSearchResultCellTheme: SBUMessageSearchResultCellTheme = .light,
+        createOpenChannelTheme: SBUCreateOpenChannelTheme = .light,
+        voiceMessageInputTheme: SBUVoiceMessageInputTheme = .light
+    ) {
+        self.init(
+            groupChannelListTheme: groupChannelListTheme,
+            groupChannelCellTheme: groupChannelCellTheme,
+            openChannelListTheme: openChannelListTheme,
+            openChannelCellTheme: openChannelCellTheme,
+            channelTheme: channelTheme,
+            messageInputTheme: messageInputTheme,
+            messageCellTheme: messageCellTheme,
+            userListTheme: userListTheme,
+            userCellTheme: userCellTheme,
+            channelSettingsTheme: channelSettingsTheme,
+            userProfileTheme: userProfileTheme,
+            componentTheme: componentTheme,
+            overlayTheme: overlayTheme,
+            messageSearchTheme: messageSearchTheme,
+            messageSearchResultCellTheme: messageSearchResultCellTheme,
+            createOpenChannelTheme: createOpenChannelTheme,
+            voiceMessageInputTheme: voiceMessageInputTheme
+        )
+    }
+
+    
     @available(*, deprecated, renamed: "setGroupChannelList(channelListTheme:channelCellTheme:)") // 3.2.2
     public static func setChannelList(
         channelListTheme: SBUGroupChannelListTheme,
@@ -64,6 +107,22 @@ extension SBUTheme {
         )
     }
     
+    @available(*, deprecated, renamed: "setChannel(channelTheme:messageCellTheme:messageInputTheme:componentTheme:)") // 3.34.1
+    public static func setChannel(
+        channelTheme: SBUChannelTheme,
+        messageCellTheme: SBUMessageCellTheme,
+        messageInputTheme: SBUMessageInputTheme,
+        componentTheme: SBUComponentTheme,
+        messageTemplateTheme: SBUMessageTemplateTheme
+    ) {
+        self.channelTheme = channelTheme
+        self.messageCellTheme = messageCellTheme
+        self.messageInputTheme = messageInputTheme
+        self.componentTheme = componentTheme
+        self.messageTemplateTheme = messageTemplateTheme
+    }
+    
+    
     @available(*, deprecated, renamed: "groupChannelListTheme") // 3.2.2
     public static var channelListTheme: SBUGroupChannelListTheme {
         set { groupChannelListTheme = newValue }
@@ -74,6 +133,12 @@ extension SBUTheme {
     public static var channelCellTheme: SBUGroupChannelCellTheme {
         set { groupChannelCellTheme = newValue }
         get { groupChannelCellTheme }
+    }
+    
+    @available(*, deprecated, renamed: "SendbirdUIMessageTemplate.TemplateTheme") // 3.34.1
+    public static var messageTemplateTheme: SBUMessageTemplateTheme {
+        get { shared.messageTemplateTheme }
+        set { shared.messageTemplateTheme = newValue }
     }
 }
 

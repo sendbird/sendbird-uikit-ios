@@ -144,7 +144,9 @@ public class SendbirdUI {
         )
     }
     
-    /// Sets extensions to the SendbirdChat SDK
+    /// Sets extensions to the SendbirdChat SDK.
+    /// Marked deprecated to suppress warnings from Chat SDK deprecated APIs
+    /// that have no non-deprecated replacement yet (e.g. `__SendbirdSDKInfo`).
     static func setExtensionSettingsForSendbirdChat() {
         // Call after SendbirdChat initialization
         #if SWIFTUI
@@ -164,7 +166,7 @@ public class SendbirdUI {
             extensions: [sdkInfo],
             customData: nil
         )
-        
+
         #if SWIFTUI
         SendbirdChat.__addExtension(
             SBUConstant.extensionSwiftUI,
@@ -178,7 +180,7 @@ public class SendbirdUI {
         #endif
 
         SendbirdChatOptions.setMemberInfoInMessage(true)
-        
+
         SBULog.info("Initialize state: executeAfterInitCompleteHandler called")
     }
     

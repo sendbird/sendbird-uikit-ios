@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SendbirdUIMessageTemplate
 
 extension SBUTheme {
     static func defaultTheme(currentClass: Any) -> AnyObject {
@@ -42,7 +43,7 @@ extension SBUTheme {
             return SBUTheme.messageSearchResultCellTheme
         } else if type(of: currentClass) == type(of: SBUCreateOpenChannelTheme.self) {
             return SBUTheme.createOpenChannelTheme
-        } else if type(of: currentClass) == type(of: SBUMessageTemplateTheme.self) {
+        } else if type(of: currentClass) == type(of: SendbirdUIMessageTemplate.TemplateTheme.self) {
             return SBUTheme.messageTemplateTheme
         } else if type(of: currentClass) == type(of: SBUVoiceMessageInputTheme.self) {
             return SBUTheme.voiceMessageInputTheme

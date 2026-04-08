@@ -48,6 +48,7 @@ public class SBUBaseMessageCellParams {
     /// The boolean value to indicates that the message cell should hide form type message.
     /// If it's `true`, never show the form type message view even the `BaseMessage/myFeedbackStatus` has valid status.
     /// - Since: 3.15.0
+    @available(*, deprecated, message: "This property is deprecated in 3.34.1")
     public var shouldHideFeedback: Bool = true
     
     /// - Since: 3.28.0
@@ -77,7 +78,6 @@ public class SBUBaseMessageCellParams {
         self.hideDateView = hideDateView
         self.messagePosition = messagePosition
         self.receiptState = receiptState
-        self.shouldHideFeedback = shouldHideFeedback
         self.isThreadMessage = isThreadMessage
         
         self.useQuotedMessage =

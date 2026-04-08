@@ -151,7 +151,7 @@ open class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDelegat
     }
 
     open override func setupStyles() {
-        self.view.backgroundColor = theme.backgroundColor
+        self.view.backgroundColor = theme.backgroundColorAdaptive
     }
 
     // MARK: - UITableView relations
@@ -225,7 +225,7 @@ open class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDelegat
 
         guard let currentUesr = SBUGlobals.currentUser else { return cell }
         let didSelect = message?.reactions
-            .first { $0.key == emoji.key }?.userIds
+            .first { $0.key == emoji.key }?.sampledUserIds
             .contains(currentUesr.userId) ?? false
         cell.isSelected = didSelect
 
@@ -249,7 +249,7 @@ open class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDelegat
 
         let emoji = emojiList[indexPath.row]
         if let reaction = message?.reactions.first(where: { $0.key == emoji.key }) {
-            let shouldSelect = reaction.userIds.contains(currentUesr.userId) == false
+            let shouldSelect = reaction.sampledUserIds.contains(currentUesr.userId) == false
             self.emojiTapHandler?(emoji.key, shouldSelect)
         } else {
             self.emojiTapHandler?(emoji.key, true)

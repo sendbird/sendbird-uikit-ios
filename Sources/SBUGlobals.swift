@@ -212,7 +212,7 @@ public class SBUGlobals {
     ///
     /// - Note: If you wish to show all available emojis without filtering, return `nil`.
     /// - Since: 3.27.0
-    public static var emojiCategoryFilter: (BaseMessage) -> [Int64]? = { message in
+    public static var emojiCategoryFilter: (BaseMessage) -> [Int64]? = { _ in
         return nil
     }
     
@@ -241,7 +241,7 @@ extension SBUGlobals {
         /// - Since: 3.27.5
         public var groupChannelList = GroupChannelList()
         
-        // The configuration for loading indicators in a Group ChannelList.
+        /// The configuration for loading indicators in a Group ChannelList.
         public class GroupChannelList {
             /// Decides whether to show a loading indicator when loading **cached** channels in a Group Channel List.
             /// Default is false.
@@ -249,7 +249,7 @@ extension SBUGlobals {
             public var cachedChannels: Bool = false
         }
         
-        // The configuration for loading indicators in a Group Channel.
+        /// The configuration for loading indicators in a Group Channel.
         public class GroupChannel {
             /// Decides whether to show a loading indicator when loading **cached** messages in a Group Channel.
             /// Default is false.

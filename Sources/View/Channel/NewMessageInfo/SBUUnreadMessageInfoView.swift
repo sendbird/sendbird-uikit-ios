@@ -92,6 +92,7 @@ public class SBUUnreadMessageInfoView: SBUView {
     }
     
     private func setupShadowLayers() {
+        // swiftlint:disable:next large_tuple
         let shadowConfigs: [(radius: CGFloat, offset: CGSize, color: UIColor)] = [
             (radius: 3, offset: CGSize(width: 0, height: 0), color: UIColor(red: 0, green: 0, blue: 0, alpha: 0.08)),
             (radius: 1, offset: CGSize(width: 0, height: 2), color: UIColor(red: 0, green: 0, blue: 0, alpha: 0.12)),

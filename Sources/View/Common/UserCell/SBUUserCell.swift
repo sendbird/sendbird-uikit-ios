@@ -399,17 +399,20 @@ open class SBUUserCell: SBUTableViewCell, SBUUserCellProtocol {
 
 #if SWIFTUI
 extension SBUUserCell {
+    /// Handles tap gesture on the content view.
     @objc
     public func onTapContentView(sender: UITapGestureRecognizer) {
         self.isChecked = !self.isChecked
         self.cellTapHandler?()
     }
     
+    /// Handles tap gesture on the check box.
     @objc
     public func onTapCheckBox(sender: UITapGestureRecognizer) {
         self.isChecked = !self.isChecked
     }
     
+    /// Handles tap gesture on the user profile view.
     @objc
     public func onTapUserProfileView() {
         self.userProfileTapHandler?()
@@ -449,7 +452,7 @@ extension SBUUserCell {
             }
         case .participants:
             return self.applyViewConverterForParticipants(.entireContent)
-        case .suggestedMention(_):
+        case .suggestedMention:
             break
         }
         return false
@@ -511,7 +514,7 @@ extension SBUUserCell {
             self.applyViewConverterForParticipants(.userNameLabel)
             self.applyViewConverterForParticipants(.operatorStateView)
             self.applyViewConverterForParticipants(.moreButton)
-        case .suggestedMention(_):
+        case .suggestedMention:
             break
         }
     }
@@ -538,7 +541,7 @@ extension SBUUserCell {
             break
         case .participants:
             break
-        case .suggestedMention(_):
+        case .suggestedMention:
             break
         }
     }

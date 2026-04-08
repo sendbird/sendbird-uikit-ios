@@ -576,9 +576,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         guard let messageCollection = self.messageCollection else { return }
         self.isLoadingNext = true
         
-        messageCollection.loadNext {
-            [weak self] messages,
-            error in
+        messageCollection.loadNext { [weak self] messages, error in
             guard let self = self else { return }
             defer {
                 self.nextLock.unlock()
@@ -901,7 +899,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     }
     
     var addedMessages = [BaseMessage]()
-    var addedMessageContext: MessageContext? = nil
+    var addedMessageContext: MessageContext?
 }
 
 extension SBUGroupChannelViewModel: MessageCollectionDelegate {
@@ -1164,6 +1162,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
     /// - Parameters:
     ///   - message: `BaseMessage` object to submit form.
     /// - Since: 3.27.0
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     public func submitMessageForm(message: BaseMessage) {
         SBULog.info("[Request] Submit Message Form")
         message.submitMessageForm { error in
@@ -1186,6 +1185,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
     ///   - answer: set feedback asnwer.
     ///   - completionHandler: Completion handler.
     /// - Since: 3.15.0
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     public func submitFeedback(
         message: BaseMessage,
         answer: SBUFeedbackAnswer,
@@ -1212,6 +1212,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
     ///   - answer: set feedback asnwer.
     ///   - completionHandler: Completion handler.
     /// - Since: 3.15.0
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     public func updateFeedback(
         message: BaseMessage,
         answer: SBUFeedbackAnswer,
@@ -1236,6 +1237,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
     ///   - message: `BaseMessage` object to delete feedback.
     ///   - completionHandler: Completion handler.
     /// - Since: 3.15.0
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     public func deleteFeedback(
         message: BaseMessage,
         completionHandler: (() -> Void)? = nil
@@ -1295,7 +1297,7 @@ extension SBUGroupChannelViewModel {
             self.messageCache?.loadNext()
         }
         
-        self.markAsReadIfAppropriate() { [weak self] error in
+        self.markAsReadIfAppropriate { [weak self] _ in
             self?.refreshChannel()
         }
     }

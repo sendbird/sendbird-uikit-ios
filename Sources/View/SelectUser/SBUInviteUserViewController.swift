@@ -224,6 +224,7 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
 
 #if SWIFTUI
 extension SBUInviteUserViewController {
+    /// Handles the event when a user is selected from the invite user module list.
     public func inviteUserModule(
         _ listComponent: SBUInviteUserModule.List,
         didSelectUser user: SBUUser
@@ -232,4 +233,3 @@ extension SBUInviteUserViewController {
     }
 }
 #endif
-

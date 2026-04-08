@@ -128,7 +128,7 @@ open class SBUCreateChannelTypeSelector: SBUView, SBUCreateChannelTypeSelectorPr
             .font: self.theme.titleFont
         ]
         self.navigationBar.setBackgroundImage(
-            UIImage.from(color: self.theme.backgroundColor), for: .default
+            UIImage.from(color: self.theme.backgroundColorAdaptive), for: .default
         )
         
         self.navigationItem.rightBarButtonItem?.tintColor = self.theme.closeBarButtonTintColor
@@ -282,7 +282,7 @@ open class SBUCreateChannelTypeSelector: SBUView, SBUCreateChannelTypeSelectorPr
         button.tag = type.rawValue+10
         button.setTitleColor(theme.channelTypeSelectorItemTextColor, for: .normal)
         button.titleLabel?.font = theme.channelTypeSelectorItemFont
-        button.backgroundColor = self.theme.backgroundColor
+        button.backgroundColor = self.theme.backgroundColorAdaptive
         return button
     }
     
@@ -319,6 +319,6 @@ open class SBUCreateChannelTypeSelector: SBUView, SBUCreateChannelTypeSelectorPr
         }
         
         button.setTitleColor(theme.channelTypeSelectorItemTextColor, for: .normal)
-        button.backgroundColor = self.theme.backgroundColor
+        button.backgroundColor = self.theme.backgroundColorAdaptive
     }
 }

@@ -230,7 +230,7 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
 
             let hidesDeleteButton = self.fileData.message.threadInfo.replyCount > 0
             || self.fileData.message.sender?.userId != SBUGlobals.currentUser?.userId
-            || self.fileData.message as? MultipleFilesMessage != nil
+            || self.fileData.message is MultipleFilesMessage
             
             bottomView.deleteButton.isHidden = hidesDeleteButton
             if !hidesDeleteButton {

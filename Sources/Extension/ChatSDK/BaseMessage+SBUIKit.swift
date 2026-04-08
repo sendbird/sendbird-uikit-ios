@@ -105,14 +105,7 @@ extension BaseMessage {
         guard extendedMessagePayload.disableChatInput == true else { return .none }
         
         if hasNext == true { return .none }
-        
-        if let form = self.messageForm,
-           form.isValidVersion == true,
-           form.isSubmitted == false,
-           SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled == true {
-            return .component // message form => component
-        }
-        
+
         if extendedMessagePayload.suggestedReplies?.hasElements == true,
            SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled == true {
             return .component // suggested replies => component

@@ -74,11 +74,13 @@ public extension SBUConfig.GroupChannel {
         /// Enable the feature to show form type in messages. Default is `false`
         /// - NOTE: A value that cannot be set in the dashboard.
         /// - Since: 3.11.0
+        @available(*, deprecated, message: "This property is deprecated in 3.34.1")
         @SBUPrioritizedConfig public var isFormTypeMessageEnabled: Bool = false
 
         /// Enable the feature to show feedback in messages. Default is `false`
         /// - NOTE: A value that cannot be set in the dashboard.
         /// - Since: 3.15.0
+        @available(*, deprecated, message: "This property is deprecated in 3.34.1")
         @SBUPrioritizedConfig public var isFeedbackEnabled: Bool = false
 
         /// Enable the feature to react to messages with emojis.
@@ -200,8 +202,6 @@ public extension SBUConfig.GroupChannel {
             _replyType.setDashboardValue(channel.replyType)
             _threadReplySelectType.setDashboardValue(channel.threadReplySelectType)
             _isSuggestedRepliesEnabled.setDashboardValue(channel.isSuggestedRepliesEnabled)
-            _isFormTypeMessageEnabled.setDashboardValue(channel.isFormTypeMessageEnabled)
-            _isFeedbackEnabled.setDashboardValue(channel.isFeedbackEnabled)
             _isMarkdownForUserMessageEnabled.setDashboardValue(channel.isMarkdownForUserMessageEnabled)
             _isMarkAsUnreadEnabled.setDashboardValue(channel.isMarkAsUnreadEnabled)
 
@@ -221,11 +221,7 @@ public extension SBUConfig.GroupChannel {
 
             // optional values
             isSuggestedRepliesEnabled = (try? container.decode(Bool.self, forKey: .isSuggestedRepliesEnabled)) ?? SendbirdUI.config.groupChannel.channel.isSuggestedRepliesEnabled
-            isFormTypeMessageEnabled = (try? container.decode(Bool.self, forKey: .isFormTypeMessageEnabled)) ??
-                SendbirdUI.config.groupChannel.channel.isFormTypeMessageEnabled
             _isSuperGroupReactionsEnabled = try container.decodeIfPresent(Bool.self, forKey: .isSuperGroupReactionsEnabled) ?? false
-            isFeedbackEnabled = (try? container.decode(Bool.self, forKey: .isFeedbackEnabled)) ??
-                SendbirdUI.config.groupChannel.channel.isFeedbackEnabled
             isMarkdownForUserMessageEnabled = (try? container.decode(Bool.self, forKey: .isMarkdownForUserMessageEnabled)) ??
                 SendbirdUI.config.groupChannel.channel.isMarkdownForUserMessageEnabled
             isMarkAsUnreadEnabled = (try? container.decode(Bool.self, forKey: .isMarkAsUnreadEnabled)) ?? SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
@@ -245,9 +241,7 @@ public extension SBUConfig.GroupChannel {
             try container.encode(threadReplySelectType, forKey: .threadReplySelectType)
 
             try container.encode(isSuggestedRepliesEnabled, forKey: .isSuggestedRepliesEnabled)
-            try container.encode(isFormTypeMessageEnabled, forKey: .isFormTypeMessageEnabled)
             try container.encode(_isSuperGroupReactionsEnabled, forKey: .isSuperGroupReactionsEnabled)
-            try container.encode(isFeedbackEnabled, forKey: .isFeedbackEnabled)
             try container.encode(isMarkdownForUserMessageEnabled, forKey: .isMarkdownForUserMessageEnabled)
             try container.encode(isMarkAsUnreadEnabled, forKey: .isMarkAsUnreadEnabled)
 

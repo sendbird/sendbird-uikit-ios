@@ -384,7 +384,6 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
 
     // MARK: - Liquid Glass Layout Updates
 
-
     // MARK: - New message count
 
     /// This function increases the new message count.
@@ -1117,7 +1116,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
               let message = messageCell.message else { return }
         
         let shouldSelect = message.reactions.first { $0.key == emojiKey }?
-            .userIds.contains(currentUser.userId) == false
+            .sampledUserIds.contains(currentUser.userId) == false
         self.viewModel?.setReaction(message: message, emojiKey: emojiKey, didSelect: shouldSelect)
     }
     
@@ -1219,12 +1218,14 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         self.viewModel?.submitForm(message: message, form: form)
     }
    
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didSubmitMessageForm form: SendbirdChatSDK.MessageForm, messageCell: SBUBaseMessageCell) {
         guard let message = messageCell.message else { return }
-        
+
         self.viewModel?.submitMessageForm(message: message)
     }
-    
+
+    @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     open func groupChannelModule(_ listComponent: SBUGroupChannelModule.List, didUpdate feedbackAnswer: SBUFeedbackAnswer, messageCell: SBUBaseMessageCell) {
         
         guard let message = messageCell.message else { return }
@@ -1335,8 +1336,8 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             // Hide unreadMessageInfoView
             self.listComponent?.unreadMessageInfoView?.isHidden = true
             
-            viewModel.markAsRead { [weak self] error in
-                guard let self, error == nil else {
+            viewModel.markAsRead { error in
+                guard error == nil else {
                     return
                 }
             }

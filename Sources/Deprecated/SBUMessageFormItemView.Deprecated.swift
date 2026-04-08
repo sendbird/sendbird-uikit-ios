@@ -1,5 +1,5 @@
 //
-//  SBUMessageFormItemView.swift
+//  SBUMessageFormItemView.Deprecated.swift
 //  SendbirdUIKit
 //
 //  Created by Damon Park on 2024/07/02.
@@ -11,13 +11,14 @@ import SendbirdChatSDK
 
 /// delegate for forwarding events from the form item
 /// - Since: 3.27.0
+@available(*, deprecated, message: "This protocol is deprecated in 3.34.1")
 public protocol SBUMessageFormItemViewDelegate: AnyObject {
     /// Called when `MessageFormItem` is updated.
     /// - Parameters:
     ///    - itemView: The updated ``SBUMessageFormItemView`` object.
     ///    - formItem: The updated ``SendbirdChatSDK.MessageFormItem`` object.
     func messageFormItemView(_ itemView: SBUMessageFormItemView, didUpdate formItem: SendbirdChatSDK.MessageFormItem)
-    
+
     /// Called when `MessageFormItem` is validation checked.
     /// - Parameters:
     ///    - itemView: The updated ``SBUMessageFormItemView`` object.
@@ -27,22 +28,23 @@ public protocol SBUMessageFormItemViewDelegate: AnyObject {
 
 /// The base view that holds the data for the form item.
 /// - Since: 3.27.0
+@available(*, deprecated, message: "This class is deprecated in 3.34.1")
 open class SBUMessageFormItemView: SBUView {
     // MARK: - Properties
-    
+
     /// The theme for ``SBUMessageFormItemView`` that is type of ``SBUMessageCellTheme``.
     public var theme: SBUMessageCellTheme = SBUTheme.messageCellTheme
-    
+
     /// The id of the ``MessageForm``.
     /// To update the data, use ``SBUMessageFormItemView/configure(form:item:didValidation:delegate:)``.
     /// - Since: 3.27.0
     public private(set) var formId: Int64?
-    
+
     /// The formItem of the ``MessageForm``.
     /// To update the data, use ``SBUMessageFormItemView/configure(form:item:didValidation:delegate:)``.
     /// - Since: 3.27.0
     public private(set) var formItem: SendbirdChatSDK.MessageFormItem?
-    
+
     /// The validation status of the ``MessageForm``.
     /// To update the data, use ``SBUMessageFormItemView/configure(form:item:didValidation:delegate:)``.
     public var didValidation: Bool = false {
@@ -52,18 +54,18 @@ open class SBUMessageFormItemView: SBUView {
             self.delegate?.messageFormItemView(self, didCheckedValidation: item)
         }
     }
-    
+
     /// The status of the ``MessageForm``.
     /// Include value of item.
     /// To update the data, use ``SBUMessageFormItemView/configure(form:item:didValidation:delegate:)``.
     public var status: StatusType = .unknown
-    
+
     /// The delegate that is type of ``SBUMessageFormItemViewDelegate``
     /// ```swift
     /// view.delegate = self // `self` conforms to `SBUMessageFormItemViewDelegate`
     /// ```
     public weak var delegate: SBUMessageFormItemViewDelegate?
-    
+
     // MARK: - Configure
     /// Configure ``SBUMessageFormItemView`` with `item`.
     open func configure(
@@ -85,6 +87,7 @@ open class SBUMessageFormItemView: SBUView {
     }
 }
 
+@available(*, deprecated, message: "This extension is deprecated in 3.34.1")
 extension SBUMessageFormItemView {
     /// Attributed string for displaying the title of the item view. Also includes whether it is optional
     public var titleAttributedString: NSAttributedString {
@@ -110,9 +113,11 @@ extension SBUMessageFormItemView {
     }
 }
 
+@available(*, deprecated, message: "This extension is deprecated in 3.34.1")
 extension SBUMessageFormItemView {
     /// Enum model to indicate the error type of the input value.
     /// - Since: 3.27.0
+    @available(*, deprecated, message: "This enum is deprecated in 3.34.1")
     public enum InputErrorType {
         /// Represents a required item error.
         case required
@@ -120,7 +125,7 @@ extension SBUMessageFormItemView {
         case invalid
         /// none error.
         case none
-        
+
         var hasError: Bool {
             switch self {
             case .invalid: return true
@@ -128,7 +133,7 @@ extension SBUMessageFormItemView {
             default: return false
             }
         }
-        
+
         var errorMessage: String {
             switch self {
             case .invalid: return SBUStringSet.FormType_Error_Default
@@ -139,9 +144,11 @@ extension SBUMessageFormItemView {
     }
 }
 
+@available(*, deprecated, message: "This extension is deprecated in 3.34.1")
 extension SBUMessageFormItemView {
     /// Enum model to indicate the status of the value in the currently entered item.
     /// - Since: 3.27.0
+    @available(*, deprecated, message: "This enum is deprecated in 3.34.1")
     public enum StatusType {
         /// Represents a completed form item with a value.
         case done(values: [String])
@@ -151,7 +158,7 @@ extension SBUMessageFormItemView {
         case editing(values: [String]?)
         /// Represents an unknown form item status.
         case unknown
-        
+
         /// init
         /// - Parameters:
         ///   - form: form data
@@ -172,7 +179,7 @@ extension SBUMessageFormItemView {
                 self = .optional
             }
         }
-        
+
         mutating func edting(item: MessageFormItem) {
             guard isEditable == true else { return }
             self = .editing(values: item.draftValues)
@@ -195,7 +202,7 @@ extension SBUMessageFormItemView {
             default: return false
             }
         }
-        
+
         /// The didSubmit property represents whether the form has been submitted.
         public var didSubmit: Bool {
             switch self {

@@ -66,7 +66,7 @@ extension SBUMessageTemplateManager {
     ) {
         let cache = SBUCacheManager.template(with: type)
         
-        type.loadTemplateList(keys: keys) { json, token in
+        type.loadTemplateList(keys: keys) { json, _ in
             guard let templateList = MessageTemplate.templateList(from: json) else {
                 completionHandler?(false)
                 return
