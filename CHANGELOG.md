@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.35.1 (Apr 24, 2026)
+
+### Improvements
+- Message templates now respect Dynamic Type (system text size).
+- Template renderer groups accessibility children for better VoiceOver navigation.
+
 ### v3.35.0 (Apr 09, 2026)
 
 ### Build Environment
