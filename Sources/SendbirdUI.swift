@@ -8,6 +8,7 @@
 
 import UIKit
 import SendbirdChatSDK
+@_spi(SendbirdInternal) import SendbirdAuthSDK
 
 /// `SendbirdUI` is a main class of Sendbird UIKit.
 /// It is responsible for initializing and configuring the Sendbird UIKit.
@@ -93,13 +94,15 @@ public class SendbirdUI {
                                   completionHandler: @escaping ((_ error: SBError?) -> Void)) {
         SBUGlobals.applicationId = applicationId
         
-        var chatLogLevel: SendbirdChatSDK.LogLevel = .none
-        if (SBULog.logType & LogType.info.rawValue) > 0 {  // info, all
-            chatLogLevel = .verbose
-        } else if (SBULog.logType & LogType.warning.rawValue) > 0 {
-            chatLogLevel = .warning
-        } else if (SBULog.logType & LogType.error.rawValue) > 0 {
-            chatLogLevel = .error
+        // Read canonical level directly from SendbirdLogger.
+        let chatLogLevel: SendbirdChatSDK.LogLevel
+        switch SendbirdLogger.level(for: .uikit) {
+        case .verbose: chatLogLevel = .verbose
+        case .debug:   chatLogLevel = .debug
+        case .info:    chatLogLevel = .info
+        case .warning: chatLogLevel = .warning
+        case .error:   chatLogLevel = .error
+        case .none:    chatLogLevel = .none
         }
         let params = InitParams(
             applicationId: applicationId,
@@ -109,33 +112,33 @@ public class SendbirdUI {
         )
         
         initParamsBuilder?(params)
-        SBULog.info("Initialize state: initParamsBuilder called\n\(params)")
+        Log.info("Initialize state: initParamsBuilder called\n\(params)")
         
         // Since 3.33.1, isLocalCachingEnabled is no longer allowed to be set to false.
         if params.isLocalCachingEnabled == false {
-            SBULog.error("`isLocalCachingEnabled` is managed internally and cannot be set to `false`. Please set it true.")
+            Log.error("`isLocalCachingEnabled` is managed internally and cannot be set to `false`. Please set it true.")
         }
         params.isLocalCachingEnabled = true
         
         startHandler?()
-        SBULog.info("Initialize state: startHandler called")
+        Log.info("Initialize state: startHandler called")
         
         SBUCacheManager.Version.checkAndClearOutdatedCache()
         
         SendbirdChat.initialize(
             params: params,
             migrationStartHandler: {
-                SBULog.info("Initialize state: migrationHandler called")
+                Log.info("Initialize state: migrationHandler called")
                 migrationHandler?()
             },
             completionHandler: { error in
                 defer {
                     completionHandler(error)
-                    SBULog.info("Initialize state: completionHandler called")
+                    Log.info("Initialize state: completionHandler called")
                 }
                 
                 guard error == nil else {
-                    SBULog.error("Initialize state: Failed - \(error.debugDescription)")
+                    Log.error("Initialize state: Failed - \(error.debugDescription)")
                     return
                 }
 
@@ -181,7 +184,7 @@ public class SendbirdUI {
 
         SendbirdChatOptions.setMemberInfoInMessage(true)
 
-        SBULog.info("Initialize state: executeAfterInitCompleteHandler called")
+        Log.info("Initialize state: executeAfterInitCompleteHandler called")
     }
     
     // MARK: - Connection
@@ -205,12 +208,12 @@ public class SendbirdUI {
         completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
         SendbirdChat.executeOrWaitForInitialization {
-            SBULog.info("[Check] Connection status : \(SendbirdChat.getConnectState().rawValue)")
+            Log.info("[Check] Connection status : \(SendbirdChat.getConnectState().rawValue)")
             
             if SendbirdChat.getConnectState() == .open {
                 completionHandler(SendbirdChat.getCurrentUser(), nil)
             } else {
-                SBULog.info("currentUser: \(String(describing: SendbirdChat.getCurrentUser()?.userId))")
+                Log.info("currentUser: \(String(describing: SendbirdChat.getCurrentUser()?.userId))")
                 if SendbirdChat.isLocalCachingEnabled,
                    let currentUser = SendbirdChat.getCurrentUser() {
                     completionHandler(currentUser, nil)
@@ -228,10 +231,10 @@ public class SendbirdUI {
         needToUpdateExtraData: Bool = true,
         completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
-        SBULog.info("[Request] Connection to Sendbird")
+        Log.info("[Request] Connection to Sendbird")
         
         guard let currentUser = SBUGlobals.currentUser else {
-            SBULog.error("[Failed] Connection to Sendbird: CurrentUser value is not set")
+            Log.error("[Failed] Connection to Sendbird: CurrentUser value is not set")
             completionHandler(SendbirdChat.getCurrentUser(), nil)
             return
         }
@@ -245,20 +248,20 @@ public class SendbirdUI {
             }
             
             guard let user = user else {
-                SBULog.error("[Failed] Connection to Sendbird: \(error?.localizedDescription ?? "")")
+                Log.error("[Failed] Connection to Sendbird: \(error?.localizedDescription ?? "")")
                 completionHandler(nil, error)
                 return
             }
             
             if let error = error {
-                SBULog.warning("[Warning] Connection to Sendbird: Succeed but error was occurred: \(error.localizedDescription)")
+                Log.warning("[Warning] Connection to Sendbird: Succeed but error was occurred: \(error.localizedDescription)")
                 
                 if !SendbirdChat.isLocalCachingEnabled {
                     completionHandler(user, error)
                     return
                 }
             } else {
-                SBULog.info("[Succeed] Connection to Sendbird")
+                Log.info("[Succeed] Connection to Sendbird")
             }
             
             var updatedNickname = nickname
@@ -283,12 +286,12 @@ public class SendbirdUI {
                 
                 if SendbirdUI.isRemoteNotificationAvailable(),
                    let pendingPushToken = SendbirdChat.getPendingPushToken() {
-                    SBULog.info("[Request] Register pending push token to Sendbird server")
+                    Log.info("[Request] Register pending push token to Sendbird server")
                     SendbirdUI.registerPush(deviceToken: pendingPushToken) { success in
                         if !success {
-                            SBULog.error("[Failed] Register pending push token to Sendbird server")
+                            Log.error("[Failed] Register pending push token to Sendbird server")
                         }
-                        SBULog.info("[Succeed] Register pending push token to Sendbird server")
+                        Log.info("[Succeed] Register pending push token to Sendbird server")
                     }
                 }
                 
@@ -341,10 +344,10 @@ public class SendbirdUI {
         needToUpdateExtraData: Bool = true,
         completionHandler: @escaping (_ user: User?, _ error: SBError?) -> Void
     ) {
-        SBULog.info("[Request] Authentication to Sendbird")
+        Log.info("[Request] Authentication to Sendbird")
         
         guard let currentUser = SBUGlobals.currentUser else {
-            SBULog.error("[Failed] Authentication to Sendbird: CurrentUser value is not set")
+            Log.error("[Failed] Authentication to Sendbird: CurrentUser value is not set")
             completionHandler(SendbirdChat.getCurrentUser(), nil)
             return
         }
@@ -353,20 +356,20 @@ public class SendbirdUI {
         let nickname = currentUser.nickname?.trimmingCharacters(in: .whitespacesAndNewlines)
         SendbirdChat.authenticate(userId: userId, authToken: SBUGlobals.accessToken, apiHost: SBUGlobals.apiHost) { [userId, nickname] user, error in
             guard let user = user else {
-                SBULog.error("[Failed] Authentication to Sendbird: \(error?.localizedDescription ?? "")")
+                Log.error("[Failed] Authentication to Sendbird: \(error?.localizedDescription ?? "")")
                 completionHandler(nil, error)
                 return
             }
             
             if let error = error {
-                SBULog.warning("[Warning] Authentication to Sendbird: Succeed but error was occurred: \(error.localizedDescription)")
+                Log.warning("[Warning] Authentication to Sendbird: Succeed but error was occurred: \(error.localizedDescription)")
                 
                 if !SendbirdChat.isLocalCachingEnabled {
                     completionHandler(user, error)
                     return
                 }
             } else {
-                SBULog.info("[Succeed] Authentication to Sendbird")
+                Log.info("[Succeed] Authentication to Sendbird")
             }
             
             var updatedNickname = nickname
@@ -391,12 +394,12 @@ public class SendbirdUI {
                 
                 if SendbirdUI.isRemoteNotificationAvailable(),
                    let pendingPushToken = SendbirdChat.getPendingPushToken() {
-                    SBULog.info("[Request] Register pending push token to Sendbird server")
+                    Log.info("[Request] Register pending push token to Sendbird server")
                     SendbirdUI.registerPush(deviceToken: pendingPushToken) { success in
                         if !success {
-                            SBULog.error("[Failed] Register pending push token to Sendbird server")
+                            Log.error("[Failed] Register pending push token to Sendbird server")
                         }
-                        SBULog.info("[Succeed] Register pending push token to Sendbird server")
+                        Log.info("[Succeed] Register pending push token to Sendbird server")
                     }
                 }
                 
@@ -419,7 +422,7 @@ public class SendbirdUI {
         }
 
         SBUNotificationChannelManager.loadGlobalNotificationChannelSettings { success in
-            if !success { SBULog.error("[Failed] Load global notification channel settings") }
+            if !success { Log.error("[Failed] Load global notification channel settings") }
             
             self.loadNotificationTemplateList(completionHandler: completionHandler)
         }
@@ -427,7 +430,7 @@ public class SendbirdUI {
     
     static func loadNotificationTemplateList(completionHandler: @escaping (_ succeeded: Bool) -> Void) {
         SBUMessageTemplateManager.loadTemplateList(type: .notification) { success in
-            if !success { SBULog.error("[Failed] Load notification message template list") }
+            if !success { Log.error("[Failed] Load notification message template list") }
             completionHandler(success)
         }
     }
@@ -439,7 +442,7 @@ public class SendbirdUI {
         }
         
         SBUMessageTemplateManager.loadTemplateList(type: .message) { success in
-            if !success { SBULog.error("[Failed] Load group message template list") }
+            if !success { Log.error("[Failed] Load group message template list") }
             completionHandler(success)
         }
     }
@@ -454,12 +457,12 @@ public class SendbirdUI {
     /// - Parameter completionHandler: A closure that is called when the update is complete.
     public static func updateUserInfo(completionHandler: @escaping (_ error: SBError?) -> Void) {
         guard let sbuUser = SBUGlobals.currentUser else {
-            SBULog.error("[Failed] Connection to Sendbird: CurrentUser value is not set")
+            Log.error("[Failed] Connection to Sendbird: CurrentUser value is not set")
             completionHandler(nil)
             return
         }
         guard let user = SendbirdChat.getCurrentUser() else {
-            SBULog.error("[Failed] Connection to Sendbird")
+            Log.error("[Failed] Connection to Sendbird")
             completionHandler(nil)
             return
         }
@@ -484,12 +487,12 @@ public class SendbirdUI {
             
             if SendbirdUI.isRemoteNotificationAvailable(),
                let pendingPushToken = SendbirdChat.getPendingPushToken() {
-                SBULog.info("[Request] Register pending push token to Sendbird server")
+                Log.info("[Request] Register pending push token to Sendbird server")
                 SendbirdUI.registerPush(deviceToken: pendingPushToken) { success in
                     if !success {
-                        SBULog.error("[Failed] Register pending push token to Sendbird server")
+                        Log.error("[Failed] Register pending push token to Sendbird server")
                     }
-                    SBULog.info("[Succeed] Register pending push token to Sendbird server")
+                    Log.info("[Succeed] Register pending push token to Sendbird server")
                 }
             }
             
@@ -500,10 +503,10 @@ public class SendbirdUI {
     /// This function is used to disconnect
     /// - Parameter completionHandler: The handler block to execute.
     public static func disconnect(completionHandler: (() -> Void)?) {
-        SBULog.info("[Request] Disconnection to Sendbird")
+        Log.info("[Request] Disconnection to Sendbird")
         
         SendbirdChat.disconnect(completionHandler: {
-            SBULog.info("[Succeed] Disconnection to Sendbird")
+            Log.info("[Succeed] Disconnection to Sendbird")
             SBUNotificationChannelManager.resetNotificationSettingCache()
             SBUGlobals.currentUser = nil
             completionHandler?()
@@ -551,7 +554,7 @@ public class SendbirdUI {
     public static func updateUserInfo(params: UserUpdateParams,
                                       completionHandler: ((_ error: SBError?) -> Void)?) {
         if SBUAvailable.isSupportUserUpdate() {
-            SBULog.info("[Request] Update user info")
+            Log.info("[Request] Update user info")
             SendbirdChat.updateCurrentUserInfo(params: params, completionHandler: { error in
                 self.didFinishUpdateUserInfo(error: error, completionHandler: completionHandler)
             })
@@ -571,14 +574,14 @@ public class SendbirdUI {
     private static func didFinishUpdateUserInfo(error: SBError?,
                                                 completionHandler: ((_ error: SBError?) -> Void)?) {
         if let error = error {
-            SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
+            Log.error("[Failed] Update user info: \(error.localizedDescription)")
             
             if !SendbirdChat.isLocalCachingEnabled {
                 completionHandler?(error)
                 return
             }
         } else {
-            SBULog.info("""
+            Log.info("""
             [Succeed]
             Update user info: \(String(SBUGlobals.currentUser?.description ?? ""))
             """)
@@ -642,7 +645,7 @@ public class SendbirdUI {
         unique: Bool = false,
         completionHandler: @escaping (_ success: Bool) -> Void
     ) {
-        SBULog.info("[Request] Register push token to Sendbird server")
+        Log.info("[Request] Register push token to Sendbird server")
         
         guard SendbirdUI.isRemoteNotificationAvailable() else {
             completionHandler(false)
@@ -652,19 +655,19 @@ public class SendbirdUI {
         SendbirdChat.registerDevicePushToken(deviceToken, unique: unique) { status, error in
             switch status {
             case .success:
-                SBULog.info("[Succeed] APNs push token is registered.")
+                Log.info("[Succeed] APNs push token is registered.")
                 completionHandler(true)
             case .pending:
-                SBULog.info("[Response] Push registration is pending.")
+                Log.info("[Response] Push registration is pending.")
                 completionHandler(false)
             case .error:
-                SBULog.error("""
+                Log.error("""
                     [Failed]
                     APNs registration failed with error: \(String(describing: error ?? nil))
                     """)
                 completionHandler(false)
             @unknown default:
-                SBULog.error("[Failed] Push registration: unknown default")
+                Log.error("[Failed] Push registration: unknown default")
                 completionHandler(false)
             }
         }
@@ -685,10 +688,10 @@ public class SendbirdUI {
                 completionHandler(false)
                 return
             }
-            SBULog.info("[Request] Unregister push token to Sendbird server")
+            Log.info("[Request] Unregister push token to Sendbird server")
             SendbirdChat.unregisterPushToken(pendingPushToken) { error in
                 if let error = error {
-                    SBULog.error("""
+                    Log.error("""
                         [Failed]
                         Push unregistration is fail: \(error.localizedDescription)
                         """)
@@ -696,7 +699,7 @@ public class SendbirdUI {
                     return
                 }
                 
-                SBULog.info("[Succeed] Push unregistration is success.")
+                Log.info("[Succeed] Push unregistration is success.")
                 completionHandler(true)
             }
         }
@@ -717,16 +720,16 @@ public class SendbirdUI {
                 return
             }
             
-            SBULog.info("[Request] Unregister all push token to Sendbird server")
+            Log.info("[Request] Unregister all push token to Sendbird server")
             
             SendbirdChat.unregisterAllPushToken { error in
                 if let error = error {
-                    SBULog.error("[Failed] Push unregistration is fail: \(error.localizedDescription)")
+                    Log.error("[Failed] Push unregistration is fail: \(error.localizedDescription)")
                     completionHandler(false)
                     return
                 }
                 
-                SBULog.info("[Succeed] Push unregistration is success.")
+                Log.info("[Succeed] Push unregistration is success.")
                 completionHandler(true)
             }
         }
@@ -929,7 +932,7 @@ public class SendbirdUI {
     /// - Since: 1.2.2
     public static func createAndMoveToChannel(userIds: [String],
                                               messageListParams: MessageListParams? = nil) {
-        SBULog.info("""
+        Log.info("""
             [Request] Create channel with users,
             User: \(userIds))
             """)
@@ -958,17 +961,17 @@ public class SendbirdUI {
                                               messageListParams: MessageListParams? = nil) {
         GroupChannel.createChannel(params: params) { channel, error in
             if let error = error {
-                SBULog.error("""
+                Log.error("""
                     [Failed] Create channel request:
                     \(String(error.localizedDescription))
                     """)
             }
             
             guard let channelURL = channel?.channelURL else {
-                SBULog.error("[Failed] Create channel request: There is no channel url.")
+                Log.error("[Failed] Create channel request: There is no channel url.")
                 return
             }
-            SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
+            Log.info("[Succeed] Create channel: \(channel?.description ?? "")")
             
             SendbirdUI.moveToChannel(channelURL: channelURL, messageListParams: messageListParams)
         }
@@ -982,18 +985,31 @@ public class SendbirdUI {
     /// - `Swift` uses a single type in this function.
     /// - default type: .none
     /// - Parameter type: LogType
+    @available(*, deprecated, message: "Use SendbirdLogger.setLevel(_:for: .uikit) instead. If you relied on UIKit affecting MessageTemplate too, also set .messageTemplate explicitly.")
     public static func setLogLevel(_ type: LogType) {
-        SBULog.logType = type.rawValue
+        let level = Self.mapToAuthLevel(type.rawValue)
+        SendbirdLogger.setCompatibilityLevel(level, for: .uikit)
+        SendbirdLogger.setCompatibilityLevel(level, for: .messageTemplate)
     }
-    
+
     ///  You can activate log information for debugging. (*Swift only*)
     ///
     /// - This function  can uses multiple types.
     /// - default type: .none
     /// - Parameter types: [LogType]
+    @available(*, deprecated, message: "Use SendbirdLogger.setLevel(_:for: .uikit) instead. If you relied on UIKit affecting MessageTemplate too, also set .messageTemplate explicitly.")
     public static func setLogLevel(_ types: [LogType]) {
         let type = types.map { $0.rawValue }.reduce(0) { $0 + $1 }
-        SBULog.logType = type
+        let level = Self.mapToAuthLevel(type)
+        SendbirdLogger.setCompatibilityLevel(level, for: .uikit)
+        SendbirdLogger.setCompatibilityLevel(level, for: .messageTemplate)
+    }
+
+    private static func mapToAuthLevel(_ type: UInt8) -> AuthLogLevel {
+        if type & LogType.info.rawValue > 0 { return .info }
+        if type & LogType.warning.rawValue > 0 { return .warning }
+        if type & LogType.error.rawValue > 0 { return .error }
+        return .none
     }
 }
 
@@ -1043,13 +1059,13 @@ extension SendbirdUI {
         errorHandler: ((_ error: SBError?) -> Void)? = nil
     ) {
         guard SendbirdChat.isInitialized == true else {
-            SBULog.error("[Failed] start chat with bot: need to be initialized.")
+            Log.error("[Failed] start chat with bot: need to be initialized.")
             errorHandler?(ChatError.invalidInitialization.asSBError)
             return
         }
         
         guard SBUGlobals.currentUser != nil else {
-            SBULog.error("[Failed] start chat with bot: no current user.")
+            Log.error("[Failed] start chat with bot: no current user.")
             errorHandler?(ChatError.invalidParameter.asSBError)
             return
         }
@@ -1060,13 +1076,13 @@ extension SendbirdUI {
         
         Self.botUserListQuery?.loadNextPage { users, error in
             if let error = error {
-                SBULog.error("[Failed] start chat with bot: \(error.description)")
+                Log.error("[Failed] start chat with bot: \(error.description)")
                 errorHandler?(ChatError.invalidParameter.asSBError)
                 return
             }
             
             guard let users = users, users.count > 0 else {
-                SBULog.error("[Failed] start chat with bot: no exist the bot.")
+                Log.error("[Failed] start chat with bot: no exist the bot.")
                 errorHandler?(ChatError.invalidParameter.asSBError)
                 return
             }
@@ -1077,18 +1093,18 @@ extension SendbirdUI {
             
             GroupChannel.createChannel(params: params) { channel, error in
                 if let error = error {
-                    SBULog.error("[Failed] start chat with bot: \(error.description)")
+                    Log.error("[Failed] start chat with bot: \(error.description)")
                     errorHandler?(error)
                     return
                 }
                 
                 guard let channel = channel else {
-                    SBULog.error("[Failed] start chat with aibot: no exist the channel.")
+                    Log.error("[Failed] start chat with aibot: no exist the channel.")
                     errorHandler?(ChatError.internalServerError.asSBError)
                     return
                 }
                 
-                SBULog.info("[Succeed] Create channel: \(channel.description)")
+                Log.info("[Succeed] Create channel: \(channel.description)")
                 
                 SendbirdUI.moveToChannel(channelURL: channel.channelURL,
                                          basedOnChannelList: false)

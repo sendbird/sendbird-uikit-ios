@@ -67,7 +67,7 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     /// - Parameter channel: Channel object
     required public init(channel: OpenChannel) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channel: channel)
         self.headerComponent = SBUModuleSet.OpenChannelSettingsModule.HeaderComponent.init()
@@ -78,7 +78,7 @@ open class SBUOpenChannelSettingsViewController: SBUBaseChannelSettingsViewContr
     /// - Parameter channelURL: Channel url string
     required public init(channelURL: String) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channelURL: channelURL)
         self.headerComponent = SBUModuleSet.OpenChannelSettingsModule.HeaderComponent.init()

@@ -598,7 +598,7 @@ extension SBUMessageThreadModule {
             forRowAt indexPath: IndexPath
         ) {
             guard self.channel != nil else {
-                SBULog.error("Channel must exist!")
+                Log.error("Channel must exist!")
                 return
             }
             
@@ -749,7 +749,7 @@ extension SBUMessageThreadModule {
         
         open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             guard indexPath.row < self.fullMessageList.count else {
-                SBULog.error("The index is out of range.")
+                Log.error("The index is out of range.")
                 return .init()
             }
             
@@ -761,7 +761,7 @@ extension SBUMessageThreadModule {
             cell.selectionStyle = .none
             
             guard let messageCell = cell as? SBUBaseMessageCell else {
-                SBULog.error("There are no message cells!")
+                Log.error("There are no message cells!")
                 return cell
             }
             
@@ -877,7 +877,7 @@ extension SBUMessageThreadModule.List {
                 .filter({ !SBUUtils.contains(messageId: $0.messageId, in: sentMessages) }).count
         }
         
-        SBULog.info("New messages inserted : \(nextInsertedCount)")
+        Log.info("New messages inserted : \(nextInsertedCount)")
         return IndexPath(
             row: firstVisibleIndexPath.row + nextInsertedCount,
             section: 0

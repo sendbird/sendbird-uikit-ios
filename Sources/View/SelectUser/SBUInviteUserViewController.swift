@@ -61,7 +61,7 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
     ///   - users: `SBUUser` object
     required public init(channel: GroupChannel, users: [SBUUser]? = nil) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         self.createViewModel(channel: channel, users: users)
         self.headerComponent = SBUModuleSet.InviteUserModule.HeaderComponent.init()
         self.listComponent = SBUModuleSet.InviteUserModule.ListComponent.init()
@@ -73,7 +73,7 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
     ///   - users: `SBUUser` object
     required public init(channelURL: String, users: [SBUUser]? = nil) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         self.createViewModel(channelURL: channelURL, users: users)
         self.headerComponent = SBUModuleSet.InviteUserModule.HeaderComponent.init()
         self.listComponent = SBUModuleSet.InviteUserModule.ListComponent.init()
@@ -92,7 +92,7 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
     }
     
     // MARK: - ViewModel
@@ -103,7 +103,7 @@ open class SBUInviteUserViewController: SBUBaseSelectUserViewController, SBUInvi
         users: [SBUUser]? = nil
     ) {
         guard channel != nil || channelURL != nil else {
-            SBULog.error("Either the channel or the channelURL parameter must be set.")
+            Log.error("Either the channel or the channelURL parameter must be set.")
             return
         }
         

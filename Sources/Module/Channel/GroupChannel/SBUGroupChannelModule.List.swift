@@ -594,7 +594,7 @@ extension SBUGroupChannelModule {
             let newlinesGoneOffScreen = previouslyVisibleNewLines.subtracting(currentlyVisibleNewLines)
             
             for newlineKey in newlinesGoneOffScreen {
-                SBULog.info("Newline '\(newlineKey)' just went off-screen.")
+                Log.info("Newline '\(newlineKey)' just went off-screen.")
                 
                 // This is the moment the newline goes off-screen.
                 // If unreMessagesCount > 0, update unreadMessageInfoView to be visible.
@@ -900,7 +900,7 @@ extension SBUGroupChannelModule {
         ///    - indexPath: An index path representing the `messageCell`
         open func configureCell(_ messageCell: SBUBaseMessageCell, message: BaseMessage, forRowAt indexPath: IndexPath) {
             guard let channel = self.channel else {
-                SBULog.error("Channel must exist!")
+                Log.error("Channel must exist!")
                 return
             }
             
@@ -1143,7 +1143,7 @@ extension SBUGroupChannelModule {
         
         open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             guard indexPath.row < self.fullMessageList.count else {
-                SBULog.error("The index is out of range.")
+                Log.error("The index is out of range.")
                 return .init()
             }
             
@@ -1154,7 +1154,7 @@ extension SBUGroupChannelModule {
             cell.selectionStyle = .none
             
             guard let messageCell = cell as? SBUBaseMessageCell else {
-                SBULog.error("There are no message cells!")
+                Log.error("There are no message cells!")
                 return cell
             }
             
@@ -1198,7 +1198,7 @@ extension SBUGroupChannelModule {
                 if SBUMessageTemplate.Container.ContainerType.isValidType(with: template) == true {
                     return messageTemplateCell?.sbu_className ?? SBUMessageTemplateCell.sbu_className
                 } else {
-                    SBULog.warning("Invalid `extended_message_paylod.template.type` of message template")
+                    Log.warning("Invalid `extended_message_paylod.template.type` of message template")
                     return unknownMessageCell?.sbu_className ?? SBUUnknownMessageCell.sbu_className
                 }
             }
@@ -1572,7 +1572,7 @@ extension SBUGroupChannelModule.List {
 
         if shouldShowUnreadMessageInfoView {
             if let unreadCount = self.channel?.unreadMessageCount, unreadCount > 0 {
-                SBULog.info("Show unreadMessageInfoView")
+                Log.info("Show unreadMessageInfoView")
                 self.unreadMessageInfoView?.isHidden = false
                 (self.unreadMessageInfoView as? SBUUnreadMessageInfoView)?.updateCount(replaceCount: unreadCount)
             }

@@ -119,7 +119,7 @@ open class SBUGroupChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     public func updateChannel(params: GroupChannelUpdateParams) {
         guard let groupChannel = self.channel as? GroupChannel else { return }
         
-        SBULog.info("[Request] Channel update")
+        Log.info("[Request] Channel update")
         self.delegates.forEach {
             $0.shouldUpdateLoadingState(true)
         }

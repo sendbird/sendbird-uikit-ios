@@ -182,7 +182,7 @@ extension SBUNotificationChannelManager {
         if cachedUpdatedAt < serverUpdatedAt {
             SendbirdChat.getGlobalNotificationChannelSetting { globalNotificationChannelSetting, error in
                 guard error == nil else {
-                    SBULog.error(error)
+                    Log.error(error)
                     completionHandler?(false)
                     return
                 }
@@ -214,7 +214,7 @@ extension SBUNotificationChannelManager {
                 
                 return settings
             } catch {
-                SBULog.error(error)
+                Log.error(error)
                 return nil
             }
         }

@@ -169,7 +169,7 @@ public class SBUQuotedBaseMessageViewParams {
             guard let firstUploadedFileInfo = multipleFilesMessage.files.first,
                   let fileType = firstUploadedFileInfo.mimeType,
                   let fileName = firstUploadedFileInfo.fileName else {
-                SBULog.error("Can't read multiple files message.")
+                Log.error("Can't read multiple files message.")
                 self.text = SBUStringSet.Message_Unknown_Description
                 self.messagePosition = position
                 self.useQuotedMessage = useQuotedMessage

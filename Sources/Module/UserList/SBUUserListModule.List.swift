@@ -105,7 +105,7 @@ extension SBUUserListModule {
         public override init(frame: CGRect) { super.init(frame: frame) }
         
         deinit {
-            SBULog.info("")
+            Log.info("")
         }
         
         /// Configures component with parameters.
@@ -333,7 +333,7 @@ extension SBUUserListModule.List: SBUEmptyViewDelegate {
             emptyView.reloadData(.noMembers)
         }
         
-        SBULog.info("[Request] Retry load user list")
+        Log.info("[Request] Retry load user list")
         self.delegate?.userListModuleDidSelectRetry(self)
     }
 }

@@ -87,7 +87,7 @@ extension SBUCacheManager {
             do {
                 try self.createDirectoryIfNeeded()
             } catch {
-                SBULog.error(error.localizedDescription)
+                Log.error(error.localizedDescription)
             }
         }
         
@@ -120,7 +120,7 @@ extension SBUCacheManager {
                     let config = try JSONDecoder().decode(SBUConfig.self, from: data)
                     return config as SBUConfig
                 } catch {
-                    SBULog.info(error.localizedDescription)
+                    Log.info(error.localizedDescription)
                 }
                 return nil
             }()
@@ -150,7 +150,7 @@ extension SBUCacheManager {
                 let data = try encoder.encode(config)
                 self.set(key: configKey, data: data as NSData)
             } catch {
-                SBULog.error("Failed to save config to disk cache: \(error)")
+                Log.error("Failed to save config to disk cache: \(error)")
             }
         }
         
@@ -169,7 +169,7 @@ extension SBUCacheManager {
                         attributes: nil
                     )
                 } catch {
-                    SBULog.error(error.localizedDescription)
+                    Log.error(error.localizedDescription)
                     DispatchQueue.main.async {
                         completionHandler?(nil, nil)
                     }
@@ -193,7 +193,7 @@ extension SBUCacheManager {
                     let fileManager = self.fileManager
                     try fileManager.removeItem(atPath: path)
                 } catch {
-                    SBULog.error("Could not remove file: \(error)")
+                    Log.error("Could not remove file: \(error)")
                 }
             }
         }
@@ -208,7 +208,7 @@ extension SBUCacheManager {
                     let fileManager = self.fileManager
                     try fileManager.removeItem(atPath: path)
                 } catch {
-                    SBULog.error("Could not remove file: \(error)")
+                    Log.error("Could not remove file: \(error)")
                 }
             }
         }
@@ -223,7 +223,7 @@ extension SBUCacheManager {
                     let fileManager = self.fileManager
                     try fileManager.removeItem(at: path)
                 } catch {
-                    SBULog.error("Could not remove path: \(error)")
+                    Log.error("Could not remove path: \(error)")
                 }
             }
         }
@@ -257,7 +257,7 @@ extension SBUCacheManager {
                 do {
                     retrievedString = try String(contentsOf: filePath, encoding: .utf8)
                 } catch {
-                    SBULog.info("No last update time value file cached in the file path: \(filePath)")
+                    Log.info("No last update time value file cached in the file path: \(filePath)")
                     return 0
                 }
                 
@@ -267,7 +267,7 @@ extension SBUCacheManager {
                         self.saveLastUpdatedAt(storedValue)
                         return storedValue
                     }
-                    SBULog.info("No last update time value cached")
+                    Log.info("No last update time value cached")
                     return 0
                 }
                 return retrievedInt
@@ -286,7 +286,7 @@ extension SBUCacheManager {
                     let valueString = "\(value)"
                     try valueString.write(to: filePath, atomically: true, encoding: .utf8)
                 } catch {
-                    SBULog.error("Error writing to file: lastUpdatedAtKey value")
+                    Log.error("Error writing to file: lastUpdatedAtKey value")
                 }
             }
         }

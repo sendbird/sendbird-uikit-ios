@@ -93,7 +93,7 @@ extension SBUMessageSearchModule {
         public override init(frame: CGRect) { super.init(frame: frame) }
         
         deinit {
-            SBULog.info("")
+            Log.info("")
         }
         
         /// This function configures component with parameters.
@@ -229,7 +229,7 @@ extension SBUMessageSearchModule.List: SBUEmptyViewDelegate {
             emptyView.reloadData(.noSearchResults)
         }
         
-        SBULog.info("[Request] Retry load channel list")
+        Log.info("[Request] Retry load channel list")
         self.delegate?.messageSearchModuleDidSelectRetry(self)
     }
 }

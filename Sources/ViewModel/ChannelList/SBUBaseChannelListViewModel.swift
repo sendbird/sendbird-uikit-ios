@@ -52,7 +52,7 @@ open class SBUBaseChannelListViewModel: SBUBaseViewModel {
     
     /// This function initialize the channel list. the channel list will reset.
     public func initChannelList() {
-        SBULog.info("[Request] Next channel List")
+        Log.info("[Request] Next channel List")
         SendbirdUI.connectIfNeeded { [weak self] _, error in
             if let error = error {
                 self?.baseDelegates.forEach {
@@ -72,7 +72,7 @@ open class SBUBaseChannelListViewModel: SBUBaseViewModel {
     /// This function loads the channel list. If the reset value is `true`, the channel list will reset.
     /// - Parameter reset: To reset the channel list
     public func loadNextChannelList(reset: Bool) {
-        SBULog.info("[Request] Next channel List")
+        Log.info("[Request] Next channel List")
     }
     
     /// This function resets channelList
@@ -96,13 +96,13 @@ open class SBUBaseChannelListViewModel: SBUBaseViewModel {
 // MARK: ConnectionDelegate
 extension SBUBaseChannelListViewModel {
     open override func didSucceedReconnection() {
-        SBULog.info("Did succeed reconnection")
+        Log.info("Did succeed reconnection")
         
         super.didSucceedReconnection()
         
         SendbirdUI.updateUserInfo { error in
             if let error = error {
-                SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
+                Log.error("[Failed] Update user info: \(error.localizedDescription)")
             }
         }
         

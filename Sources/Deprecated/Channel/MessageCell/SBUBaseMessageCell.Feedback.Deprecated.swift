@@ -17,7 +17,7 @@ extension SBUBaseMessageCell {
     /// - since: 3.15.0
     @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     public func updateFeedbackView(with message: BaseMessage?) {
-        SBULog.info("[Deprecated] Feedback feature is deprecated in 3.34.1")
+        Log.info("[Deprecated] Feedback feature is deprecated in 3.34.1")
         self.feedbackView?.removeFromSuperview()
         self.feedbackView = nil
     }

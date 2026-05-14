@@ -57,7 +57,7 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     
     required public init() {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel()
         self.headerComponent = SBUModuleSet.CreateOpenChannelModule.HeaderComponent.init()
@@ -78,7 +78,7 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         self.viewModel = nil
         self.headerComponent = nil
         self.profileInputComponent = nil
@@ -312,7 +312,7 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
     }
     
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
     
     // MARK: - SBUCreateOpenChannelModuleHeaderDelegate
@@ -384,7 +384,7 @@ open class SBUCreateOpenChannelViewController: SBUBaseViewController, SBUActionS
         didCreateChannel channel: BaseChannel?
     ) {
         guard let channelURL = channel?.channelURL else {
-            SBULog.error("[Failed] Create channel request: There is no channel url.")
+            Log.error("[Failed] Create channel request: There is no channel url.")
             return
         }
         

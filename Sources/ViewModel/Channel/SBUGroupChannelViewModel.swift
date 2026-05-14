@@ -232,7 +232,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 return
             }
             
-            SBULog.info("[Request] Load channel: \(String(channelURL))")
+            Log.info("[Request] Load channel: \(String(channelURL))")
             GroupChannel.getChannel(url: channelURL) { [weak self] channel, error in
                 guard let self = self else {
                     completionHandler?(nil, error)
@@ -246,7 +246,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 
                 self.channel = channel
                 self.channelURL = channel?.channelURL
-                SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
+                Log.info("[Succeed] Load channel request: \(String(describing: self.channel))")
                 
                 // background refresh to check if user is banned or not.
                 self.refreshChannel()
@@ -298,7 +298,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     
     private func canProceed(with channel: GroupChannel?, error: SBError?) -> Bool {
         if let error = error {
-            SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
+            Log.error("[Failed] Load channel request: \(error.localizedDescription)")
             
             if error.code == ChatError.nonAuthorized.rawValue {
                 self.delegates.forEach {
@@ -349,9 +349,9 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 params: param,
                 fileUploadHandler: { requestId, index, _, error in
                     if let error = error {
-                        SBULog.error("Multiple files message - failed to upload file at index [\(index)]. \(error.localizedDescription)")
+                        Log.error("Multiple files message - failed to upload file at index [\(index)]. \(error.localizedDescription)")
                     } else {
-                        SBULog.info("Multiple files message - file at index [\(index)] upload completed.")
+                        Log.info("Multiple files message - file at index [\(index)] upload completed.")
                     }
                     
                     // Update the multipleFilesMessage collection view cell
@@ -360,7 +360,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 },
                 completionHandler: { [weak self] multipleFilesMessage, error in
                     if let error = error {
-                        SBULog.error(error.localizedDescription)
+                        Log.error(error.localizedDescription)
                     }
                     self?.sendMultipleFilesMessageCompletionHandler?(multipleFilesMessage, error)
                 })
@@ -386,7 +386,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                   message: preSendMessage
               )
             } else {
-                SBULog.info("A filtered file message has been sent.")
+                Log.info("A filtered file message has been sent.")
             }
           
             self.sortAllMessageList(needReload: true)
@@ -423,7 +423,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         showIndicator: Bool,
         initialMessages: [BaseMessage]?
     ) {
-        SBULog.info("""
+        Log.info("""
             loadInitialMessages,
             startingPoint : \(String(describing: startingPoint)),
             initialMessages : \(String(describing: initialMessages))
@@ -527,11 +527,11 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     public override func loadPrevMessages() {
         guard let messageCollection = self.messageCollection else { return }
         guard self.prevLock.try() else {
-            SBULog.info("Prev message already loading")
+            Log.info("Prev message already loading")
             return
         }
         
-        SBULog.info("[Request] Prev message list")
+        Log.info("[Request] Prev message list")
         
         messageCollection.loadPrevious { [weak self] messages, error in
             guard let self = self else { return }
@@ -548,7 +548,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             
             guard let messages = messages,
                   !messages.isEmpty else { return }
-            SBULog.info("[Prev message response] \(messages.count) messages")
+            Log.info("[Prev message response] \(messages.count) messages")
             
             self.delegates.forEach {
                 $0.baseChannelViewModel(
@@ -569,7 +569,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     /// Loads next messages from `lastUpdatedTimestamp`.
     public override func loadNextMessages() {
         guard self.nextLock.try() else {
-            SBULog.info("Next message already loading")
+            Log.info("Next message already loading")
             return
         }
 
@@ -591,7 +591,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             }
             guard let messages = messages else { return }
             
-            SBULog.info("[Next message Response] \(messages.count) messages")
+            Log.info("[Next message Response] \(messages.count) messages")
             
             self.delegates.forEach {
                 $0.baseChannelViewModel(
@@ -657,7 +657,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     open func markMessageAsUnread(_ message: BaseMessage, completionHandler: SendbirdChatSDK.SBErrorHandler?) {
         let isMarkAsUnreadEnabled = SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled
         guard isMarkAsUnreadEnabled else {
-            SBULog.warning("To call markAsUnread, please first enable `SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled` feature.")
+            Log.warning("To call markAsUnread, please first enable `SendbirdUI.config.groupChannel.channel.isMarkAsUnreadEnabled` feature.")
             return
         }
         
@@ -665,7 +665,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             groupChannel.markAsUnread(message: message) { [weak self] error in
                 guard let self = self else { return }
                 if let error = error {
-                    SBULog.error("Failed to mark message as unread. \(error)")
+                    Log.error("Failed to mark message as unread. \(error)")
                     self.delegates.forEach {
                         $0.didReceiveError(error)
                     }
@@ -693,7 +693,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     }
     
     override public func updateFirstUnreadMessage() {
-        SBULog.info("Update firstUnreadMessage")
+        Log.info("Update firstUnreadMessage")
         guard let groupChannel = self.channel as? GroupChannel else { return }
         guard let collection = self.messageCollection else { return }
                 
@@ -702,7 +702,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         // Check if we have any loaded messages
         guard !self.messageList.isEmpty else {
             self.firstUnreadMessage = nil
-            SBULog.info("No messages loaded yet. firstUnreadMessage = nil")
+            Log.info("No messages loaded yet. firstUnreadMessage = nil")
             return
         }
         
@@ -715,13 +715,13 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 // Check if the first unread message might be before our loaded messages
                 if myLastRead < oldestLoadedMessageTimestamp && collection.hasPrevious {
                     self.firstUnreadMessage = nil
-                    SBULog.info("The first unread message is not yet loaded in `messageList` (before current range).")
+                    Log.info("The first unread message is not yet loaded in `messageList` (before current range).")
                     return
                 }
                 // Check if the first unread message might be after our loaded messages  
                 else if myLastRead > newestLoadedMessageTimestamp && collection.hasNext {
                     self.firstUnreadMessage = nil
-                    SBULog.info("The first unread message is not yet loaded in `messageList` (after current range).")
+                    Log.info("The first unread message is not yet loaded in `messageList` (after current range).")
                     return
                 } else {
                     // If we don't have previous/next messages to load, proceed to find within current range
@@ -737,7 +737,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             
             if currentMessage is UserMessage || currentMessage is FileMessage || currentMessage is MultipleFilesMessage || currentMessage is AdminMessage {
                 if groupChannel.myLastRead < currentMessage.createdAt {
-                    SBULog.info("Temporary firstUnreadMessage=\(currentMessage.message)")
+                    Log.info("Temporary firstUnreadMessage=\(currentMessage.message)")
                     tempFirstUnreadMessage = currentMessage
                 }
             }
@@ -745,21 +745,21 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         
         self.firstUnreadMessage = tempFirstUnreadMessage
         
-        SBULog.info("Finished finding firstUnreadMessage. firstUnreadMessage=\(self.firstUnreadMessage?.message ?? "nil")")
+        Log.info("Finished finding firstUnreadMessage. firstUnreadMessage=\(self.firstUnreadMessage?.message ?? "nil")")
     }
     
     // MARK: - Typing
     public func startTypingMessage() {
         guard let channel = self.channel as? GroupChannel else { return }
 
-        SBULog.info("[Request] Start typing")
+        Log.info("[Request] Start typing")
         channel.startTyping()
     }
     
     public func endTypingMessage() {
         guard let channel = self.channel as? GroupChannel else { return }
 
-        SBULog.info("[Request] End typing")
+        Log.info("[Request] End typing")
         channel.endTyping()
     }
     
@@ -807,12 +807,12 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
             if let channel = self.channel as? GroupChannel {
                 if channel.isSuper {
                     guard let config = SBUGlobals.userMentionConfig else {
-                        SBULog.error("`SBUGlobals.userMentionConfig` is `nil`")
+                        Log.error("`SBUGlobals.userMentionConfig` is `nil`")
                         return
                     }
                     
                     guard SendbirdUI.config.groupChannel.channel.isMentionEnabled else {
-                        SBULog.error("User mention features are disabled. See `SBUGlobals.isMentionEnabled` for more information")
+                        Log.error("User mention features are disabled. See `SBUGlobals.isMentionEnabled` for more information")
                         return
                     }
                     
@@ -926,7 +926,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         }
         if existInPendingMessage { return }
 
-        SBULog.info("messageCollection addedMessages : \(messages.count)")
+        Log.info("messageCollection addedMessages : \(messages.count)")
         
         var isEventMessageReceived = false
         
@@ -1010,7 +1010,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         }
         if existInPendingMessage { return }
         
-        SBULog.info("messageCollection updatedMessages : \(messages.count)")
+        Log.info("messageCollection updatedMessages : \(messages.count)")
         self.delegates.forEach {
             $0.baseChannelViewModel(
                 self,
@@ -1032,7 +1032,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         channel: GroupChannel,
         deletedMessages messages: [BaseMessage]
     ) {
-        SBULog.info("messageCollection deletedMessages : \(messages.count)")
+        Log.info("messageCollection deletedMessages : \(messages.count)")
         self.delegates.forEach {
             $0.baseChannelViewModel(self, deletedMessages: messages)
         }
@@ -1044,7 +1044,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         context: MessageContext,
         updatedChannel channel: GroupChannel
     ) {
-        SBULog.info("messageCollection changedChannel")
+        Log.info("messageCollection changedChannel")
         
         // Update typingMessageBubble.
         if context.source == .eventTypingStatusUpdated,
@@ -1065,33 +1065,33 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
     ) {
         switch channelContext.source {
         case .eventUserDidMarkAsRead:
-            SBULog.info("channelContext.source == .eventDidMarkAsRead")
+            Log.info("channelContext.source == .eventDidMarkAsRead")
             guard let readEventDetail = channelContext.eventDetail as? EventDetail.UserDidMarkAsRead else {
                 return
             }
             
-            SBULog.info("reader=\(readEventDetail.userIds[0])")
+            Log.info("reader=\(readEventDetail.userIds[0])")
             if let currentUserId = SBUGlobals.currentUser?.userId,
                readEventDetail.userIds[0] == currentUserId {
-                SBULog.info(".eventDidMarkAsRead by CurrentUser")
+                Log.info(".eventDidMarkAsRead by CurrentUser")
             }
         
         case .eventUserDidMarkAsUnread:
-            SBULog.info("channelContext.source == .eventDidMarkAsUnread")
+            Log.info("channelContext.source == .eventDidMarkAsUnread")
             guard let unreadEventDetail = channelContext.eventDetail as? EventDetail.UserDidMarkAsUnread else {
                 return
             }
             
-            SBULog.info("reader=\(unreadEventDetail.userIds[0])")
+            Log.info("reader=\(unreadEventDetail.userIds[0])")
             guard let currentUserId = SBUGlobals.currentUser?.userId,
                   unreadEventDetail.userIds[0] == currentUserId else {
                 return
             }
             
-            SBULog.info(".eventDidMarkAsUnread by CurrentUser")
+            Log.info(".eventDidMarkAsUnread by CurrentUser")
             self.updateFirstUnreadMessage()
         case .eventChannelChanged:
-            SBULog.info("channelContext.source == .eventChannelChanged")
+            Log.info("channelContext.source == .eventChannelChanged")
             
             // Update unreadMessageInfoView's visibility based on
             // the updated channel data (myLastRead, lastMessage.createdAt).
@@ -1112,14 +1112,14 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         context: MessageContext,
         deletedChannel channelURL: String
     ) {
-        SBULog.info("messageCollection deletedChannel")
+        Log.info("messageCollection deletedChannel")
         self.delegates.forEach {
             $0.baseChannelViewModel(self, didChangeChannel: nil, withContext: context)
         }
     }
     
     open func didDetectHugeGap(_ collection: MessageCollection) {
-        SBULog.info("messageCollection didDetectHugeGap")
+        Log.info("messageCollection didDetectHugeGap")
         collection.dispose()
         
         var startingPoint: Int64?
@@ -1145,10 +1145,10 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
     /// - Since: 3.16.0
     @available(*, deprecated, message: "This method is deprecated in 3.27.0.")
     public func submitForm(message: BaseMessage, form: SendbirdChatSDK.Form) {
-        SBULog.info("[Request] Submit Form")
+        Log.info("[Request] Submit Form")
         message.submitForm(form: form) { error in
             if let error = error {
-                SBULog.error("[Request] Submit Form - error: \(error.localizedDescription)")
+                Log.error("[Request] Submit Form - error: \(error.localizedDescription)")
                 self.delegates.forEach {
                     $0.didReceiveError(error)
                 }
@@ -1164,11 +1164,11 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
     /// - Since: 3.27.0
     @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     public func submitMessageForm(message: BaseMessage) {
-        SBULog.info("[Request] Submit Message Form")
+        Log.info("[Request] Submit Message Form")
         message.submitMessageForm { error in
             if let error = error {
                 message.isFormSubmitting = false
-                SBULog.error("[Request] Submit Message Form - error: \(error.localizedDescription)")
+                Log.error("[Request] Submit Message Form - error: \(error.localizedDescription)")
                 self.delegates.forEach {
                     $0.didReceiveError(error)
                 }
@@ -1192,10 +1192,10 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         completionHandler: ((Feedback?) -> Void)? = nil
     ) {
         guard let rating = answer.rating else { return }
-        SBULog.info("[Request] Submit feedback")
+        Log.info("[Request] Submit feedback")
         message.submitFeedback(rating: rating, comment: answer.comment) { feedback, error in
             if let error = error {
-                SBULog.error("[Request] Submit feedback - error: \(error.localizedDescription)")
+                Log.error("[Request] Submit feedback - error: \(error.localizedDescription)")
                 self.delegates.forEach {
                     $0.didReceiveError(error)
                 }
@@ -1219,10 +1219,10 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         completionHandler: ((Feedback?) -> Void)? = nil
     ) {
         guard let rating = answer.rating else { return }
-        SBULog.info("[Request] Update feedback")
+        Log.info("[Request] Update feedback")
         message.updateFeedback(rating: rating, comment: answer.comment) { feedback, error in
             if let error = error {
-                SBULog.error("[Request] update feedback - error: \(error.localizedDescription)")
+                Log.error("[Request] update feedback - error: \(error.localizedDescription)")
                 self.delegates.forEach {
                     $0.didReceiveError(error)
                 }
@@ -1242,10 +1242,10 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         message: BaseMessage,
         completionHandler: (() -> Void)? = nil
     ) {
-        SBULog.info("[Request] Delete feedback")
+        Log.info("[Request] Delete feedback")
         message.deleteFeedback { error in
             if let error = error {
-                SBULog.error("[Request] delete feedback - error: \(error.localizedDescription)")
+                Log.error("[Request] delete feedback - error: \(error.localizedDescription)")
                 self.delegates.forEach {
                     $0.didReceiveError(error)
                 }
@@ -1260,7 +1260,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         completionHandler: @escaping (Bool) -> Void
     ) {
         guard let uncachedKeys = self.templateLoadCache.uncachedKeys(from: keys) else {
-            SBULog.info("[Request] All requested keys are already marked as failed or are loading: \(keys)")
+            Log.info("[Request] All requested keys are already marked as failed or are loading: \(keys)")
             completionHandler(false)
             return
         }
@@ -1269,7 +1269,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         
         SBUMessageTemplateManager.loadTemplateList(type: .message, keys: keys) { [weak self] success in
             guard let self = self else { return }
-            SBULog.info("[Request] Load request completed - success: \(success)")
+            Log.info("[Request] Load request completed - success: \(success)")
             
             self.templateLoadCache.didLoadKeys(form: uncachedKeys, success: success)
 
@@ -1282,7 +1282,7 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         completionHandler: @escaping (Bool) -> Void
     ) {
         SBUMessageTemplateManager.loadTemplateImages(type: .message, cacheData: data) { success in
-            SBULog.info("[Request] load missing templates images - success: \(success)")
+            Log.info("[Request] load missing templates images - success: \(success)")
             completionHandler(success)
         }
     }

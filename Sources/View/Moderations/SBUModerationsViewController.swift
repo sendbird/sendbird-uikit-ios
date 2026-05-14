@@ -72,7 +72,7 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     /// - Parameter channel: Channel object
     required public init(channel: BaseChannel) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channel: channel)
         
@@ -83,7 +83,7 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     /// - Parameter channelURL: Channel url string
     required public init(channelURL: String, channelType: ChannelType) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channelURL: channelURL, channelType: channelType)
         
@@ -116,7 +116,7 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         self.viewModel = nil
         self.headerComponent = nil
         self.listComponent = nil
@@ -257,7 +257,7 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     
     open func showUserList(userListType: ChannelUserListType) {
         guard let channel = self.channel else {
-            SBULog.error("[Failed] Channel object is nil")
+            Log.error("[Failed] Channel object is nil")
             return
         }
         
@@ -289,7 +289,7 @@ open class SBUModerationsViewController: SBUBaseViewController, SBUModerationsMo
     }
     
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
     
     // MARK: SBUModerationsModuleHeaderDelegate

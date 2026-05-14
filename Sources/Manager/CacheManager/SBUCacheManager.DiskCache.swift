@@ -23,7 +23,7 @@ extension SBUCacheManager {
             do {
                 try self.createDirectoryIfNeeded()
             } catch {
-                SBULog.error(error.localizedDescription)
+                Log.error(error.localizedDescription)
             }
         }
         
@@ -50,7 +50,7 @@ extension SBUCacheManager {
                 let data = try Data(contentsOf: fullPath)
                 return data
             } catch {
-                SBULog.info(error.localizedDescription)
+                Log.info(error.localizedDescription)
             }
             return nil
         }
@@ -64,7 +64,7 @@ extension SBUCacheManager {
                 let data = try Data(contentsOf: filePath)
                 return data as NSData
             } catch {
-                SBULog.info(error.localizedDescription)
+                Log.info(error.localizedDescription)
             }
             return nil
         }
@@ -82,7 +82,7 @@ extension SBUCacheManager {
                         attributes: nil
                     )
                 } catch {
-                    SBULog.error(error.localizedDescription)
+                    Log.error(error.localizedDescription)
                     DispatchQueue.main.async {
                         switch completionHandler {
                         case let cacheHandler as SBUCacheCompletionHandler:
@@ -90,7 +90,7 @@ extension SBUCacheManager {
                         case let imageCacheHandler as SBUImageCacheCompletionHandler:
                             imageCacheHandler(nil, nil, image)
                         default:
-                            SBULog.error("Invalid cacheHandler type")
+                            Log.error("Invalid cacheHandler type")
                         }
                     }
                     return
@@ -104,7 +104,7 @@ extension SBUCacheManager {
                     case let imageCacheHandler as SBUImageCacheCompletionHandler:
                         imageCacheHandler(filePath, data, image)
                     default:
-                        SBULog.error("Invalid cacheHandler type")
+                        Log.error("Invalid cacheHandler type")
                     }
                 }
             }
@@ -127,7 +127,7 @@ extension SBUCacheManager {
                 do {
                     try fileManager.removeItem(atPath: path)
                 } catch {
-                    SBULog.error("Could not remove file: \(error)")
+                    Log.error("Could not remove file: \(error)")
                 }
             }
         }
@@ -140,7 +140,7 @@ extension SBUCacheManager {
                 do {
                     try fileManager.removeItem(atPath: cachePath)
                 } catch {
-                    SBULog.error("Could not remove cache path: \(error)")
+                    Log.error("Could not remove cache path: \(error)")
                 }
             }
         }
@@ -178,7 +178,7 @@ extension SBUCacheManager {
                     try FileManager.default.createDirectory(at: documentPath, withIntermediateDirectories: true)
                     return documentPath.appendingPathComponent(fileName)
                 } catch {
-                    SBULog.error("[Failed] Create directory : \(error.localizedDescription)")
+                    Log.error("[Failed] Create directory : \(error.localizedDescription)")
                     return nil
                 }
             }
@@ -195,7 +195,7 @@ extension SBUCacheManager {
                 do {
                     try fileManager.removeItem(atPath: path)
                 } catch {
-                    SBULog.error("Could not remove file: \(error)")
+                    Log.error("Could not remove file: \(error)")
                 }
             }
         }
@@ -216,7 +216,7 @@ extension SBUCacheManager {
                 case let imageCacheHandler as SBUImageCacheCompletionHandler:
                     imageCacheHandler(nil, nil, image)
                 default:
-                    SBULog.error("Invalid cacheHandler type")
+                    Log.error("Invalid cacheHandler type")
                 }
             }
         }

@@ -225,7 +225,7 @@ extension SBUBaseChannelListModule.List: SBUEmptyViewDelegate {
             emptyView.reloadData(.noChannels)
         }
         
-        SBULog.info("[Request] Retry load channel list")
+        Log.info("[Request] Retry load channel list")
         self.baseDelegate?.baseChannelListModuleDidSelectRetry(self)
     }
 }

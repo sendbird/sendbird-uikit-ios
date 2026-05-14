@@ -74,7 +74,7 @@ public extension UIImage {
         )
         
         if data == nil {
-            SBULog.error("No image data")
+            Log.error("No image data")
         }
         
         return data

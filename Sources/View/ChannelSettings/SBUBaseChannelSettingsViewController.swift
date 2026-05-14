@@ -50,7 +50,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         self.baseViewModel = nil
         self.baseHeaderComponent = nil
         self.baseListComponent = nil
@@ -309,7 +309,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     }
     
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
     
     // MARK: SBUActionSheetDelegate

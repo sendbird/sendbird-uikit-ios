@@ -432,7 +432,7 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     }
     
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
     
     @available(*, unavailable, renamed: "errorHandler(_:_:)")

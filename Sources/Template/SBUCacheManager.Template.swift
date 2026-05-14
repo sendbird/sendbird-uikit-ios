@@ -57,15 +57,15 @@ extension SBUTemplateCacheType {
     @discardableResult
     func loadAllTemplates() -> [String: MessageTemplate]? {
         if let templateList = Self.memoryCache.getAllTemplates() {
-//                SBULog.info("Loaded templates from memory cache")
+//                Log.info("Loaded templates from memory cache")
             return templateList
         } else if let templateList = Self.diskCache.getAllTemplates() {
-//                SBULog.info("Loaded templates from disk cache")
+//                Log.info("Loaded templates from disk cache")
             Self.memoryCache.set(templates: Array(templateList.values))
             return templateList
         }
         
-        SBULog.info("No have templates in cache")
+        Log.info("No have templates in cache")
         return nil
     }
     
@@ -140,7 +140,7 @@ extension SBUCacheManager {
             do {
                 try self.createDirectoryIfNeeded()
             } catch {
-                SBULog.error(error.localizedDescription)
+                Log.error(error.localizedDescription)
             }
         }
         
@@ -169,7 +169,7 @@ extension SBUCacheManager {
                     let template = try JSONDecoder().decode(MessageTemplate.self, from: data)
                     return template
                 } catch {
-                    SBULog.info(error.localizedDescription)
+                    Log.info(error.localizedDescription)
                 }
                 return nil
             }()
@@ -211,7 +211,7 @@ extension SBUCacheManager {
                         }
                     }
                 } catch {
-                    SBULog.info(error.localizedDescription)
+                    Log.info(error.localizedDescription)
                 }
                 
                 return templateList
@@ -225,7 +225,7 @@ extension SBUCacheManager {
                     let data = try encoder.encode(template)
                     self.set(key: template.key, data: data as NSData)
                 } catch {
-                    SBULog.error("Failed to save template to disk cache: \(error)")
+                    Log.error("Failed to save template to disk cache: \(error)")
                 }
             }
         }
@@ -245,7 +245,7 @@ extension SBUCacheManager {
                         attributes: nil
                     )
                 } catch {
-                    SBULog.error(error.localizedDescription)
+                    Log.error(error.localizedDescription)
                     DispatchQueue.main.async {
                         completionHandler?(nil, nil)
                     }
@@ -269,7 +269,7 @@ extension SBUCacheManager {
                     let fileManager = self.fileManager
                     try fileManager.removeItem(atPath: path)
                 } catch {
-                    SBULog.error("Could not remove file: \(error)")
+                    Log.error("Could not remove file: \(error)")
                 }
             }
         }
@@ -284,7 +284,7 @@ extension SBUCacheManager {
                     let fileManager = self.fileManager
                     try fileManager.removeItem(at: path)
                 } catch {
-                    SBULog.error("Could not remove path: \(error)")
+                    Log.error("Could not remove path: \(error)")
                 }
             }
         }
@@ -335,7 +335,7 @@ extension SBUCacheManager {
                     let filePath = cachePathURL.appendingPathComponent(lastTokenKey)
                     try value.write(to: filePath, atomically: true, encoding: .utf8)
                 } catch {
-                    SBULog.error("Error writing to file: lastTokenKey value")
+                    Log.error("Error writing to file: lastTokenKey value")
                 }
             }
         }

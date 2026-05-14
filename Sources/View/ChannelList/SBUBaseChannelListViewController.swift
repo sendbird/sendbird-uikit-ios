@@ -30,7 +30,7 @@ open class SBUBaseChannelListViewController: SBUBaseViewController {
     
     // MARK: - Life cycle
     deinit {
-        SBULog.info("")
+        Log.info("")
         self.baseViewModel = nil
         self.baseHeaderComponent = nil
         self.baseListComponent = nil

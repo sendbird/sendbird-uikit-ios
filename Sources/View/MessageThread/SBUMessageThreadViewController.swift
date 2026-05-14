@@ -121,7 +121,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         voiceFileInfos: [String: SBUVoiceFileInfo]? = nil
     ) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info(#function)
+        Log.info(#function)
         
         self.delegate = delegate
         
@@ -185,7 +185,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
     }
     
     // MARK: - ViewModel
@@ -204,7 +204,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
                               threadedMessageListParams: ThreadedMessageListParams? = nil,
                               startingPoint: Int64? = nil) {
         guard channel != nil || channelURL != nil else {
-            SBULog.error("Either the channel or the channelURL parameter must be set.")
+            Log.error("Either the channel or the channelURL parameter must be set.")
             return
         }
         

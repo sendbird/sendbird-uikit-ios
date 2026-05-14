@@ -101,7 +101,7 @@ extension SBUBaseSelectUserModule {
         
         // MARK: - Life cycle
         deinit {
-            SBULog.info("")
+            Log.info("")
         }
         
         /// Set values of the views in the header component when it needs.

@@ -66,7 +66,7 @@ extension SBUOpenChannelSettingsModule {
         public override init(frame: CGRect) { super.init(frame: frame) }
         
         deinit {
-            SBULog.info("")
+            Log.info("")
         }
         
         /// Configures component with parameters.

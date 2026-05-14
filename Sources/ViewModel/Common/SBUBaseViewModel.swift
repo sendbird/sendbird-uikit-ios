@@ -38,21 +38,21 @@ open class SBUBaseViewModel: NSObject {
 
 extension SBUBaseViewModel: ConnectionDelegate {
     open func didDelayConnection(retryAfter: UInt) {
-        SBULog.info("retryAfter=\(retryAfter)")
+        Log.info("retryAfter=\(retryAfter)")
         
         // show the busy server alert view
         self.commonDelegate?.baseViewModelDidDelayConnection(self, retryAfter: retryAfter)
     }
     
     open func didSucceedReconnection() {
-        SBULog.info("")
+        Log.info("")
         
         // dismiss the busy server alert view
         self.commonDelegate?.baseViewModelDidSucceedReconnection(self)
     }
     
     open func didFailReconnection() {
-        SBULog.info("")
+        Log.info("")
         
         // dismiss the busy server alert view
         self.commonDelegate?.baseViewModelDidFailReconnection(self)

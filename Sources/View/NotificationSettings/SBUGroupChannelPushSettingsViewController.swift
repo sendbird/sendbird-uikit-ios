@@ -50,20 +50,20 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     @available(*, unavailable, renamed: "SBUGroupChannelPushSettingsViewController(channelURL:type:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
-        SBULog.info("")
+        Log.info("")
         fatalError()
     }
     
     @available(*, unavailable, renamed: "SBUGroupChannelPushSettingsViewController.init(channelURL:)")
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        SBULog.info("")
+        Log.info("")
         fatalError()
     }
     
     required public init(channel: BaseChannel) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channel: channel)
         
@@ -73,7 +73,7 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     
     required public init(channelURL: String) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channelURL: channelURL)
         
@@ -96,7 +96,7 @@ open class SBUGroupChannelPushSettingsViewController: SBUBaseViewController, SBU
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         self.viewModel = nil
         self.headerComponent = nil
     }

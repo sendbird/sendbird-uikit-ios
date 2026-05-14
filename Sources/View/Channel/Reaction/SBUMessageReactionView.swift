@@ -305,7 +305,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         let emojiKey = reactions[indexPath.row].key
         if !SBUEmojiManager.isEmojiAvailable(emojiKey: emojiKey, message: message) {
             let error = SBUError(code: .emojiUnsupported)
-            SBULog.info(error.code.message)
+            Log.info(error.code.message)
             self.errorHandler?(error.asSBError())  // lets users handle the error.
             return false
         }

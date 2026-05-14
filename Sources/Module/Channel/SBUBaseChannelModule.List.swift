@@ -393,7 +393,7 @@ extension SBUBaseChannelModule {
         }
         
         deinit {
-            SBULog.info(#function)
+            Log.info(#function)
         }
         
         /// Set values of the views in the list component when it needs.
@@ -568,7 +568,7 @@ extension SBUBaseChannelModule {
             default:
                 // succeed, unknown
                 guard let cell = self.tableView.cellForRow(at: indexPath) else {
-                    SBULog.error("Couldn't find cell for row at \(indexPath)")
+                    Log.error("Couldn't find cell for row at \(indexPath)")
                     return
                 }
                 cell.isSelected = true
@@ -623,7 +623,7 @@ extension SBUBaseChannelModule {
                 color: self.theme?.alertRemoveColor
             ) { [weak self, message] _ in
                 guard let self = self else { return }
-                SBULog.info("[Request] Delete message: \(message.description)")
+                Log.info("[Request] Delete message: \(message.description)")
                 self.baseDelegate?.baseChannelModule(self, didTapDeleteMessage: message)
             }
             
@@ -1032,7 +1032,7 @@ extension SBUBaseChannelModule {
             case .scheduled:
                 break
             @unknown default:
-                SBULog.error("unknown Type")
+                Log.error("unknown Type")
             }
         }
         
@@ -1137,7 +1137,7 @@ extension SBUBaseChannelModule.List: SBUEmptyViewDelegate {
             emptyView.reloadData(.noMessages)
         }
         
-        SBULog.info("[Request] Retry load channel list")
+        Log.info("[Request] Retry load channel list")
         self.baseDelegate?.baseChannelModuleDidSelectRetry(self)
     }
 }
@@ -1215,7 +1215,7 @@ extension SBUBaseChannelModule.List {
                 .filter({ !SBUUtils.contains(messageId: $0.messageId, in: sentMessages) }).count
         }
         
-        SBULog.info("New messages inserted : \(nextInsertedCount)")
+        Log.info("New messages inserted : \(nextInsertedCount)")
         return IndexPath(
             row: firstVisibleIndexPath.row + nextInsertedCount,
             section: 0
@@ -1258,7 +1258,7 @@ extension SBUBaseChannelModule.List {
         guard let row = self.fullMessageList.firstIndex(
             where: { $0.messageId == messageId }
         ) else {
-            SBULog.error("Couldn't find message with ID: \(messageId)")
+            Log.error("Couldn't find message with ID: \(messageId)")
             self.baseDelegate?.baseChannelModule(self, didFailScrollToMessageId: messageId, needToSearch: needToSearch)
             return false
         }
@@ -1292,7 +1292,7 @@ extension SBUBaseChannelModule.List {
         guard let row = self.fullMessageList.firstIndex(
             where: { $0.messageId == message.messageId }
         ) else {
-            SBULog.error("Couldn't find message with ID: \(message.messageId)")
+            Log.error("Couldn't find message with ID: \(message.messageId)")
             self.baseDelegate?.baseChannelModule(self, didFailScrollToMessage: message, needToSearch: needToSearch)
             return false
         }
@@ -1319,7 +1319,7 @@ extension SBUBaseChannelModule.List {
         
         if messageAnimated {
             guard let cell = self.tableView.cellForRow(at: indexPath) as? SBUBaseMessageCell else {
-                SBULog.error("The cell for row at \(indexPath) is not `SBUBaseMessageCell`")
+                Log.error("The cell for row at \(indexPath) is not `SBUBaseMessageCell`")
                 return
             }
             cell.messageContentView.animate(.shakeUpDown)

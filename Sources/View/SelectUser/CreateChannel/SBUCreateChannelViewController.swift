@@ -72,7 +72,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     ///   - type: The type of channel to create (default: `.group`)
     required public init(users: [SBUUser]? = nil, type: ChannelCreationType = .group) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.users = users
         self.type = type
@@ -97,7 +97,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         self.viewModel = nil
         self.headerComponent = nil
         self.listComponent = nil
@@ -197,7 +197,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     }
     
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
     
     // MARK: - SBUCreateChannelModuleHeaderDelegate
@@ -312,7 +312,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
         withMessageListParams messageListParams: MessageListParams?
     ) {
         guard let channelURL = channel?.channelURL else {
-            SBULog.error("[Failed] Create channel request: There is no channel url.")
+            Log.error("[Failed] Create channel request: There is no channel url.")
             return
         }
         SendbirdUI.moveToChannel(channelURL: channelURL, messageListParams: messageListParams)

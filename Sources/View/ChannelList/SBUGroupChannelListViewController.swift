@@ -110,7 +110,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     /// - Since: 1.0.11
     required public init(channelListQuery: GroupChannelListQuery? = nil) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channelListQuery: channelListQuery)
         self.headerComponent = SBUModuleSet.GroupChannelListModule.HeaderComponent.init()
@@ -137,7 +137,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         self.viewModel = nil
         self.headerComponent = nil
         self.listComponent = nil
@@ -311,7 +311,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     }
     
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
 
     // MARK: - SBUGroupChannelListModuleHeaderDelegate

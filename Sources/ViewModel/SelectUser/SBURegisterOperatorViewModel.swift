@@ -87,7 +87,7 @@ open class SBURegisterOperatorViewModel: SBUBaseSelectUserViewModel {
         guard let channel = self.channel else { return }
         
         self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
-        SBULog.info("[Request] Register users: \(userIds)")
+        Log.info("[Request] Register users: \(userIds)")
 
         channel.addOperators(userIds: userIds) { [weak self] error in
             guard let self = self else { return }
@@ -98,7 +98,7 @@ open class SBURegisterOperatorViewModel: SBUBaseSelectUserViewModel {
                 return
             }
             
-            SBULog.info("[Succeed] Register users request success")
+            Log.info("[Succeed] Register users request success")
             self.delegates.forEach { $0.registerOperatorViewModel(self, didRegisterOperatorIds: userIds) }
         }
     }

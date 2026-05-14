@@ -45,13 +45,13 @@ class SBUDownloadManager {
                         )
                     } completionHandler: { completed, error in
                         guard error == nil else {
-                            SBULog.error("[Failed] Save image: \(String(describing: error))")
+                            Log.error("[Failed] Save image: \(String(describing: error))")
                             SBUToastView.show(type: .file(.downloadFailed))
                             return
                         }
                         
                         if completed {
-                            SBULog.info("[Succeed] Image saved.")
+                            Log.info("[Succeed] Image saved.")
                             SBUToastView.show(type: .file(.downloadSuccess))
                         }
                     }
@@ -115,7 +115,7 @@ class SBUDownloadManager {
                         transparentVC.dismiss(animated: true, completion: nil)
                         viewController?.presentedViewController?.dismiss(animated: true, completion: {
                             if completed {
-                                SBULog.info("[Succeed] File is saved.")
+                                Log.info("[Succeed] File is saved.")
                                 SBUToastView.show(type: .file(.downloadSuccess))
                             }
                         })
@@ -163,7 +163,7 @@ class SBUDownloadManager {
     
     static func saveImage(with fileMessage: FileMessage, parent: UIViewController?) {
         guard parent != nil else {
-            SBULog.error("[Failed] Save image")
+            Log.error("[Failed] Save image")
             return
         }
         
@@ -180,13 +180,13 @@ class SBUDownloadManager {
                         )
                     } completionHandler: { completed, error in
                         guard error == nil else {
-                            SBULog.error("[Failed] Save image: \(String(describing: error))")
+                            Log.error("[Failed] Save image: \(String(describing: error))")
                             SBUToastView.show(type: .file(.downloadFailed))
                             return
                         }
                         
                         if completed {
-                            SBULog.info("[Succeed] Image saved.")
+                            Log.info("[Succeed] Image saved.")
                             SBUToastView.show(type: .file(.downloadSuccess))
                         }
                     }
@@ -228,7 +228,7 @@ class SBUDownloadManager {
     
     static func saveFile(with fileMessage: FileMessage, parent: UIViewController?) {
         guard let parent = parent else {
-            SBULog.error("[Failed] Save file")
+            Log.error("[Failed] Save file")
             return
         }
         
@@ -248,7 +248,7 @@ class SBUDownloadManager {
                         transparentVC.dismiss(animated: true, completion: nil)
                         parent?.presentedViewController?.dismiss(animated: true, completion: {
                             if completed {
-                                SBULog.info("[Succeed] File is saved.")
+                                Log.info("[Succeed] File is saved.")
                                 SBUToastView.show(type: .file(.downloadSuccess))
                             }
                         })

@@ -87,7 +87,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     /// If needed, override this handler to show your custom alert view.
     /// - Since: 3.10.0
     open func multipleFilesMessageFileSizeErrorHandler(_ message: String) {
-        SBULog.error("Did receive error: \(message)")
+        Log.error("Did receive error: \(message)")
         
         DispatchQueue.main.async {
             SBUAlertView.show(
@@ -205,7 +205,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         
         // Clear typing message when exiting the channel.
         self.viewModel?.clearTypingMessage()
@@ -238,7 +238,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         displaysLocalCachedListFirst: Bool = false
     ) {
         guard channel != nil || channelURL != nil else {
-            SBULog.error("Either the channel or the channelURL parameter must be set.")
+            Log.error("Either the channel or the channelURL parameter must be set.")
             return
         }
         
@@ -465,7 +465,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         position: MessagePosition
     ) -> CGPoint {
         guard let listComponent = listComponent else {
-            SBULog.error("listComponent is not set up.")
+            Log.error("listComponent is not set up.")
             return .zero
         }
         
@@ -508,7 +508,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         startingPoint: Int64? = 0
     ) {
         if (parentMessageCreatedAt ?? 0) < (self.channel?.messageOffsetTimestamp ?? 0) {
-            SBULog.warning(SBUStringSet.Message_Reply_Cannot_Found_Original)
+            Log.warning(SBUStringSet.Message_Reply_Cannot_Found_Original)
             return
         }
         
@@ -770,7 +770,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
                 completion(videoURL.isFileSizeUploadable)
             } else {
                 if let error = error {
-                    SBULog.error("Failed to read video file. \(error)")
+                    Log.error("Failed to read video file. \(error)")
                 }
                 completion(false)
             }
@@ -943,17 +943,17 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         forContext context: MessageContext?,
         keepsScroll: Bool
     ) {
-        SBULog.info("Fetched : \(messages.count), keepScroll : \(keepsScroll)")
+        Log.info("Fetched : \(messages.count), keepScroll : \(keepsScroll)")
         guard let baseListComponent = baseListComponent else { return }
         
         guard !messages.isEmpty else {
-            SBULog.info("Fetched empty messages.")
+            Log.info("Fetched empty messages.")
             return
         }
         
         switch context?.source {
         case .eventMessageSent:
-            SBULog.info("context.source == .eventMessageSent, messages=\(messages.map { $0.message })")
+            Log.info("context.source == .eventMessageSent, messages=\(messages.map { $0.message })")
             if !keepsScroll {
                 self.baseChannelModuleDidTapScrollToButton(baseListComponent, animated: false)
             }
@@ -961,7 +961,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             handleMarkAsRead()
         case .eventMessageReceived:
             // Source includes .eventMessageReceived
-            SBULog.info("context.source == .eventMessageReceived, messages=\(messages.map { $0.message })")
+            Log.info("context.source == .eventMessageReceived, messages=\(messages.map { $0.message })")
             if !baseChannelViewModel(viewModel, isScrollNearBottomInChannel: viewModel.channel) {
                 self.lastSeenIndexPath = baseListComponent.keepCurrentScroll(for: messages)
             } else {
@@ -969,7 +969,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
                 handleMarkAsRead()
             }
         default:
-            SBULog.info("context.source is neither .eventMessageSent nor .eventMessageReceived")
+            Log.info("context.source is neither .eventMessageSent nor .eventMessageReceived")
             // follow keepScroll flag if context is not `eventMessageReceived`.
             if keepsScroll, !baseChannelViewModel(viewModel, isScrollNearBottomInChannel: viewModel.channel) {
                 self.lastSeenIndexPath = baseListComponent.keepCurrentScroll(for: messages)
@@ -1157,14 +1157,14 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         }
         
         if (quotedMessageView.params?.quotedMessageCreatedAt ?? 0) < (self.channel?.messageOffsetTimestamp ?? 0) {
-            SBULog.warning(SBUStringSet.Message_Reply_Cannot_Found_Original)
+            Log.warning(SBUStringSet.Message_Reply_Cannot_Found_Original)
             return
         }
         
         guard let row = self.baseViewModel?.fullMessageList.firstIndex(
             where: { $0.messageId == quotedMessageView.messageId }
         ) else {
-            SBULog.info("There is no cached linked message. Reloads messages based on linked messages.")
+            Log.info("There is no cached linked message. Reloads messages based on linked messages.")
             self.viewModel?.loadInitialMessages(
                 startingPoint: quotedMessageView.params?.quotedMessageCreatedAt,
                 showIndicator: true,
@@ -1177,7 +1177,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         self.listComponent?.tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
         guard let cell = self.listComponent?.tableView.cellForRow(at: indexPath) as? SBUBaseMessageCell else {
-            SBULog.error("The cell for row at \(indexPath) is not `SBUBaseMessageCell`")
+            Log.error("The cell for row at \(indexPath) is not `SBUBaseMessageCell`")
             return
         }
         cell.messageContentView.animate(.shakeUpDown)
@@ -1344,9 +1344,9 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         } else {
             if let viewModel = self.viewModel, let firstNewMessage = viewModel.newMessagesList.first {
                 // Internally markAsUnread
-                SBULog.info("Should call markAsUnread with message=\(firstNewMessage.message)")
+                Log.info("Should call markAsUnread with message=\(firstNewMessage.message)")
                 viewModel.markMessageAsUnread(firstNewMessage) { _ in
-                    SBULog.info("markAsUnread done")
+                    Log.info("markAsUnread done")
                 }
             }
         }
@@ -1412,7 +1412,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
                 && channel.unreadMessageCount > 0
                 && (listComponent.hasSeenNewLine || listComponent.didUnreadMessageExist == false) {
                 
-                SBULog.info("Scrolled to bottom, call markAsRead()")
+                Log.info("Scrolled to bottom, call markAsRead()")
                 self.viewModel?.newMessagesList = []
                 self.viewModel?.markAsRead()
                 self.listComponent?.unreadMessageInfoView?.isHidden = true
@@ -1536,7 +1536,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
             guard let self = self else { return }
             self.showVoiceMessageInput()
         } onDenied: {
-            SBULog.info("Record permission was denied")
+            Log.info("Record permission was denied")
             self.showPermissionAlert(forType: .record)
             return
         }
@@ -1587,7 +1587,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         guard let row = self.baseViewModel?.fullMessageList.firstIndex(
             where: { $0.messageId == parentMessage.messageId }
         ) else {
-            SBULog.info("There is no cached linked message. Reloads messages based on linked messages.")
+            Log.info("There is no cached linked message. Reloads messages based on linked messages.")
             self.viewModel?.loadInitialMessages(
                 startingPoint: parentMessage.createdAt,
                 showIndicator: true,

@@ -91,7 +91,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     /// - Since: 1.0.11
     public init(baseChannel: BaseChannel, messageListParams: MessageListParams? = nil, displaysLocalCachedListFirst: Bool = false) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info(#function)
+        Log.info(#function)
         
         if displaysLocalCachedListFirst {
             self.createViewModel(
@@ -132,7 +132,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     ) {
         super.init(nibName: nil, bundle: nil)
         
-        SBULog.info(#function)
+        Log.info(#function)
         
         self.createViewModel(
             channelURL: channelURL,
@@ -168,7 +168,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     ) {
         super.init(nibName: nil, bundle: nil)
         
-        SBULog.info(#function)
+        Log.info(#function)
         
         if displaysLocalCachedListFirst {
             self.createViewModel(
@@ -650,7 +650,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     ///   - message: error message
     ///   - code: error code
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
     
     // MARK: - SBUBaseChannelViewModelDelegate
@@ -781,7 +781,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         forContext context: MessageContext?,
         keepsScroll: Bool
     ) {
-        SBULog.info("Fetched : \(messages.count), keepScroll : \(keepsScroll)")
+        Log.info("Fetched : \(messages.count), keepScroll : \(keepsScroll)")
         guard let baseListComponent = baseListComponent else { return }
         
         guard !messages.isEmpty else { return }
@@ -944,7 +944,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             self.baseViewModel?.isOperator == true {
             self.setMessageInputViewMode(.edit, message: userMessage)
         } else {
-            SBULog.info("This channel is frozen")
+            Log.info("This channel is frozen")
         }
     }
     
@@ -1534,7 +1534,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     // MARK: - SBUFileViewControllerDelegate
     open func didSelectDeleteImage(message: FileMessage) {
-        SBULog.info("[Request] Delete message: \(message.description)")
+        Log.info("[Request] Delete message: \(message.description)")
         
         self.baseViewModel?.deleteMessage(message: message)
     }

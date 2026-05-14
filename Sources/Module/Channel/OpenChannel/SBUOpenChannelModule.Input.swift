@@ -135,7 +135,7 @@ extension SBUOpenChannelModule {
             
             let imageName = imageURL.lastPathComponent
             guard let mimeType = SBUUtils.getMimeType(url: imageURL) else {
-                SBULog.error("Failed to get mimeType")
+                Log.error("Failed to get mimeType")
                 return
             }
             
@@ -254,7 +254,7 @@ extension SBUOpenChannelModule {
                         )
                     }
                 } catch {
-                    SBULog.error(error.localizedDescription)
+                    Log.error(error.localizedDescription)
                 }
             }
         }
@@ -273,7 +273,7 @@ extension SBUOpenChannelModule {
                     mimeType: mimeType
                 )
             } catch {
-                SBULog.error(error.localizedDescription)
+                Log.error(error.localizedDescription)
                 let sbError = SBError(domain: (error as NSError).domain, code: (error as NSError).code)
                 self.delegate?.didReceiveError(sbError, isBlocker: false)
             }
@@ -303,7 +303,7 @@ extension SBUOpenChannelModule {
                     mimeType: mimeType
                 )
             } catch {
-                SBULog.error(error.localizedDescription)
+                Log.error(error.localizedDescription)
                 let sbError = SBError(domain: (error as NSError).domain, code: (error as NSError).code)
                 self.delegate?.didReceiveError(sbError, isBlocker: false)
             }

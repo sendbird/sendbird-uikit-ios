@@ -192,7 +192,7 @@ open class SBUMessageSearchResultCell: SBUTableViewCell {
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
     }
     
     /// This function configure a cell using `BaseMessage` information.

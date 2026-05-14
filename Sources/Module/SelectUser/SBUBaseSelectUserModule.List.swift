@@ -81,7 +81,7 @@ extension SBUBaseSelectUserModule {
         
         // MARK: - LifeCycle
         deinit {
-            SBULog.info("")
+            Log.info("")
             self.baseDelegate = nil
             self.baseDataSource = nil
         }
@@ -192,7 +192,7 @@ extension SBUBaseSelectUserModule.List: SBUEmptyViewDelegate {
             emptyView.reloadData(.noMembers)
         }
         
-        SBULog.info("[Request] Retry load channel list")
+        Log.info("[Request] Retry load channel list")
     }
 }
 

@@ -209,7 +209,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     }
 
     deinit {
-        SBULog.info("")
+        Log.info("")
     }
     
     // MARK: - ViewModel
@@ -221,7 +221,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         showIndicator: Bool = true
     ) {
         guard channel != nil || channelURL != nil else {
-            SBULog.error("Either the channel or the channelURL parameter must be set.")
+            Log.error("Either the channel or the channelURL parameter must be set.")
             return
         }
         
@@ -629,7 +629,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     @available(*, deprecated, message: "Please use `calculateMessageMenuCGPoint(indexPath:)` in `SBUOpenChannelModule.List`") // 3.1.2
     public func calculatorMenuPoint(indexPath: IndexPath) -> CGPoint {
         guard let listComponent = listComponent else {
-            SBULog.error("listComponent is not set up.")
+            Log.error("listComponent is not set up.")
             return .zero
         }
         return listComponent.calculateMessageMenuCGPoint(indexPath: indexPath)
@@ -685,7 +685,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
     /// ```
     public func updateMessageListRatio(to ratio: CGFloat) {
         guard (0...1).contains(ratio) else {
-            SBULog.warning("The ratio must be in range of 0...1")
+            Log.warning("The ratio must be in range of 0...1")
             return
         }
         
@@ -757,7 +757,7 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         channel.exit(completionHandler: { [weak self] (error) in
             guard let self = self else { return }
             if let error = error {
-                SBULog.error("[Failed] Exit channel request: \(error.localizedDescription)")
+                Log.error("[Failed] Exit channel request: \(error.localizedDescription)")
                 self.errorHandler(error.localizedDescription)
             }
             

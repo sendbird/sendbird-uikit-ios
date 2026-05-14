@@ -261,7 +261,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         completionHandler: ((BaseChannel?, SBError?) -> Void)? = nil
     ) {
         guard let channelURL = channelURL else {
-            SBULog.error("Invalid ChannelURL")
+            Log.error("Invalid ChannelURL")
             let error = ChatError.invalidChannelURL.asSBError(
                 message: "Invalid ChannelURL"
             )
@@ -299,7 +299,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
                 }
                 
                 self.channel = channel
-                SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
+                Log.info("[Succeed] Load channel request: \(String(describing: self.channel))")
 
                 self.updateLastSeenAt() // will mark as read
                 
@@ -358,7 +358,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     
     private func canProceed(with channel: FeedChannel?, error: SBError?) -> Bool {
         if let error = error {
-            SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
+            Log.error("[Failed] Load channel request: \(error.localizedDescription)")
             
             if error.code == ChatError.nonAuthorized.rawValue {
                 self.delegate?.feedNotificationChannelViewModel(
@@ -403,7 +403,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         startingPoint: Int64?,
         showsIndicator: Bool
     ) {
-        SBULog.info("""
+        Log.info("""
             loadInitialNotifications,
             startingPoint : \(String(describing: startingPoint))
             """
@@ -462,11 +462,11 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     func loadPrevNotifications() {
         guard let notificationCollection = self.notificationCollection else { return }
         guard self.prevLock.try() else {
-            SBULog.info("Prev notification already loading")
+            Log.info("Prev notification already loading")
             return
         }
         
-        SBULog.info("[Request] Prev notification list")
+        Log.info("[Request] Prev notification list")
         
         notificationCollection.loadPrevious { [weak self] notifications, error in
             guard let self = self else { return }
@@ -480,7 +480,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
             }
             
             guard let notifications = notifications, !notifications.isEmpty else { return }
-            SBULog.info("[Prev notification response] \(notifications.count) notifications")
+            Log.info("[Prev notification response] \(notifications.count) notifications")
             
             self.delegate?.feedNotificationChannelViewModel(
                 self,
@@ -495,7 +495,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     /// Loads next notifications from `lastUpdatedTimestamp`.
     func loadNextNotifications() {
         guard self.nextLock.try() else {
-            SBULog.info("Next notification already loading")
+            Log.info("Next notification already loading")
             return
         }
         
@@ -515,7 +515,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
             }
             guard let notifications = notifications else { return }
             
-            SBULog.info("[Next notification Response] \(notifications.count) notifications")
+            Log.info("[Next notification Response] \(notifications.count) notifications")
             
             self.upsertNotificationsInList(notifications: notifications, needReload: true)
         }
@@ -591,7 +591,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         needUpdateNewNotification: Bool = false,
         needReload: Bool
     ) {
-        SBULog.info("First : \(String(describing: notifications?.first)), Last : \(String(describing: notifications?.last))")
+        Log.info("First : \(String(describing: notifications?.first)), Last : \(String(describing: notifications?.last))")
         
         var needsToMarkAsRead = false
         
@@ -709,7 +709,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         completionHandler: @escaping (Bool) -> Void
     ) {
         guard let uncachedKeys = self.templateLoadCache.uncachedKeys(from: keys) else {
-            SBULog.info("[Request] All requested keys are already marked as failed or are loading: \(keys)")
+            Log.info("[Request] All requested keys are already marked as failed or are loading: \(keys)")
             completionHandler(false)
             return
         }
@@ -718,7 +718,7 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         
         SBUMessageTemplateManager.loadTemplateList(type: .notification, keys: uncachedKeys) { [weak self] success in
             guard let self = self else { return }
-            SBULog.info("[Request] Load request completed - success: \(success)")
+            Log.info("[Request] Load request completed - success: \(success)")
             
             self.templateLoadCache.didLoadKeys(form: uncachedKeys, success: success)
 
@@ -738,11 +738,11 @@ class SBUFeedNotificationChannelViewModel: NSObject {
 // MARK: - ConnectionDelegate
 extension SBUFeedNotificationChannelViewModel: ConnectionDelegate {
     func didSucceedReconnection() {
-        SBULog.info("Did succeed reconnection")
+        Log.info("Did succeed reconnection")
         
         SendbirdUI.updateUserInfo { error in
             if let error = error {
-                SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
+                Log.error("[Failed] Update user info: \(error.localizedDescription)")
             }
         }
         
@@ -761,11 +761,11 @@ extension SBUFeedNotificationChannelViewModel: FeedChannelDelegate {
         
         switch message {
         case is UserMessage:
-            SBULog.info("Did receive user notification: \(message)")
+            Log.info("Did receive user notification: \(message)")
         case is FileMessage:
-            SBULog.info("Did receive file notification: \(message)")
+            Log.info("Did receive file notification: \(message)")
         case is AdminMessage:
-            SBULog.info("Did receive admin notification: \(message)")
+            Log.info("Did receive admin notification: \(message)")
         default:
             break
         }
@@ -794,7 +794,7 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
         addedMessages messages: [BaseMessage]
     ) {
         // -> pending, -> receive new notification
-        SBULog.info("notificationCollection addedMessages : \(messages.count)")
+        Log.info("notificationCollection addedMessages : \(messages.count)")
         switch context.source {
         case .eventMessageReceived:
             self.markAsRead()
@@ -817,7 +817,7 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
         updatedMessages messages: [BaseMessage]
     ) {
         // pending -> failed, pending -> succeded, failed -> Pending
-        SBULog.info("notificationCollection updatedNotifications : \(messages.count)")
+        Log.info("notificationCollection updatedNotifications : \(messages.count)")
         
         self.delegate?.feedNotificationChannelViewModel(
             self,
@@ -839,7 +839,7 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
         channel: FeedChannel,
         deletedMessages messages: [BaseMessage]
     ) {
-        SBULog.info("notificationCollection deletedNotifications : \(messages.count)")
+        Log.info("notificationCollection deletedNotifications : \(messages.count)")
         self.delegate?.feedNotificationChannelViewModel(self, deletedNotifications: messages)
         self.deleteNotificationsInList(notificationIds: messages.compactMap({ $0.messageId }), needReload: true)
     }
@@ -849,7 +849,7 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
         context: FeedChannelContext,
         deletedChannel channelURL: String
     ) {
-        SBULog.info("notificationCollection deletedChannel")
+        Log.info("notificationCollection deletedChannel")
         self.delegate?.feedNotificationChannelViewModel(
             self,
             didChangeChannel: nil,
@@ -870,7 +870,7 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
     }
     
     func didDetectHugeGap(_ collection: NotificationCollection) {
-        SBULog.info("notificationCollection didDetectHugeGap")
+        Log.info("notificationCollection didDetectHugeGap")
         self.notificationCollection?.dispose()
         
         var startingPoint: Int64?

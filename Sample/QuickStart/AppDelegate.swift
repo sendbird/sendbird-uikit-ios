@@ -20,9 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        SendbirdUI.setLogLevel(.all)
+        SendbirdLogger.setLevel(.info, for: .uikit)
+        SendbirdLogger.setLevel(.info, for: .messageTemplate)
         #if INSPECTION
-        SendbirdUI.setLogLevel(.all)
         self.renderViewForInspection()
         #endif
         self.uikitConfigs()

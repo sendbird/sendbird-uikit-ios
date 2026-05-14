@@ -255,7 +255,7 @@ extension SBUMessageThreadModule {
             
             let imageName = imageURL.lastPathComponent
             guard let mimeType = SBUUtils.getMimeType(url: imageURL) else {
-                SBULog.error("Failed to get mimeType")
+                Log.error("Failed to get mimeType")
                 return
             }
             
@@ -300,7 +300,7 @@ extension SBUMessageThreadModule {
                     parentMessage: self.parentMessage
                 )
             } catch {
-                SBULog.error(error.localizedDescription)
+                Log.error(error.localizedDescription)
                 let sbError = SBError(domain: (error as NSError).domain, code: (error as NSError).code)
                 self.delegate?.didReceiveError(sbError, isBlocker: false)
             }
@@ -384,7 +384,7 @@ extension SBUMessageThreadModule {
                         )
                     }
                 } catch {
-                    SBULog.error(error.localizedDescription)
+                    Log.error(error.localizedDescription)
                 }
             }
         }
@@ -404,7 +404,7 @@ extension SBUMessageThreadModule {
                     parentMessage: self.parentMessage
                 )
             } catch {
-                SBULog.error(error.localizedDescription)
+                Log.error(error.localizedDescription)
                 let sbError = SBError(domain: (error as NSError).domain, code: (error as NSError).code)
                 self.delegate?.didReceiveError(sbError, isBlocker: false)
             }
@@ -436,7 +436,7 @@ extension SBUMessageThreadModule {
                     parentMessage: self.parentMessage
                 )
             } catch {
-                SBULog.error(error.localizedDescription)
+                Log.error(error.localizedDescription)
                 let sbError = SBError(domain: (error as NSError).domain, code: (error as NSError).code)
                 self.delegate?.didReceiveError(sbError, isBlocker: false)
             }
@@ -761,12 +761,12 @@ extension SBUMessageThreadModule {
         /// Updates `suggestedMentionList` with `members`
         open func updateSuggestedMentionList(with members: [SBUUser]) {
             guard let config = SBUGlobals.userMentionConfig else {
-                SBULog.error("`SBUGlobals.userMentionConfig` is `nil`")
+                Log.error("`SBUGlobals.userMentionConfig` is `nil`")
                 return
             }
             
             guard SendbirdUI.config.groupChannel.channel.isMentionEnabled else {
-                SBULog.error("User mention features are disabled. See `SBUGlobals.isMentionEnabled` for more information")
+                Log.error("User mention features are disabled. See `SBUGlobals.isMentionEnabled` for more information")
                 return
             }
             

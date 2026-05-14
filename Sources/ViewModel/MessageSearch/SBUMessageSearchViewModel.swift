@@ -198,15 +198,15 @@ open class SBUMessageSearchViewModel: SBUBaseViewModel {
         let trimmedKeyword = keyword.trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard !trimmedKeyword.isEmpty else {
-            SBULog.info("Keyword shouldn't be empty.")
+            Log.info("Keyword shouldn't be empty.")
             return
         }
         guard trimmedKeyword != self.keyword else {
-            SBULog.info("Same keyword.")
+            Log.info("Same keyword.")
             return
         }
         
-        SBULog.info("new search keyword : [\(trimmedKeyword)]")
+        Log.info("new search keyword : [\(trimmedKeyword)]")
         
         self.searchResultList.removeAll()
         
@@ -221,7 +221,7 @@ open class SBUMessageSearchViewModel: SBUBaseViewModel {
     
     /// Loads the following list
     public func loadMore() {
-        SBULog.info("query : \(String(describing: self.messageSearchQuery))")
+        Log.info("query : \(String(describing: self.messageSearchQuery))")
         guard let messageSearchQuery = self.messageSearchQuery,
               messageSearchQuery.hasNext &&
                 !messageSearchQuery.isLoading
@@ -232,7 +232,7 @@ open class SBUMessageSearchViewModel: SBUBaseViewModel {
             return
         }
         
-        SBULog.info("loading next page.")
+        Log.info("loading next page.")
         messageSearchQuery.loadNextPage { [weak self] messageList, error in
             guard let self = self else { return }
             

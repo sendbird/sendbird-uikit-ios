@@ -207,13 +207,13 @@ extension SBUOpenChannelModule {
         
         // MARK: - SBUChannelInfoHeaderViewDelegate
         open func didSelectChannelInfo() {
-            SBULog.info("didSelectChannelInfo")
+            Log.info("didSelectChannelInfo")
             guard let rightBarButton = self.rightBarButton else { return }
             self.delegate?.baseChannelModule(self, didTapRightItem: rightBarButton)
         }
         
         open func didSelectChannelParticipants() {
-            SBULog.info("didSelectChannelParticipants")
+            Log.info("didSelectChannelParticipants")
             guard let rightBarButton = self.rightBarButton else { return }
             self.delegate?.baseChannelModule(self, didTapRightItem: rightBarButton)
         }

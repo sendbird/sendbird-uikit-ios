@@ -170,7 +170,7 @@ public extension SBUConfig.GroupChannel {
                     if #available(iOS 14, *) {
                         SBUGlobals.isPHPickerEnabled = newValue
                     } else {
-                        SBULog.error("`isMultipleFilesMessageEnabled` can only be enabled in iOS 14 or above.")
+                        Log.error("`isMultipleFilesMessageEnabled` can only be enabled in iOS 14 or above.")
                     }
                 }
             }
