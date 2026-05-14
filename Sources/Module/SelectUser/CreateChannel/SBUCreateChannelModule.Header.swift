@@ -127,7 +127,7 @@ extension SBUCreateChannelModule {
         public override init(frame: CGRect) { super.init(frame: frame) }
         
         deinit {
-            SBULog.info("")
+            Log.info("")
         }
         
         /// Configures header component.

@@ -575,7 +575,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
             }
         }
         didSet {
-            SBULog.info("Message input view changed mode to \(self.option.toString)")
+            Log.info("Message input view changed mode to \(self.option.toString)")
         }
     }
     

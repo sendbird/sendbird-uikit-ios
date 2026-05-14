@@ -57,7 +57,7 @@ extension SBUFeedbackAnswer {
             title: confirmTitle
         ) { info in
             let message = info as? String
-            SBULog.info("[Request] submit message: \(String(describing: message))")
+            Log.info("[Request] submit message: \(String(describing: message))")
             handler(answer.updateComment(message))
         }
 

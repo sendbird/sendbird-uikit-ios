@@ -91,7 +91,7 @@ open class SBUInviteUserViewModel: SBUBaseSelectUserViewModel {
         guard let channel = self.channel as? GroupChannel else { return }
         
         self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
-        SBULog.info("Request invite users: \(userIds)")
+        Log.info("Request invite users: \(userIds)")
         
         channel.inviteUserIds(userIds, completionHandler: { [weak self] error in
             guard let self = self else { return }
@@ -102,7 +102,7 @@ open class SBUInviteUserViewModel: SBUBaseSelectUserViewModel {
                 return
             }
             
-            SBULog.info("[Succeed] Invite users request success")
+            Log.info("[Succeed] Invite users request success")
             self.delegates.forEach { $0.inviteUserViewModel(self, didInviteUserIds: userIds) }
         })
     }

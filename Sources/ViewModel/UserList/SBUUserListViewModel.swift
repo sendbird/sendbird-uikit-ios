@@ -245,11 +245,11 @@ open class SBUUserListViewModel: NSObject {
         self.isLoading = true
         self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         
-        SBULog.info("[Request] Next user List")
+        Log.info("[Request] Next user List")
 
         if let users = users {
             // Customized user list
-            SBULog.info("\(users.count) customized users have been added.")
+            Log.info("\(users.count) customized users have been added.")
             
             self.userList += users
             self.isLoading = false
@@ -296,7 +296,7 @@ open class SBUUserListViewModel: NSObject {
         guard self.memberListQuery?.hasNext == true else {
             self.isLoading = false
             self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
-            SBULog.info("All members have been loaded.")
+            Log.info("All members have been loaded.")
             return
         }
         
@@ -312,7 +312,7 @@ open class SBUUserListViewModel: NSObject {
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
-            SBULog.info("[Response] \(members.count) members")
+            Log.info("[Response] \(members.count) members")
 
             self.userList += members
             self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
@@ -334,7 +334,7 @@ open class SBUUserListViewModel: NSObject {
         guard self.operatorListQuery?.hasNext == true else {
             self.isLoading = false
             self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
-            SBULog.info("All operators have been loaded.")
+            Log.info("All operators have been loaded.")
             return
         }
         
@@ -350,7 +350,7 @@ open class SBUUserListViewModel: NSObject {
                 return
             }
             guard let operators = operators?.sbu_convertUserList() else { return }
-            SBULog.info("[Response] \(operators.count) operators")
+            Log.info("[Response] \(operators.count) operators")
 
             self.userList += operators
             self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
@@ -372,7 +372,7 @@ open class SBUUserListViewModel: NSObject {
         guard self.mutedMemberListQuery?.hasNext == true else {
             self.isLoading = false
             self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
-            SBULog.info("All muted members have been loaded.")
+            Log.info("All muted members have been loaded.")
             return
         }
         
@@ -388,7 +388,7 @@ open class SBUUserListViewModel: NSObject {
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
-            SBULog.info("[Response] \(members.count) members")
+            Log.info("[Response] \(members.count) members")
 
             self.userList += members
             self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
@@ -411,7 +411,7 @@ open class SBUUserListViewModel: NSObject {
         guard self.mutedParticipantListQuery?.hasNext == true else {
             self.isLoading = false
             self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
-            SBULog.info("All muted participants have been loaded.")
+            Log.info("All muted participants have been loaded.")
             return
         }
         
@@ -427,7 +427,7 @@ open class SBUUserListViewModel: NSObject {
                 return
             }
             guard let members = members?.sbu_convertUserList() else { return }
-            SBULog.info("[Response] \(members.count) members")
+            Log.info("[Response] \(members.count) members")
 
             self.userList += members.sbu_updateOperatorStatus(channel: channel)
             self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
@@ -448,7 +448,7 @@ open class SBUUserListViewModel: NSObject {
         guard self.bannedUserListQuery?.hasNext == true else {
             self.isLoading = false
             self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
-            SBULog.info("All banned users have been loaded.")
+            Log.info("All banned users have been loaded.")
             return
         }
         
@@ -465,7 +465,7 @@ open class SBUUserListViewModel: NSObject {
                 return
             }
             guard let users = users?.sbu_convertUserList() else { return }
-            SBULog.info("[Response] \(users.count) users")
+            Log.info("[Response] \(users.count) users")
 
             self.userList += users
             self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
@@ -487,7 +487,7 @@ open class SBUUserListViewModel: NSObject {
         guard self.participantListQuery?.hasNext == true else {
             self.isLoading = false
             self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
-            SBULog.info("All participants have been loaded.")
+            Log.info("All participants have been loaded.")
             return
         }
         
@@ -503,7 +503,7 @@ open class SBUUserListViewModel: NSObject {
                 return
             }
             guard let participants = participants?.sbu_convertUserList() else { return }
-            SBULog.info("[Response] \(participants.count) participants")
+            Log.info("[Response] \(participants.count) participants")
 
             self.userList += participants.sbu_updateOperatorStatus(channel: channel)
             self.delegates.forEach { $0.userListViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
@@ -586,7 +586,7 @@ open class SBUUserListViewModel: NSObject {
         let userId = user.userId
         
         self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
-        SBULog.info("[Request] Register user: \(userId)")
+        Log.info("[Request] Register user: \(userId)")
 
         channel.addOperators(userIds: [userId], completionHandler: self.userStateChangedHandler)
     }
@@ -598,7 +598,7 @@ open class SBUUserListViewModel: NSObject {
         let userId = user.userId
         
         self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
-        SBULog.info("[Request] Unregister operator: \(userId)")
+        Log.info("[Request] Unregister operator: \(userId)")
         
         channel.removeOperators(userIds: [userId], completionHandler: self.userStateChangedHandler)
     }

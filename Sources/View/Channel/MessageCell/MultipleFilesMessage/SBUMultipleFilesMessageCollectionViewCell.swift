@@ -80,7 +80,7 @@ open class SBUMultipleFilesMessageCollectionViewCell: SBUCollectionViewCell {
             // when message.sendingStatus is pending or failed.
             guard let uploadableFileInfo = uploadableFileInfo,
                   let imageData = uploadableFileInfo.file else {
-                SBULog.error("Multiple files message has no files")
+                Log.error("Multiple files message has no files")
                 return
             }
             

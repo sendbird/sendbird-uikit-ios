@@ -91,7 +91,7 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
     /// - Since: 1.0.11
     required public init(channelListQuery: OpenChannelListQuery? = nil) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channelListQuery: channelListQuery)
         self.headerComponent = SBUModuleSet.OpenChannelListModule.HeaderComponent.init()
@@ -118,7 +118,7 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         self.viewModel = nil
         self.headerComponent = nil
         self.listComponent = nil
@@ -217,7 +217,7 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
     }
     
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
 
     // MARK: - SBUOpenChannelListModuleHeaderDelegate

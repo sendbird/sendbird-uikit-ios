@@ -83,7 +83,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     ) {
         super.init(nibName: nil, bundle: nil)
         
-        SBULog.info(#function)
+        Log.info(#function)
 
         self.initialize(
             channel: channel,
@@ -102,7 +102,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     ) {
         super.init(nibName: nil, bundle: nil)
         
-        SBULog.info(#function)
+        Log.info(#function)
         
         self.initialize(
             channelURL: channelURL,
@@ -120,7 +120,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         displaysLocalCachedListFirst: Bool = false,
         viewParams: SBUFeedNotificationChannelViewParams? = nil
     ) {
-        SBULog.info(#function)
+        Log.info(#function)
         
         self.createViewModelHandler = { [weak self] in
             guard let self = self else { return }
@@ -181,7 +181,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         
         self.viewModel = nil
         self.headerComponent = nil
@@ -210,7 +210,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     /// - Parameter unreadMessageCount: unread message count
     /// - Since: 3.5.0
     open func didUpdateUnreadMessageCount(_ unreadMessageCount: UInt) {
-        SBULog.info("Unread message count: \(unreadMessageCount)")
+        Log.info("Unread message count: \(unreadMessageCount)")
     }
     
     // MARK: - Header
@@ -265,7 +265,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         displaysLocalCachedListFirst: Bool = false
     ) {
         guard channel != nil || channelURL != nil else {
-            SBULog.error("Either the channel or the channelURL parameter must be set.")
+            Log.error("Either the channel or the channelURL parameter must be set.")
             return
         }
         
@@ -406,7 +406,7 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
     ///   - message: error message
     ///   - code: error code
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
     
     // MARK: - TableView
@@ -558,11 +558,11 @@ open class SBUFeedNotificationChannelViewController: SBUBaseViewController,
         forContext context: NotificationContext?,
         keepsScroll: Bool
     ) {
-        SBULog.info("Fetched : \(notifications.count), keepScroll : \(keepsScroll)")
+        Log.info("Fetched : \(notifications.count), keepScroll : \(keepsScroll)")
         guard let listComponent = listComponent else { return }
         
         guard !notifications.isEmpty else {
-            SBULog.info("Fetched empty notifications.")
+            Log.info("Fetched empty notifications.")
             return
         }
         

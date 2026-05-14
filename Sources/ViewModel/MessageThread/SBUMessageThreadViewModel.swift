@@ -285,7 +285,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     public override func loadChannel(channelURL: String,
                                      messageListParams: MessageListParams? = nil,
                                      completionHandler: ((BaseChannel?, SBError?) -> Void)? = nil) {
-        SBULog.info("[Request] Load channel: \(String(channelURL))")
+        Log.info("[Request] Load channel: \(String(channelURL))")
         GroupChannel.getChannel(url: channelURL) { [weak self] channel, error in
             guard let self = self else {
                 completionHandler?(nil, error)
@@ -298,7 +298,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 return
             }
             
-            SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
+            Log.info("[Succeed] Load channel request: \(String(describing: self.channel))")
             
             // background refresh to check if user is banned or not.
             self.refreshChannel()
@@ -354,7 +354,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     
     private func canProceed(with channel: GroupChannel?, error: SBError?) -> Bool {
         if let error = error {
-            SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
+            Log.error("[Failed] Load channel request: \(error.localizedDescription)")
             
             if error.code == ChatError.nonAuthorized.rawValue {
                 self.delegates.forEach {
@@ -442,7 +442,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                                              initialMessages: [BaseMessage]?) {
         guard SendbirdChat.getConnectState() == .open else { return }
         
-        SBULog.info("""
+        Log.info("""
             loadInitialMessages,
             startingPoint : \(String(describing: startingPoint)),
             initialMessages : \(String(describing: initialMessages))
@@ -469,11 +469,11 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     /// Loads previous messages from given timestamp. Load messages from the latest (`Int64.max`).
     public func loadPrevMessages(timestamp: Int64?) {
         guard self.prevLock.try() else {
-            SBULog.info("Prev message already loading")
+            Log.info("Prev message already loading")
             return
         }
         
-        SBULog.info("[Request] Prev message list from : \(String(describing: timestamp))")
+        Log.info("[Request] Prev message list from : \(String(describing: timestamp))")
         
         self.isLoadingPrev = true
         
@@ -504,12 +504,12 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 
                 guard self.isValidResponse(messages: messages, error: error),
                       let messages = messages else {
-                    SBULog.warning("Prev message list request is not valid")
+                    Log.warning("Prev message list request is not valid")
                     self.isLoadingPrev = false
                     return
                 }
                 
-                SBULog.info("[Prev message response] \(messages.count) messages")
+                Log.info("[Prev message response] \(messages.count) messages")
                 
                 self.hasMorePrevious = messages.count >= params.previousResultSize
                 
@@ -533,11 +533,11 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     
     public override func loadNextMessages() {
         guard self.nextLock.try() else {
-            SBULog.info("Next message already loading")
+            Log.info("Next message already loading")
             return
         }
         
-        SBULog.info("[Request] Next message list from : \(self.lastUpdatedTimestamp)")
+        Log.info("[Request] Next message list from : \(self.lastUpdatedTimestamp)")
         
         self.isLoadingNext = true
         
@@ -561,11 +561,11 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 
                 guard self.isValidResponse(messages: messages, error: error),
                       let messages = messages else {
-                    SBULog.warning("Next message list request is not valid")
+                    Log.warning("Next message list request is not valid")
                     return
                 }
                 
-                SBULog.info("[Next message Response] \(messages.count) messages")
+                Log.info("[Next message Response] \(messages.count) messages")
                 
                 self.hasMoreNext = messages.count >= params.nextResultSize
                 
@@ -590,7 +590,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     ///   - startingPoint: Starting point to load messages from, or `nil` to load from the latest. (`Int64.max`)
     ///   - showIndicator: Whether to show indicator on load or not.
     public func loadBothMessages(timestamp: Int64?, showIndicator: Bool) {
-        SBULog.info("[Request] Both message list from : \(String(describing: timestamp))")
+        Log.info("[Request] Both message list from : \(String(describing: timestamp))")
         guard self.initialLock.try() else { return }
         self.delegates.forEach {
             $0.shouldUpdateLoadingState(showIndicator)
@@ -626,7 +626,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         }
         
         let startingTimestamp: Int64 = timestamp ?? .max
-        SBULog.info("""
+        Log.info("""
             Fetch from : \(startingTimestamp),
             limit: prev = \(params.previousResultSize),
             next = \(params.nextResultSize)
@@ -671,14 +671,14 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         
         guard self.isValidResponse(messages: messages, error: error),
               let messages = messages else {
-            SBULog.warning("Initial message list request is not valid")
+            Log.warning("Initial message list request is not valid")
             self.delegates.forEach {
                 $0.shouldUpdateLoadingState(false)
             }
             return
         }
         
-        SBULog.info("[Both message response] \(messages.count) messages")
+        Log.info("[Both message response] \(messages.count) messages")
         let startingTimestamp: Int64 = self.startingPoint ?? .max
         
         if let usedParam = usedParam {
@@ -694,18 +694,18 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             }
         }
         
-        SBULog.info("""
+        Log.info("""
             [Initial message response] Prev count : \(messages.filter({ $0.createdAt <= startingTimestamp }).count),
             prevLimit : \(String(describing: usedParam?.previousResultSize)),
             hasPrev : \(String(describing: self.hasPrevious))
             """)
-        SBULog.info("""
+        Log.info("""
             [Initial message response] Next count : \(messages.filter({ $0.createdAt >= startingTimestamp }).count),
             nextLimit : \(String(describing: usedParam?.nextResultSize)),
             hasNext : \(String(describing: self.hasNext))
             """)
         
-        SBULog.info("""
+        Log.info("""
             [Initial message response] First : \(String(describing: messages.first)),
             Last : \(String(describing: messages.last))
             """)
@@ -738,9 +738,9 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 params: param,
                 fileUploadHandler: { requestId, index, _, error in
                     if let error = error {
-                        SBULog.error("Multiple files message - failed to upload file at index [\(index)]. \(error.localizedDescription)")
+                        Log.error("Multiple files message - failed to upload file at index [\(index)]. \(error.localizedDescription)")
                     } else {
-                        SBULog.info("Multiple files message - file at index [\(index)] upload completed.")
+                        Log.info("Multiple files message - file at index [\(index)] upload completed.")
                     }
                     
                     // Update the multipleFilesMessage collection view cell
@@ -749,7 +749,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 },
                 completionHandler: { [weak self] multipleFilesMessage, error in
                     if let error = error {
-                        SBULog.error(error.localizedDescription)
+                        Log.error(error.localizedDescription)
                     }
                     self?.sendMultipleFilesMessageCompletionHandler?(multipleFilesMessage, error)
                 })
@@ -775,7 +775,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                   message: preSendMessage
               )
             } else {
-                SBULog.info("A filtered file message has been sent.")
+                Log.info("A filtered file message has been sent.")
             }
           
             self.sortAllMessageList(needReload: true)
@@ -812,7 +812,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 self.baseDelegates.forEach {
                     $0.didReceiveError(error)
                 }
-                SBULog.error("[Failed] Send user message request: \(error.localizedDescription)")
+                Log.error("[Failed] Send user message request: \(error.localizedDescription)")
                 return
             }
 
@@ -824,7 +824,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 forMessageThread: self.isThreadMessageMode
             )
             
-            SBULog.info("[Succeed] Send user message: \(userMessage.description)")
+            Log.info("[Succeed] Send user message: \(userMessage.description)")
             self.upsertMessagesInList(messages: [userMessage], needReload: true)
         }
     }
@@ -838,7 +838,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 self.baseDelegates.forEach {
                     $0.didReceiveError(error)
                 }
-                SBULog.error(
+                Log.error(
                     """
                     [Failed] Send file message request:
                     \(error.localizedDescription)
@@ -855,7 +855,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 forMessageThread: self.isThreadMessageMode
             )
             
-            SBULog.info("[Succeed] Send file message: \(fileMessage.description)")
+            Log.info("[Succeed] Send file message: \(fileMessage.description)")
             
             self.upsertMessagesInList(messages: [fileMessage], needReload: true)
         }
@@ -876,7 +876,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 $0.didReceiveError(error, isBlocker: false)
             }
             
-            SBULog.error("[Failed] Resend failed user message request: \(error.localizedDescription)")
+            Log.error("[Failed] Resend failed user message request: \(error.localizedDescription)")
             return
             
         } else {
@@ -888,7 +888,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 forMessageThread: self.isThreadMessageMode
             )
             
-            SBULog.info("[Succeed] Resend failed file message: \(message.description)")
+            Log.info("[Succeed] Resend failed file message: \(message.description)")
             
             self.upsertMessagesInList(messages: [message], needReload: true)
         }
@@ -931,7 +931,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
 
     // MARK: - Last Updated timestamp
     private func updateLastUpdatedTimestamp(messages: [BaseMessage]) {
-        SBULog.info("""
+        Log.info("""
             hasNext : \(String(describing: self.hasNext)),
             first : \(String(describing: messages.first)),
             last : \(String(describing: messages.last))
@@ -946,7 +946,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             }
         }
         
-        SBULog.info("""
+        Log.info("""
             newTimestamp : \(newTimestamp),
             lastUpdatedTimestamp : \(self.lastUpdatedTimestamp),
             currentTime : \(currentTime)
@@ -956,14 +956,14 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     }
     
     private func setLastUpdatedTimestamp(timestamp: Int64) {
-        SBULog.info("set to \(timestamp)")
+        Log.info("set to \(timestamp)")
         self.lastUpdatedTimestamp = timestamp
     }
     
     private func resetLastUpdatedTimestamp() {
         let currentTime = self.currentTimeMillis
         self.lastUpdatedTimestamp = self.startingPoint ?? currentTime
-        SBULog.info("""
+        Log.info("""
             reset timestamp to : \(self.lastUpdatedTimestamp),
             startingPoint : \(String(describing: self.startingPoint)),
             currentTime : \(currentTime)
@@ -1007,14 +1007,14 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         }
         
         if let token = self.changelogToken {
-            SBULog.info("[Request] Message change logs with token")
+            Log.info("[Request] Message change logs with token")
             self.channel?.getMessageChangeLogs(
                 token: token,
                 params: changeLogsParams,
                 completionHandler: completion
             )
         } else {
-            SBULog.info("[Request] Message change logs with last updated timestamp")
+            Log.info("[Request] Message change logs with last updated timestamp")
             self.channel?.getMessageChangeLogs(
                 timestamp: self.lastUpdatedTimestamp,
                 params: changeLogsParams,
@@ -1026,7 +1026,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     /// Separated loadNext for changelog and normal loading on scroll.
     /// Difference on limit + handling response (setting hasNext, updatedAt, etc)
     private func loadNextMessagesForChangelog(completion: @escaping ([BaseMessage]) -> Void) {
-        SBULog.info("[Request] Changelog added message list from : \(self.lastUpdatedTimestamp)")
+        Log.info("[Request] Changelog added message list from : \(self.lastUpdatedTimestamp)")
         
         let params = (self.threadedMessageListParams.copy() as? ThreadedMessageListParams) ?? ThreadedMessageListParams()
         params.previousResultSize = 0
@@ -1042,12 +1042,12 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 
                 guard self.isValidResponse(messages: messages, error: error),
                       let messages = messages else {
-                    SBULog.warning("Changelog added message list request is not valid")
+                    Log.warning("Changelog added message list request is not valid")
                     self.nextLock.unlock()
                     return
                 }
                 
-                SBULog.info("[Changelog added response] \(messages.count) messages")
+                Log.info("[Changelog added response] \(messages.count) messages")
                 completion(messages)
             }
         )
@@ -1061,7 +1061,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                                          nextToken: String?,
                                          error: SBError?) {
         if let error = error {
-            SBULog.error("""
+            Log.error("""
                 [Failed] Message change logs request:
                 \(error.localizedDescription)
                 """)
@@ -1073,7 +1073,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             return
         }
         
-        SBULog.info("""
+        Log.info("""
             [Response]
             \(String(format: "%d updated messages", updatedMessages?.count ?? 0)),
             \(String(format: "%d deleted messages", deletedMessageIds?.count ?? 0))
@@ -1150,7 +1150,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         }
         self.upsertMessagesInList(messages: addedMessages, needReload: true)
         
-        SBULog.info("Loaded added messages : \(addedMessages.count), hasNext : \(String(describing: self.hasNext))")
+        Log.info("Loaded added messages : \(addedMessages.count), hasNext : \(String(describing: self.hasNext))")
         
         return hasMore
     }
@@ -1159,14 +1159,14 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     public func startTypingMessage() {
         guard let channel = self.channel as? GroupChannel else { return }
         
-        SBULog.info("[Request] Start typing")
+        Log.info("[Request] Start typing")
         channel.startTyping()
     }
     
     public func endTypingMessage() {
         guard let channel = self.channel as? GroupChannel else { return }
         
-        SBULog.info("[Request] End typing")
+        Log.info("[Request] End typing")
         channel.endTyping()
     }
     
@@ -1182,12 +1182,12 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
             if let channel = self.channel as? GroupChannel {
                 if channel.isSuper {
                     guard let config = SBUGlobals.userMentionConfig else {
-                        SBULog.error("`SBUGlobals.userMentionConfig` is `nil`")
+                        Log.error("`SBUGlobals.userMentionConfig` is `nil`")
                         return
                     }
                     
                     guard SendbirdUI.config.groupChannel.channel.isMentionEnabled else {
-                        SBULog.error("User mention features are disabled. See `SBUGlobals.isMentionEnabled` for more information")
+                        Log.error("User mention features are disabled. See `SBUGlobals.isMentionEnabled` for more information")
                         return
                     }
                     
@@ -1255,7 +1255,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
     /// - Returns: `true` if response is valid.
     private func isValidResponse(messages: [BaseMessage]?, error: SBError?) -> Bool {
         if let error = error {
-            SBULog.error("Couldn't retrieve thread list.: \(error)")
+            Log.error("Couldn't retrieve thread list.: \(error)")
             self.isLoadingNext = false
             self.delegates.forEach {
                 $0.didReceiveError(error, isBlocker: true)
@@ -1264,7 +1264,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
         }
         
         guard messages != nil else {
-            SBULog.warning("Response of retrieve thread list is nil")
+            Log.warning("Response of retrieve thread list is nil")
             self.isLoadingNext = false
             return false
         }
@@ -1392,13 +1392,13 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         guard self.channel?.channelURL == channel.channelURL else { return }
         
         if message.messageId == self.parentMessageId {
-            SBULog.info("Did update message: \(message)")
+            Log.info("Did update message: \(message)")
             self.delegates.forEach {
                 $0.messageThreadViewModel(self, didUpdateParentMessage: message)
             }
             
         } else if self.parentMessageId == message.parentMessageId {
-            SBULog.info("Did update message: \(message)")
+            Log.info("Did update message: \(message)")
             self.upsertMessagesInList(messages: [message], needReload: true)
         }
     }
@@ -1422,7 +1422,7 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         
         if reactionEvent.messageId == self.parentMessageId {
             // Parent message
-            SBULog.info("Did update message: \(String(describing: self.parentMessage))")
+            Log.info("Did update message: \(String(describing: self.parentMessage))")
             if let parentMessage = parentMessage {
                 if reactionEvent.messageId == parentMessage.messageId {
                     parentMessage.apply(reactionEvent)
@@ -1439,7 +1439,7 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         } else if self.parentMessageId == message?.parentMessageId {
             guard let message = message else { return }
             // threaded message
-            SBULog.info("Did update message: \(message.parentMessageId)")
+            Log.info("Did update message: \(message.parentMessageId)")
             if reactionEvent.messageId == message.messageId {
                 message.apply(reactionEvent)
             }
@@ -1456,7 +1456,7 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
                 $0.messageThreadViewModelShouldDismissMessageThread(self)
             }
         } else {
-            SBULog.info("Message was deleted: \(messageId)")
+            Log.info("Message was deleted: \(messageId)")
             
             for message in self.messageList where message.messageId == messageId {
                 self.delegates.forEach {
@@ -1474,7 +1474,7 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         guard let channel = channel as? GroupChannel else { return }
         self.channel = channel
         
-        SBULog.info("Channel was changed, ChannelURL:\(channel.channelURL)")
+        Log.info("Channel was changed, ChannelURL:\(channel.channelURL)")
         
         let context = MessageContext(source: .eventChannelChanged, sendingStatus: .succeeded)
         self.delegates.forEach {
@@ -1485,7 +1485,7 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
     open override func channelWasFrozen(_ channel: BaseChannel) {
         guard self.channel?.channelURL == channel.channelURL else { return }
         guard let channel = channel as? GroupChannel else { return }
-        SBULog.info("Channel was frozen, ChannelURL:\(channel.channelURL)")
+        Log.info("Channel was frozen, ChannelURL:\(channel.channelURL)")
         
         let context = MessageContext(source: .eventChannelFrozen, sendingStatus: .succeeded)
         self.delegates.forEach {
@@ -1496,7 +1496,7 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
     open override func channelWasUnfrozen(_ channel: BaseChannel) {
         guard self.channel?.channelURL == channel.channelURL else { return }
         guard let channel = channel as? GroupChannel else { return }
-        SBULog.info("Channel was unfrozen, ChannelURL:\(channel.channelURL)")
+        Log.info("Channel was unfrozen, ChannelURL:\(channel.channelURL)")
         
         let context = MessageContext(source: .eventChannelUnfrozen, sendingStatus: .succeeded)
         self.delegates.forEach {
@@ -1508,7 +1508,7 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         guard self.channel?.channelURL == channel.channelURL else { return }
         
         if user.userId == SBUGlobals.currentUser?.userId {
-            SBULog.info("You are muted.")
+            Log.info("You are muted.")
             let context = MessageContext(source: .eventUserMuted, sendingStatus: .succeeded)
             self.delegates.forEach {
                 $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
@@ -1520,7 +1520,7 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         guard self.channel?.channelURL == channel.channelURL else { return }
         
         if user.userId == SBUGlobals.currentUser?.userId {
-            SBULog.info("You are unmuted.")
+            Log.info("You are unmuted.")
             let context = MessageContext(source: .eventUserUnmuted, sendingStatus: .succeeded)
             self.delegates.forEach {
                 $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
@@ -1541,7 +1541,7 @@ extension SBUMessageThreadViewModel: GroupChannelDelegate {
         guard self.channel?.channelURL == channel.channelURL else { return }
         
         if user.userId == SBUGlobals.currentUser?.userId {
-            SBULog.info("You are banned.")
+            Log.info("You are banned.")
             self.delegates.forEach {
                 $0.baseChannelViewModel(self, shouldDismissForChannel: channel)
             }
@@ -1594,7 +1594,7 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
                                 channel: GroupChannel,
                                 addedMessages messages: [BaseMessage]) {
         // -> pending, -> receive new message
-        SBULog.info("messageCollection addedMessages : \(messages.count)")
+        Log.info("messageCollection addedMessages : \(messages.count)")
         
         for addedMessage in messages {
             if addedMessage.sendingStatus == .succeeded
@@ -1629,7 +1629,7 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
                                 context: MessageContext,
                                 channel: GroupChannel,
                                 updatedMessages messages: [BaseMessage]) {
-        SBULog.info("messageCollection updatedMessages : \(messages.count)")
+        Log.info("messageCollection updatedMessages : \(messages.count)")
         
         let parentMessages = messages.filter { $0.messageId == self.parentMessageId }
         if let parentMessage = parentMessages.first {
@@ -1648,7 +1648,7 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
                                 context: MessageContext,
                                 channel: GroupChannel,
                                 deletedMessages messages: [BaseMessage]) {
-        SBULog.info("messageCollection deletedMessages : \(messages.count)")
+        Log.info("messageCollection deletedMessages : \(messages.count)")
         
         let parentMessages = messages.filter { $0.messageId == self.parentMessageId }
         if let parentMessage = parentMessages.first {
@@ -1663,12 +1663,12 @@ extension SBUMessageThreadViewModel: MessageCollectionDelegate {
     open func messageCollection(_ collection: MessageCollection,
                                 context: MessageContext,
                                 updatedChannel channel: GroupChannel) {
-        SBULog.info("messageCollection changedChannel")
+        Log.info("messageCollection changedChannel")
     }
     
     open func messageCollection(_ collection: MessageCollection,
                                 context: MessageContext,
                                 deletedChannel channelURL: String) {
-        SBULog.info("messageCollection deletedChannel")
+        Log.info("messageCollection deletedChannel")
     }
 }

@@ -88,7 +88,7 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
 
         SBUPermissionManager.shared.requestRecordAcess(onDenied: { [weak self] in
             guard let self = self else { return }
-            SBULog.error("[Failed] Request record permission")
+            Log.error("[Failed] Request record permission")
             self.showPermissionAlert()
         })
     }
@@ -134,7 +134,7 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
         case .granted:
             if self.status != .prepared {
                 if self.prepareToRecord() == false {
-                    SBULog.error("[Failed] Recorder preparation")
+                    Log.error("[Failed] Recorder preparation")
                     self.status = .none
                 }
             }
@@ -146,14 +146,14 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
                 return true
             } else {
                 self.status = .none
-                SBULog.error("[Failed] Record")
+                Log.error("[Failed] Record")
                 self.delegate?.voiceRecorderDidReceiveError(self, errorStatus: .record)
                 return false
             }
         default:
             SBUPermissionManager.shared.requestRecordAcess(onDenied: { [weak self] in
                 guard let self = self else { return }
-                SBULog.error("[Failed] Request record permission")
+                Log.error("[Failed] Request record permission")
                 self.showPermissionAlert()
             })
             self.status = .none
@@ -214,7 +214,7 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
             try self.audioSession.overrideOutputAudioPort(.speaker)
             try self.audioSession.setActive(true)
         } catch {
-            SBULog.error("[Failed] Audio session preparation error: \(error.localizedDescription)")
+            Log.error("[Failed] Audio session preparation error: \(error.localizedDescription)")
             self.delegate?.voiceRecorderDidReceiveError(self, errorStatus: .audioSessionSetting)
             return false
         }
@@ -228,7 +228,7 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
         let fullFileName = "\(fileName).\(fileExtension)"
         
         guard let voiceFilePath = SBUCacheManager.File.diskCache.voiceTempPath(fileName: fullFileName) else {
-            SBULog.error("[Failed] Create voice file")
+            Log.error("[Failed] Create voice file")
             self.delegate?.voiceRecorderDidReceiveError(self, errorStatus: .recorderPreparation)
             return false
         }
@@ -241,7 +241,7 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
             self.voiceFileInfo.fileName = fullFileName
             self.voiceFileInfo.filePath = voiceFilePath
         } catch {
-            SBULog.error("[Failed] Audio recorder preparation error: \(error.localizedDescription)")
+            Log.error("[Failed] Audio recorder preparation error: \(error.localizedDescription)")
             self.delegate?.voiceRecorderDidReceiveError(self, errorStatus: .recorderPreparation)
             return false
         }
@@ -250,7 +250,7 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
             return false
         }
         
-        SBULog.info("[Succeeded] Audio recorder preparation")
+        Log.info("[Succeeded] Audio recorder preparation")
         self.status = .prepared
         self.delegate?.voiceRecorderDidPrepare(self, voiceFileInfo: self.voiceFileInfo)
         return true
@@ -292,7 +292,7 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
         self.stopProgressTimer()
         
         if self.currentRecordingTime < self.minRecordingTime {
-            SBULog.info("Recorder will be canceled because it is less than the minimum recording time.")
+            Log.info("Recorder will be canceled because it is less than the minimum recording time.")
             self.resetRecorder()
             return
         }
@@ -302,7 +302,7 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
             self.status = .completed
             self.delegate?.voiceRecorderDidFinishRecord(self, voiceFileInfo: self.voiceFileInfo)
         } else {
-            SBULog.error("[Failed] Finish recording")
+            Log.error("[Failed] Finish recording")
             self.status = .none
             self.delegate?.voiceRecorderDidReceiveError(self, errorStatus: .finishRecording)
             self.resetRecorder()
@@ -310,7 +310,7 @@ public class SBUVoiceRecorder: NSObject, AVAudioRecorderDelegate {
     }
     
     public func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
-        SBULog.error("[Failed] Recorder encode error: \(error.debugDescription)")
+        Log.error("[Failed] Recorder encode error: \(error.debugDescription)")
         
         self.resetRecorder()
         

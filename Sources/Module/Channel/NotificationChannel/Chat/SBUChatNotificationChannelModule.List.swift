@@ -244,7 +244,7 @@ extension SBUChatNotificationChannelModule {
         @available(*, unavailable, renamed: "SBUChatNotificationChannelModule.List()")
         public override init(frame: CGRect) { super.init(frame: frame) }
         
-        deinit { SBULog.info(#function) }
+        deinit { Log.info(#function) }
         
         /// Set values of the views in the list component when it needs.
         func setupViews() {
@@ -400,7 +400,7 @@ extension SBUChatNotificationChannelModule {
             forRowAt indexPath: IndexPath
         ) {
             guard let channel = self.channel else {
-                SBULog.error("Channel must exist!")
+                Log.error("Channel must exist!")
                 return
             }
             
@@ -518,7 +518,7 @@ extension SBUChatNotificationChannelModule {
         
         public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             guard indexPath.row < self.notifications.count else {
-                SBULog.error("The index is out of range.")
+                Log.error("The index is out of range.")
                 return .init()
             }
             
@@ -530,7 +530,7 @@ extension SBUChatNotificationChannelModule {
             cell.selectionStyle = .none
             
             guard let notificationCell = cell as? SBUBaseMessageCell else {
-                SBULog.error("There are no notification cells!")
+                Log.error("There are no notification cells!")
                 return cell
             }
             
@@ -572,7 +572,7 @@ extension SBUChatNotificationChannelModule {
                 emptyView.reloadData(.noNotifications)
             }
             
-            SBULog.info("[Request] Retry load channel list")
+            Log.info("[Request] Retry load channel list")
             self.delegate?.chatNotificationChannelModuleDidSelectRetry(self)
         }
         

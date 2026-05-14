@@ -29,19 +29,19 @@ public class SBUEmojiManager {
     /// - Returns: `EmojiCategory` type array
     public static func getEmojiCategories() -> [EmojiCategory] {
         guard let container = shared.container else {
-            SBULog.error("[Failed] Emoji Categories: load emoji")
+            Log.error("[Failed] Emoji Categories: load emoji")
             return []
         }
 
         guard SBUAvailable.isSupportReactions() else {
-            SBULog.error("[Failed] Emoji Categories: enableReactions is false")
+            Log.error("[Failed] Emoji Categories: enableReactions is false")
             return []
         }
 
         let categories = container.categories
 
         if categories.isEmpty {
-            SBULog.error("[Failed] Emoji Categories: Category is empty")
+            Log.error("[Failed] Emoji Categories: Category is empty")
         }
 
         return categories
@@ -51,19 +51,19 @@ public class SBUEmojiManager {
     /// - Returns: `Emoji` type array
     public static func getAllEmojis() -> [Emoji] {
         guard let container = shared.container else {
-            SBULog.error("[Failed] Emoji List: load emoji")
+            Log.error("[Failed] Emoji List: load emoji")
             return []
         }
 
         guard SBUAvailable.isSupportReactions() else {
-            SBULog.error("[Failed] Emoji List: enableReactions is false")
+            Log.error("[Failed] Emoji List: enableReactions is false")
             return []
         }
 
         let emojis = container.categories.reduce([]) { $0 + $1.emojis }
 
         if emojis.isEmpty {
-            SBULog.error("[Failed] Emoji List: emoji list is empty")
+            Log.error("[Failed] Emoji List: emoji list is empty")
         }
 
         return emojis
@@ -73,23 +73,23 @@ public class SBUEmojiManager {
     /// - Returns: `Emoji` type array
     public static func getEmojis(emojiCategoryId: Int64) -> [Emoji] {
         guard let container = shared.container else {
-            SBULog.error("[Failed] Emojis with category id: load emoji")
+            Log.error("[Failed] Emojis with category id: load emoji")
             return []
         }
 
         guard SBUAvailable.isSupportReactions() else {
-            SBULog.error("[Failed] Emojis with category id: enableReactions is false")
+            Log.error("[Failed] Emojis with category id: enableReactions is false")
             return []
         }
 
         let categories = container.categories
         if categories.isEmpty {
-            SBULog.warning("[Warning] Emojis with category id: Category is empty")
+            Log.warning("[Warning] Emojis with category id: Category is empty")
             return []
         }
 
         guard let category = categories.first(where: { $0.cid == emojiCategoryId }) else {
-            SBULog.warning("[Warning] Emojis with category id: Can not find category")
+            Log.warning("[Warning] Emojis with category id: Can not find category")
             return []
         }
 
@@ -98,7 +98,7 @@ public class SBUEmojiManager {
     
     static func getEmojis(with categoryIds: [Int64]) -> [Emoji] {
         guard let container = shared.container else {
-            SBULog.error("[Failed] Emojis with categoryIds")
+            Log.error("[Failed] Emojis with categoryIds")
             return []
         }
         
@@ -111,7 +111,7 @@ public class SBUEmojiManager {
         let filteredEmojis = filteredEmojiCategories.reduce([]) { $0 + $1.emojis }
         
         if filteredEmojis.isEmpty {
-            SBULog.warning("Emojis for emojiCategoryIds is empty.")
+            Log.warning("Emojis for emojiCategoryIds is empty.")
         }
         
         return filteredEmojis
@@ -148,7 +148,7 @@ public class SBUEmojiManager {
             return
         }
         
-        SBULog.info("[Request] Load all emojis")
+        Log.info("[Request] Load all emojis")
         
         // Load from cached data first.
         if let cachedContainer = UserDefaults.standard.data(forKey: SBUEmojiManager.kEmojiCacheKey) {
@@ -159,10 +159,10 @@ public class SBUEmojiManager {
         SendbirdChat.getAllEmojis { container, error in
             if let error = error {
                 if let cachedContainer = shared.container, container == nil {
-                    SBULog.info("[Succeed] Load all emojis from cache")
+                    Log.info("[Succeed] Load all emojis from cache")
                     completionHandler(cachedContainer, nil)
                 } else {
-                    SBULog.error("[Failed] Load all emojis: \(error.localizedDescription)")
+                    Log.error("[Failed] Load all emojis: \(error.localizedDescription)")
                     completionHandler(nil, error)
                 }
                 return
@@ -170,16 +170,16 @@ public class SBUEmojiManager {
             
             guard let container = container else {
                 if let cachedContainer = shared.container {
-                    SBULog.info("[Succeed] Load all emojis from cache")
+                    Log.info("[Succeed] Load all emojis from cache")
                     completionHandler(cachedContainer, nil)
                 } else {
-                    SBULog.error("[Failed] Load all emojis: EmojiContainer is not set")
+                    Log.error("[Failed] Load all emojis: EmojiContainer is not set")
                     completionHandler(nil, nil)
                 }
                 return
             }
             
-            SBULog.info("[Succeed] Load all emojis")
+            Log.info("[Succeed] Load all emojis")
             shared.container = container
             completionHandler(container, nil)
         }

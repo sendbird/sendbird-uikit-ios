@@ -105,7 +105,7 @@ open class SBUOpenChannelSettingsViewModel: SBUBaseChannelSettingsViewModel {
     public func updateChannel(params: OpenChannelUpdateParams) {
         guard let openChannel = self.channel as? OpenChannel else { return }
         
-        SBULog.info("[Request] Channel update")
+        Log.info("[Request] Channel update")
         self.delegates.forEach {
             $0.shouldUpdateLoadingState(true)
         }

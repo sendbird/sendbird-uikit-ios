@@ -95,7 +95,7 @@ extension SBUModerationsModule {
         }
         
         deinit {
-            SBULog.info("")
+            Log.info("")
         }
         
         // MARK: - Style

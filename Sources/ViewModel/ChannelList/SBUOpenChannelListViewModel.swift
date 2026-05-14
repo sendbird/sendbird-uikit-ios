@@ -145,7 +145,7 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
                 return
             }
             
-            SBULog.info("[Response] \(channels?.count ?? 0) channels")
+            Log.info("[Response] \(channels?.count ?? 0) channels")
             
             self.upsertChannels(channels, needReload: true)
         })
@@ -302,7 +302,7 @@ extension SBUOpenChannelListViewModel: OpenChannelDelegate {
     
     open func channelWasDeleted(_ channelURL: String, channelType: ChannelType) {
         guard channelType == .open else { return }
-        SBULog.info("Channel was deleted")
+        Log.info("Channel was deleted")
         self.deleteChannels(channelURLs: [channelURL], needReload: true)
     }
 }

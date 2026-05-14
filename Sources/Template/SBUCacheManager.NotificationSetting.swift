@@ -41,15 +41,15 @@ extension SBUCacheManager {
         
         static func loadAllThemes() -> [String: SBUNotificationChannelManager.GlobalNotificationSettings.Theme]? {
             if let themeList = memoryCache.getAllThemes() {
-//                SBULog.info("Loaded themes from memory cache")
+//                Log.info("Loaded themes from memory cache")
                 return themeList
             } else if let themeList = diskCache.getAllThemes() {
-//                SBULog.info("Loaded themes from disk cache")
+//                Log.info("Loaded themes from disk cache")
                 self.memoryCache.set(themes: Array(themeList.values))
                 return themeList
             }
             
-            SBULog.info("No have themes in cache")
+            Log.info("No have themes in cache")
             return nil
         }
         
@@ -139,7 +139,7 @@ extension SBUCacheManager {
             do {
                 try self.createDirectoryIfNeeded()
             } catch {
-                SBULog.error(error.localizedDescription)
+                Log.error(error.localizedDescription)
             }
         }
         
@@ -168,7 +168,7 @@ extension SBUCacheManager {
                     let theme = try JSONDecoder().decode(SBUNotificationChannelManager.GlobalNotificationSettings.Theme.self, from: data)
                     return theme as SBUNotificationChannelManager.GlobalNotificationSettings.Theme
                 } catch {
-                    SBULog.info(error.localizedDescription)
+                    Log.info(error.localizedDescription)
                 }
                 return nil
             }()
@@ -210,7 +210,7 @@ extension SBUCacheManager {
                         }
                     }
                 } catch {
-                    SBULog.info(error.localizedDescription)
+                    Log.info(error.localizedDescription)
                 }
                 
                 return themeList
@@ -224,7 +224,7 @@ extension SBUCacheManager {
                     let data = try encoder.encode(theme)
                     self.set(key: theme.key, data: data as NSData)
                 } catch {
-                    SBULog.error("Failed to save theme to disk cache: \(error)")
+                    Log.error("Failed to save theme to disk cache: \(error)")
                 }
             }
         }
@@ -244,7 +244,7 @@ extension SBUCacheManager {
                         attributes: nil
                     )
                 } catch {
-                    SBULog.error(error.localizedDescription)
+                    Log.error(error.localizedDescription)
                     DispatchQueue.main.async {
                         completionHandler?(nil, nil)
                     }
@@ -268,7 +268,7 @@ extension SBUCacheManager {
                     let fileManager = self.fileManager
                     try fileManager.removeItem(atPath: path)
                 } catch {
-                    SBULog.error("Could not remove file: \(error)")
+                    Log.error("Could not remove file: \(error)")
                 }
             }
         }
@@ -283,7 +283,7 @@ extension SBUCacheManager {
                     let fileManager = self.fileManager
                     try fileManager.removeItem(at: path)
                 } catch {
-                    SBULog.error("Could not remove path: \(error)")
+                    Log.error("Could not remove path: \(error)")
                 }
             }
         }
@@ -338,7 +338,7 @@ extension SBUCacheManager {
                     
                     try valueString.write(to: filePath, atomically: true, encoding: .utf8)
                 } catch {
-                    SBULog.error("Error writing to file: lastUpdatedTimeKey value")
+                    Log.error("Error writing to file: lastUpdatedTimeKey value")
                 }
             }
         }
@@ -372,7 +372,7 @@ extension SBUCacheManager {
                     let filePath = cachePathURL.appendingPathComponent(themeModeKey)
                     try value.write(to: filePath, atomically: true, encoding: .utf8)
                 } catch {
-                    SBULog.error("Error writing to file: themeModeKey value")
+                    Log.error("Error writing to file: themeModeKey value")
                 }
             }
         }

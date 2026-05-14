@@ -175,7 +175,7 @@ extension SBUFeedNotificationChannelModule {
         @available(*, unavailable, renamed: "SBUFeedNotificationChannelModule.Header()")
         public override init(frame: CGRect) { super.init(frame: frame) }
         
-        deinit { SBULog.info(#function) }
+        deinit { Log.info(#function) }
         
         /// Configures ``SBUFeedNotificationChannelModule/Header`` object with the ``delegate`` and the ``SBUNotificationTheme/Header``.
         /// - Parameters:

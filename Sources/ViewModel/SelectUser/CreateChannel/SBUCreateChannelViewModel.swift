@@ -128,14 +128,14 @@ open class SBUCreateChannelViewModel: SBUBaseViewModel {
             self.userListQuery = nil
             self.userList = []
             
-            SBULog.info("[Request] User List")
+            Log.info("[Request] User List")
         } else {
-            SBULog.info("[Request] Next user List")
+            Log.info("[Request] Next user List")
         }
 
         if let users = users {
             // for using customized user list
-            SBULog.info("\(users.count) customized users have been added.")
+            Log.info("\(users.count) customized users have been added.")
             
             self.userList += users
             self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
@@ -161,7 +161,7 @@ open class SBUCreateChannelViewModel: SBUBaseViewModel {
             
             guard self.userListQuery?.hasNext == true else {
                 self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
-                SBULog.info("All users have been loaded.")
+                Log.info("All users have been loaded.")
                 return
             }
             
@@ -178,7 +178,7 @@ open class SBUCreateChannelViewModel: SBUBaseViewModel {
                 
                 guard let users = filteredUsers?.sbu_convertUserList() else { return }
                 
-                SBULog.info("[Response] \(users.count) users")
+                Log.info("[Response] \(users.count) users")
                 
                 guard !users.isEmpty else { return }
                 
@@ -247,7 +247,7 @@ open class SBUCreateChannelViewModel: SBUBaseViewModel {
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
     public func createChannel(params: GroupChannelCreateParams,
                               messageListParams: MessageListParams? = nil) {
-        SBULog.info("""
+        Log.info("""
             [Request] Create channel with users,
             Users: \(Array(self.selectedUserList))
             """)
@@ -258,7 +258,7 @@ open class SBUCreateChannelViewModel: SBUBaseViewModel {
             guard let self = self else { return }
             
             if let error = error {
-                SBULog.error("""
+                Log.error("""
                     [Failed] Create channel request:
                     \(String(error.localizedDescription))
                     """)
@@ -266,7 +266,7 @@ open class SBUCreateChannelViewModel: SBUBaseViewModel {
                 return
             }
             
-            SBULog.info("[Succeed] Create channel: \(channel?.description ?? "")")
+            Log.info("[Succeed] Create channel: \(channel?.description ?? "")")
             self.delegates.forEach {
                 $0.createChannelViewModel(
                     self,
@@ -289,7 +289,7 @@ open class SBUCreateChannelViewModel: SBUBaseViewModel {
             self.selectedUserList.insert(user)
         }
         
-        SBULog.info("Selected user: \(user)")
+        Log.info("Selected user: \(user)")
         
         self.delegates.forEach {
             $0.createChannelViewModel(

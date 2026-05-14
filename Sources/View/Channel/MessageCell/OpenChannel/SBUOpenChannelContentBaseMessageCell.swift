@@ -236,7 +236,7 @@ open class SBUOpenChannelContentBaseMessageCell: SBUOpenChannelBaseMessageCell {
         stateImageView.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
         
         guard let message = self.message else {
-            SBULog.error("Failed state image configuration")
+            Log.error("Failed state image configuration")
             return
         }
         

@@ -328,7 +328,7 @@ extension SBUOpenChannelModule {
         
         open override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             guard self.channel != nil else {
-                SBULog.error("Channel must exist!")
+                Log.error("Channel must exist!")
                 return .init()
             }
             let message = self.fullMessageList[indexPath.row]
@@ -338,7 +338,7 @@ extension SBUOpenChannelModule {
             cell.selectionStyle = .none
             
             guard let messageCell = cell as? SBUOpenChannelBaseMessageCell else {
-                SBULog.error("There are no message cells!")
+                Log.error("There are no message cells!")
                 return cell
             }
             

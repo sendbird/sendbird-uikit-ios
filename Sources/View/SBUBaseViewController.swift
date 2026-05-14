@@ -234,7 +234,7 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     ///   - message: error message
     ///   - code: error code
     open func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
     
     // MARK: UINavigationController
@@ -277,7 +277,7 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     
     @available(iOS 26.0, *)
     open func setupLiquidGlassNavigationBar(gradientBackgroundTint: UIColor) {
-        SBULog.info("gradientBackgroundTint: \(gradientBackgroundTint)")
+        Log.info("gradientBackgroundTint: \(gradientBackgroundTint)")
 
         // If container view already exists, just update the gradient colors
         if let gradientLayer = self.liquidGlassGradientLayer {

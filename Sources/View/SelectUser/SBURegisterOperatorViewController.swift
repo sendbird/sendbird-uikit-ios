@@ -61,7 +61,7 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
     ///   - users: `SBUUser` object
     required public init(channel: BaseChannel, users: [SBUUser]? = nil) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channel: channel, channelType: channelType, users: users)
         
@@ -75,7 +75,7 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
     ///   - users: `SBUUser` object
     required public init(channelURL: String, channelType: ChannelType = .group, users: [SBUUser]? = nil) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         self.createViewModel(channelURL: channelURL, channelType: channelType, users: users)
         
         self.setupComponents(channelType: channelType)
@@ -105,7 +105,7 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
     }
     
     // MARK: - ViewModel
@@ -116,7 +116,7 @@ open class SBURegisterOperatorViewController: SBUBaseSelectUserViewController, S
         users: [SBUUser]? = nil
     ) {
         guard channel != nil || channelURL != nil else {
-            SBULog.error("Either the channel or the channelURL parameter must be set.")
+            Log.error("Either the channel or the channelURL parameter must be set.")
             return
         }
         

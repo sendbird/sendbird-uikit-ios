@@ -304,7 +304,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
     ///    - parentMessage: The parent message. The default value is `nil` when there's no parent message.
     /// - Since: 1.0.9
     open func sendUserMessage(messageParams: UserMessageCreateParams, parentMessage: BaseMessage? = nil) {
-        SBULog.info("[Request] Send user message")
+        Log.info("[Request] Send user message")
         
         let preSendMessage = self.channel?.sendUserMessage(params: messageParams) { [weak self] userMessage, error in
             self?.sendUserMessageCompletionHandler?(userMessage, error)
@@ -319,7 +319,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
                 forMessageThread: self.isThreadMessageMode
             )
         } else {
-            SBULog.info("A filtered user message has been sent.")
+            Log.info("A filtered user message has been sent.")
         }
         
         self.sortAllMessageList(needReload: true)
@@ -421,7 +421,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
     open func sendFileMessage(messageParams: FileMessageCreateParams, parentMessage: BaseMessage? = nil) {
         guard let channel = self.channel else { return }
         
-        SBULog.info("[Request] Send file message")
+        Log.info("[Request] Send file message")
         
         // for voice message
         let fileName = messageParams.fileName ?? ""
@@ -442,11 +442,11 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
                 //// If need reload cell for progress, call reload action in here.
                 guard let requestId = requestId, !requestId.isEmpty else { return }
                 let fileTransferProgress = CGFloat(totalBytesSent)/CGFloat(totalBytesExpectedToSend)
-                SBULog.info("File message transfer progress: \(requestId) - \(fileTransferProgress)")
+                Log.info("File message transfer progress: \(requestId) - \(fileTransferProgress)")
             },
             completionHandler: { [weak self] fileMessage, error in
                 if let error = error {
-                    SBULog.error(error.localizedDescription)
+                    Log.error(error.localizedDescription)
                 }
                 self?.sendFileMessageCompletionHandler?(fileMessage, error)
             }
@@ -486,7 +486,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
                 forMessageThread: self.isThreadMessageMode
             )
         } else {
-            SBULog.info("A filtered file message has been sent.")
+            Log.info("A filtered file message has been sent.")
         }
         
         self.sortAllMessageList(needReload: true)
@@ -547,7 +547,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
     ///   - messageParams: `UserMessageUpdateParams` class object
     /// - Since: 1.0.9
     public func updateUserMessage(message: UserMessage, messageParams: UserMessageUpdateParams) {
-        SBULog.info("[Request] Update user message")
+        Log.info("[Request] Update user message")
         self.channel?.updateUserMessage(
             messageId: message.messageId,
             params: messageParams
@@ -567,7 +567,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
     /// - Since: 1.0.9
     public func resendMessage(failedMessage: BaseMessage) {
         if let failedMessage = failedMessage as? UserMessage {
-            SBULog.info("[Request] Resend failed user message")
+            Log.info("[Request] Resend failed user message")
             
             let pendingMessage = self.channel?.resendUserMessage(
                 failedMessage
@@ -600,7 +600,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
                 data = fileInfo.file
             }
 
-            SBULog.info("[Request] Resend failed file message")
+            Log.info("[Request] Resend failed file message")
             
             let pendingMessage = self.channel?.resendFileMessage(
                 failedMessage,
@@ -642,7 +642,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
     /// - Parameter message: `BaseMessage` based class object
     /// - Since: 1.0.9
     public func deleteMessage(message: BaseMessage) {
-        SBULog.info("[Request] Delete message: \(message.description)")
+        Log.info("[Request] Delete message: \(message.description)")
         self.channel?.deleteMessage(message, completionHandler: nil)
     }
     
@@ -705,7 +705,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
         shouldUpdateFirstUnreadMessage: Bool = false,
         isEventMessageReceived: Bool = false
     ) {
-        SBULog.info("First : \(String(describing: messages?.first)), Last : \(String(describing: messages?.last))")
+        Log.info("First : \(String(describing: messages?.first)), Last : \(String(describing: messages?.last))")
         
         var needMarkAsRead = false
         let myLastRead = (channel as? GroupChannel)?.myLastRead
@@ -1005,7 +1005,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
     /// - Since: 1.1.0
     public func setReaction(message: BaseMessage, emojiKey: String, didSelect: Bool) {
         if didSelect {
-            SBULog.info("[Request] Add Reaction")
+            Log.info("[Request] Add Reaction")
             self.channel?.addReaction(with: message, key: emojiKey) { reactionEvent, error in
                 // INFO:
                 // In **super group channel limited mode**, current user can only addReaction and never deleteReaction.
@@ -1017,7 +1017,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
                     }
                 }
                 
-                SBULog.info("[Response] \(reactionEvent?.key ?? "") reaction")
+                Log.info("[Response] \(reactionEvent?.key ?? "") reaction")
                 guard let reactionEvent = reactionEvent else { return }
                 if reactionEvent.messageId == message.messageId {
                     message.apply(reactionEvent)
@@ -1027,7 +1027,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
                 }
             }
         } else {
-            SBULog.info("[Request] Delete Reaction")
+            Log.info("[Request] Delete Reaction")
             self.channel?.deleteReaction(with: message, key: emojiKey) { reactionEvent, error in
                 if let error = error {
                     self.baseDelegates.forEach {
@@ -1035,7 +1035,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
                     }
                 }
 
-                SBULog.info("[Response] \(reactionEvent?.key ?? "") reaction")
+                Log.info("[Response] \(reactionEvent?.key ?? "") reaction")
                 guard let reactionEvent = reactionEvent else { return }
                 if reactionEvent.messageId == message.messageId {
                     message.apply(reactionEvent)
@@ -1070,7 +1070,7 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
     }
     
     func flushCache(with messages: [BaseMessage]) -> [BaseMessage] {
-        SBULog.info("flushing cache with : \(messages.count)")
+        Log.info("flushing cache with : \(messages.count)")
         guard let messageCache = self.messageCache else { return messages }
         
         let mergedList = messageCache.flush(with: messages)
@@ -1084,13 +1084,13 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
 // MARK: - ConnectionDelegate
 extension SBUBaseChannelViewModel {
     open override func didSucceedReconnection() {
-        SBULog.info("Did succeed reconnection")
+        Log.info("Did succeed reconnection")
         
         super.didSucceedReconnection()
         
         SendbirdUI.updateUserInfo { error in
             if let error = error {
-                SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
+                Log.error("[Failed] Update user info: \(error.localizedDescription)")
             }
         }
         
@@ -1106,11 +1106,11 @@ extension SBUBaseChannelViewModel: BaseChannelDelegate {
         
         switch message {
         case is UserMessage:
-            SBULog.info("Did receive user message: \(message)")
+            Log.info("Did receive user message: \(message)")
         case is FileMessage:
-            SBULog.info("Did receive file message: \(message)")
+            Log.info("Did receive file message: \(message)")
         case is AdminMessage:
-            SBULog.info("Did receive admin message: \(message)")
+            Log.info("Did receive admin message: \(message)")
         default:
             break
         }

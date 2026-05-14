@@ -64,14 +64,14 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     @available(*, unavailable, renamed: "SBUUserListViewController(channelURL:type:)")
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
-        SBULog.info("")
+        Log.info("")
         fatalError()
     }
     
     @available(*, unavailable, renamed: "SBUUserListViewController.init(channelURL:)")
     public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        SBULog.info("")
+        Log.info("")
         fatalError()
     }
     
@@ -87,7 +87,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         userListType: ChannelUserListType = .members
     ) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         var channelType = ChannelType.group
         if channel is OpenChannel {
@@ -124,7 +124,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
         userListType: ChannelUserListType = .members
     ) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(
             channelURL: channelURL,
@@ -165,7 +165,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         self.viewModel = nil
         self.headerComponent = nil
         self.listComponent = nil
@@ -438,7 +438,7 @@ open class SBUUserListViewController: SBUBaseViewController, SBUUserListModuleHe
     }
     
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
     
     // MARK: - SBUUserListModuleHeaderDelegate

@@ -241,7 +241,7 @@ open class SBUGroupChannelCell: SBUBaseChannelCell {
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
     }
     
     /// This function configure a cell using `GroupChannel` information.

@@ -200,14 +200,14 @@ open class SBUBaseSelectUserViewModel: SBUBaseViewModel {
             
             self.prepareDatas()
             
-            SBULog.info("[Request] User List")
+            Log.info("[Request] User List")
         } else {
-            SBULog.info("[Request] Next user List")
+            Log.info("[Request] Next user List")
         }
 
         if let users = users {
             // Customized user list
-            SBULog.info("\(users.count) customized users have been added.")
+            Log.info("\(users.count) customized users have been added.")
             
             self.isLoading = false
             self.appendUsersWithFiltering(users: users)
@@ -245,7 +245,7 @@ open class SBUBaseSelectUserViewModel: SBUBaseViewModel {
         guard self.userListQuery?.hasNext == true else {
             self.isLoading = false
             self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
-            SBULog.info("All users have been loaded.")
+            Log.info("All users have been loaded.")
             return
         }
         
@@ -261,7 +261,7 @@ open class SBUBaseSelectUserViewModel: SBUBaseViewModel {
                 return
             }
             guard let users = users?.sbu_convertUserList() else { return }
-            SBULog.info("[Response] \(users.count) users")
+            Log.info("[Response] \(users.count) users")
             guard !users.isEmpty else { return }
             
             self.appendUsersWithFiltering(users: users)
@@ -342,7 +342,7 @@ open class SBUBaseSelectUserViewModel: SBUBaseViewModel {
         guard self.memberListQuery?.hasNext == true else {
             self.isLoading = false
             self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
-            SBULog.info("All members have been loaded.")
+            Log.info("All members have been loaded.")
             return
         }
         
@@ -359,7 +359,7 @@ open class SBUBaseSelectUserViewModel: SBUBaseViewModel {
             }
         
             guard let members = members?.sbu_convertUserList() else { return }
-            SBULog.info("[Response] \(members.count) members")
+            Log.info("[Response] \(members.count) members")
             guard !members.isEmpty else { return }
             
             self.userList += members
@@ -396,7 +396,7 @@ open class SBUBaseSelectUserViewModel: SBUBaseViewModel {
         guard self.participantListQuery?.hasNext == true else {
             self.isLoading = false
             self.baseDelegates.forEach { $0.shouldUpdateLoadingState(false) }
-            SBULog.info("All participants have been loaded.")
+            Log.info("All participants have been loaded.")
             return
         }
         
@@ -413,7 +413,7 @@ open class SBUBaseSelectUserViewModel: SBUBaseViewModel {
             }
         
             guard let users = users?.sbu_convertUserList() else { return }
-            SBULog.info("[Response] \(users.count) participants")
+            Log.info("[Response] \(users.count) participants")
             guard !users.isEmpty else { return }
             
             self.userList += users.sbu_updateOperatorStatus(channel: channel)
@@ -473,7 +473,7 @@ open class SBUBaseSelectUserViewModel: SBUBaseViewModel {
             self.selectedUserList.insert(user)
         }
         
-        SBULog.info("Selected user: \(user)")
+        Log.info("Selected user: \(user)")
         
         self.baseDelegates.forEach { $0.baseSelectedUserViewModel(
             self,

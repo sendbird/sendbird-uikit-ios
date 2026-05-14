@@ -285,7 +285,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
                         groupPosition: MessageGroupPosition,
                         withTextView: Bool) {
         guard let userMessage = message as? UserMessage else {
-            SBULog.error("The message is not a type of UserMessage")
+            Log.error("The message is not a type of UserMessage")
             return
         }
 
@@ -394,7 +394,7 @@ open class SBUUserMessageCell: SBUContentBaseMessageCell, SBUUserMessageTextView
 
     @available(*, deprecated, message: "This method is deprecated in 3.34.1")
     public func updateMessageFormView(with message: BaseMessage?) -> Bool {
-        SBULog.info("[Deprecated] MessageForm feature is deprecated in 3.34.1")
+        Log.info("[Deprecated] MessageForm feature is deprecated in 3.34.1")
         return false
     }
     

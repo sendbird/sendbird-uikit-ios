@@ -682,12 +682,12 @@ extension SBUMentionManager {
         // set up range to be start from the character right after the end of applied text
         
         guard range.location != NSNotFound else {
-            SBULog.error("Mention must have a range to insert into")
+            Log.error("Mention must have a range to insert into")
             return (NSMutableAttributedString(), NSRange())
         }
         
         guard NSMaxRange(range) <= attributedText.string.utf16.count else {
-            SBULog.error("Mention range is out of bounds for the text length")
+            Log.error("Mention range is out of bounds for the text length")
             return (NSMutableAttributedString(), NSRange())
         }
 

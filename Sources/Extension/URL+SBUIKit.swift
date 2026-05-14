@@ -35,11 +35,11 @@ internal extension URL {
         if let fileResourceValues = try? self.resourceValues(forKeys: [.fileSizeKey]) {
             if let fileSize = fileResourceValues.fileSize {
                 if fileSize > SBUAvailable.uploadSizeLimitBytes {
-                    SBULog.error(SBUStringSet.FileUpload.Error.exceededSizeLimit)
+                    Log.error(SBUStringSet.FileUpload.Error.exceededSizeLimit)
                     return false
                 }
             } else {
-                SBULog.error("Can't read file size.")
+                Log.error("Can't read file size.")
             }
         }
         

@@ -117,7 +117,7 @@ public extension SBUExtendedMessagePayloadCustomViewFactory {
     ///   - message: The message data for resolving the error.
     /// - Returns: The custom view that will be created and attached. If an error occurs, it generally returns nil.
     static func errorHandler(_ error: Error, message: SendbirdChatSDK.BaseMessage?) -> UIView? {
-        SBULog.error("[Failed] decode CustomViewData : \(String(describing: error))")
+        Log.error("[Failed] decode CustomViewData : \(String(describing: error))")
         return nil
     }
 }

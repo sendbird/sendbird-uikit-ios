@@ -89,7 +89,7 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
         self.voiceFileInfo = voiceFileInfo
         
         if self.prepareToPlayer() == false {
-            SBULog.error("[Failed] Player preparation")
+            Log.error("[Failed] Player preparation")
             self.status = .none
         }
     }
@@ -111,7 +111,7 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
     public func play(fromTime time: TimeInterval = 0) {
         if self.status != .prepared && self.status != .paused {
             if self.prepareToPlayer() == false {
-                SBULog.error("[Failed] Player preparation")
+                Log.error("[Failed] Player preparation")
                 self.status = .none
             }
         }
@@ -124,7 +124,7 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
             self.delegate?.voicePlayerDidStart(self)
         } else {
             self.status = .none
-            SBULog.error("[Failed] Play")
+            Log.error("[Failed] Play")
             self.delegate?.voicePlayerDidReceiveError(self, errorStatus: .play)
         }
     }
@@ -203,24 +203,24 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
             }
             try self.audioSession.setCategory(.playback)
             try self.audioSession.overrideOutputAudioPort(.speaker)
-            SBULog.info("AVAudioSession Category Playback OK")
+            Log.info("AVAudioSession Category Playback OK")
             do {
                 try self.audioSession.setActive(true)
                 
-                SBULog.info("AVAudioSession is Active")
+                Log.info("AVAudioSession is Active")
                 
             } catch let error as NSError {
-                SBULog.error(error.localizedDescription)
+                Log.error(error.localizedDescription)
             }
         } catch let error as NSError {
-            SBULog.error(error.localizedDescription)
+            Log.error(error.localizedDescription)
         }
         
         do {
             self.audioPlayer = try AVAudioPlayer(contentsOf: url)
         } catch {
             self.status = .none
-            SBULog.error("[Failed] Audio player preparation: \(error.localizedDescription)")
+            Log.error("[Failed] Audio player preparation: \(error.localizedDescription)")
             self.delegate?.voicePlayerDidReceiveError(self, errorStatus: .playerPreparation)
         }
         
@@ -236,7 +236,7 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
             self.audioPlayer?.rate = playbackRate
         }
         
-        SBULog.info("[Succeeded] Audio player preparation")
+        Log.info("[Succeeded] Audio player preparation")
         self.status = .prepared
         return true
     }
@@ -281,7 +281,7 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
             self.voiceFileInfo?.currentPlayTime = 0
             self.delegate?.voicePlayerDidStop(self)
         } else {
-            SBULog.error("[Failed] Finish playing")
+            Log.error("[Failed] Finish playing")
             self.status = .none
             self.delegate?.voicePlayerDidReceiveError(self, errorStatus: .finishPlaying)
             self.resetPlayer()
@@ -289,7 +289,7 @@ public class SBUVoicePlayer: NSObject, AVAudioPlayerDelegate {
     }
     
     public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
-        SBULog.error("[Failed] Player decode error: \(error.debugDescription)")
+        Log.error("[Failed] Player decode error: \(error.debugDescription)")
         
         self.delegate?.voicePlayerDidReceiveError(self, errorStatus: .playerDecodeError)
         self.status = .none

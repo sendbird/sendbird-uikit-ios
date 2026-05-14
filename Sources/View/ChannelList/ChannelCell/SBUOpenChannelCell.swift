@@ -162,7 +162,7 @@ open class SBUOpenChannelCell: SBUBaseChannelCell {
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
     }
     
     /// This function configure a cell using `OpenChannel` information.

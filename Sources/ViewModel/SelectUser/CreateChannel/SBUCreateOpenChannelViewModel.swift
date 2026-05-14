@@ -62,7 +62,7 @@ open class SBUCreateOpenChannelViewModel: SBUBaseViewModel {
     /// - Parameters:
     ///   - params: `OpenChannelCreateParams` class object
     open func createChannel(params: OpenChannelCreateParams) {
-        SBULog.info("[Request] Create open channel")
+        Log.info("[Request] Create open channel")
         
         self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
 
@@ -71,7 +71,7 @@ open class SBUCreateOpenChannelViewModel: SBUBaseViewModel {
             guard let self = self else { return }
 
             if let error = error {
-                SBULog.error("""
+                Log.error("""
                     [Failed] Create open channel request:
                     \(String(error.localizedDescription))
                     """)
@@ -79,7 +79,7 @@ open class SBUCreateOpenChannelViewModel: SBUBaseViewModel {
                 return
             }
 
-            SBULog.info("[Succeed] Create open channel: \(channel?.description ?? "")")
+            Log.info("[Succeed] Create open channel: \(channel?.description ?? "")")
             self.delegates.forEach { $0.createOpenChannelViewModel(self, didCreateChannel: channel) }
         }
     }

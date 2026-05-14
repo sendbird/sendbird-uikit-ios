@@ -30,7 +30,7 @@ extension SBUConfig {
                       error == nil,
                       let jsonPayload = uikitConfiguration?.jsonPayload,
                       let dashboardConfig = self.decodeDashboardConfig(with: jsonPayload) else {
-                    SBULog.error(error)
+                    Log.error(error)
                     completionHandler?(false)
                     return
                 }
@@ -63,7 +63,7 @@ extension SBUConfig {
     
     func decodeDashboardConfig(with jsonPayload: String) -> SBUDashboardConfig? {
         guard let jsonData = jsonPayload.data(using: .utf8) else {
-            SBULog.error("Failed to decode JSON")
+            Log.error("Failed to decode JSON")
             return nil
         }
         
@@ -73,7 +73,7 @@ extension SBUConfig {
             let dashboardConfig = try decoder.decode(SBUDashboardConfig.self, from: jsonData)
             return dashboardConfig
         } catch {
-            SBULog.error("Failed to decode JSON: \(error)")
+            Log.error("Failed to decode JSON: \(error)")
         }
         
         return nil

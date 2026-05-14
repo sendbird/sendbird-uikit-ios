@@ -152,7 +152,7 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
         self.createCollectionIfNeeded()
         
         guard self.channelCollection?.hasNext == true else {
-            SBULog.info("All channels have been loaded.")
+            Log.info("All channels have been loaded.")
             return
         }
 
@@ -172,7 +172,7 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
                 return
             }
             
-            SBULog.info("[Response] \(channels?.count ?? 0) channels")
+            Log.info("[Response] \(channels?.count ?? 0) channels")
             
             self.delegates.forEach {
                 $0.groupChannelListViewModel(
@@ -200,7 +200,7 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
     ///   - channel: Channel to leave
     ///   - completionHandler: Completion handler
     public func leaveChannel(_ channel: GroupChannel) {
-        SBULog.info("[Request] Leave channel, ChannelURL: \(channel.channelURL)")
+        Log.info("[Request] Leave channel, ChannelURL: \(channel.channelURL)")
         
         self.setLoading(true, true)
         
@@ -218,7 +218,7 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
             }
 
             // Final handling in `GroupChannelCollectionDelegate`
-            SBULog.info("[Succeed] Leave channel request, ChannelURL: \(channel.channelURL)")
+            Log.info("[Succeed] Leave channel request, ChannelURL: \(channel.channelURL)")
             
             self.delegates.forEach {
                 $0.groupChannelListViewModel(self, didLeaveChannel: channel)
@@ -232,7 +232,7 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
     ///   - channel: Channel to change option
     public func changePushTriggerOption(option: GroupChannelPushTriggerOption,
                                         channel: GroupChannel) {
-        SBULog.info("""
+        Log.info("""
             [Request]
             Channel push status: \(option == .off ? "on" : "off"),
             ChannelURL: \(channel.channelURL)
@@ -253,7 +253,7 @@ open class SBUGroupChannelListViewModel: SBUBaseChannelListViewModel {
             }
             
             // Final handling in `GroupChannelCollectionDelegate`
-            SBULog.info("[Succeed] Channel push status, ChannelURL: \(channel.channelURL)")
+            Log.info("[Succeed] Channel push status, ChannelURL: \(channel.channelURL)")
             
             self.delegates.forEach {
                 $0.groupChannelListViewModel(self, didUpdateChannel: channel)
@@ -280,7 +280,7 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
     open func channelCollection(_ collection: GroupChannelCollection,
                                 context: ChannelContext,
                                 deletedChannelURLs: [String]) {
-        SBULog.info("""
+        Log.info("""
             source: \(context.source.rawValue),
             fromEvent: \(context.fromEvent),
             delete size : \(deletedChannelURLs.count)
@@ -298,7 +298,7 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
     open func channelCollection(_ collection: GroupChannelCollection,
                                 context: ChannelContext,
                                 addedChannels channels: [GroupChannel]) {
-        SBULog.info("""
+        Log.info("""
             source: \(context.source.rawValue),
             fromEvent: \(context.fromEvent),
             channel size : \(channels.count)
@@ -315,7 +315,7 @@ extension SBUGroupChannelListViewModel: GroupChannelCollectionDelegate {
     open func channelCollection(_ collection: GroupChannelCollection,
                                 context: ChannelContext,
                                 updatedChannels channels: [GroupChannel]) {
-        SBULog.info("""
+        Log.info("""
             source: \(context.source.rawValue),
             fromEvent: \(context.fromEvent),
             channel size : \(channels.count)

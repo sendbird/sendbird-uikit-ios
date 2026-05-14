@@ -162,7 +162,7 @@ extension SBUBaseChannelModule {
         public override init(frame: CGRect) { super.init(frame: frame) }
         
         deinit {
-            SBULog.info(#function)
+            Log.info(#function)
         }
         
         /// Set values of the views in the header component when it needs.

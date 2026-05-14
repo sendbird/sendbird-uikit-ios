@@ -428,7 +428,7 @@ class SBUNotificationCell: SBUBaseMessageCell {
             ]
         )
         
-        SBULog.info("[\(isSucceed ? "Succeed" : "Failed")] SendbirdStatistics - \(type), \(action)")
+        Log.info("[\(isSucceed ? "Succeed" : "Failed")] SendbirdStatistics - \(type), \(action)")
         return isSucceed
     }
 }

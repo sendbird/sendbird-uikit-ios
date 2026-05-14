@@ -268,7 +268,7 @@ extension SBUFeedNotificationChannelModule {
         
         deinit {
             self.delegate?.feedNotificationChannelModuleStopMarkAsViewedTimer(self)
-            SBULog.info(#function)
+            Log.info(#function)
         }
         
         /// Set values of the views in the list component when it needs.
@@ -438,7 +438,7 @@ extension SBUFeedNotificationChannelModule {
             forRowAt indexPath: IndexPath
         ) {
             guard let channel = self.channel, channel.isFeedChannel() else {
-                SBULog.error("Channel must exist!")
+                Log.error("Channel must exist!")
                 return
             }
             
@@ -557,7 +557,7 @@ extension SBUFeedNotificationChannelModule {
         
         public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             guard indexPath.row < self.notifications.count else {
-                SBULog.error("The index is out of range.")
+                Log.error("The index is out of range.")
                 return .init()
             }
             
@@ -568,7 +568,7 @@ extension SBUFeedNotificationChannelModule {
             cell.selectionStyle = .none
             
             guard let notificationCell = cell as? SBUBaseMessageCell else {
-                SBULog.error("There are no notification cells!")
+                Log.error("There are no notification cells!")
                 return cell
             }
             
@@ -611,7 +611,7 @@ extension SBUFeedNotificationChannelModule {
                 emptyView.reloadData(.noNotifications)
             }
             
-            SBULog.info("[Request] Retry load channel list")
+            Log.info("[Request] Retry load channel list")
             self.delegate?.feedNotificationChannelModuleDidSelectRetry(self)
         }
         

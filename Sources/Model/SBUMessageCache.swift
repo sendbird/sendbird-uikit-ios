@@ -30,7 +30,7 @@ class SBUMessageCache {
     // MARK: - Loading messages in cache
     
     func loadInitial() {
-        SBULog.info("loadInitial")
+        Log.info("loadInitial")
         let param: MessageListParams = self.messageListParam.copy() as? MessageListParams ?? MessageListParams()
         param.isInclusive = true
         param.nextResultSize = 0
@@ -49,9 +49,9 @@ class SBUMessageCache {
     }
     
     func loadNext() {
-        SBULog.info("loadNext from : \(self.latestUpdatedAt)")
+        Log.info("loadNext from : \(self.latestUpdatedAt)")
         guard self.latestUpdatedAt > 0 else {
-            SBULog.warning("lastest updatedAt is 0. loadInitial instead.")
+            Log.warning("lastest updatedAt is 0. loadInitial instead.")
             self.loadInitial()
             return
         }
@@ -68,7 +68,7 @@ class SBUMessageCache {
                 return
             }
             
-            SBULog.info("loaded next messages : \(messages), size : \(messages.count)")
+            Log.info("loaded next messages : \(messages), size : \(messages.count)")
             guard !messages.isEmpty else {
                 return
             }
@@ -78,13 +78,13 @@ class SBUMessageCache {
             
             let latestUpdated = newLatestUpdatedAt > self.latestUpdatedAt
             if latestUpdated {
-                SBULog.info("update latestUpdatedAt to : \(newLatestUpdatedAt) from : \(self.latestUpdatedAt)")
+                Log.info("update latestUpdatedAt to : \(newLatestUpdatedAt) from : \(self.latestUpdatedAt)")
                 self.latestUpdatedAt = newLatestUpdatedAt
             }
             
             guard messages.count >= self.fetchLimit,
                   latestUpdated else {
-                SBULog.info("fetched to the newest. \(self)")
+                Log.info("fetched to the newest. \(self)")
                 return
             }
             
@@ -97,7 +97,7 @@ class SBUMessageCache {
     // MARK: - Upsert messages
     
     func add(messages: [BaseMessage]) {
-        SBULog.info("add : \(messages.count)")
+        Log.info("add : \(messages.count)")
         guard !messages.isEmpty else { return }
         
         self.cachedMessageList.removeAll(where: { messages.contains($0) })
@@ -106,7 +106,7 @@ class SBUMessageCache {
     }
     
     func applyChangeLog(updated: [BaseMessage]?, deleted: [Int64]?) {
-        SBULog.info("applyChangeLog. updated : \(String(describing: updated)), deleted : \(String(describing: deleted)) \(self)")
+        Log.info("applyChangeLog. updated : \(String(describing: updated)), deleted : \(String(describing: deleted)) \(self)")
         guard !self.cachedMessageList.isEmpty else { return }
         
         if let updatedMessages = updated?.filter({ self.cachedMessageList.contains($0) }),
@@ -125,7 +125,7 @@ class SBUMessageCache {
     }
     
     func flush(with messages: [BaseMessage]) -> [BaseMessage] {
-        SBULog.info("flushing cache with : \(messages.count)")
+        Log.info("flushing cache with : \(messages.count)")
         guard !self.cachedMessageList.isEmpty else { return messages }
         
         let mergedList: [BaseMessage] =
@@ -135,7 +135,7 @@ class SBUMessageCache {
             .sorted(by: { $0.createdAt > $1.createdAt })
         self.cachedMessageList.removeAll()
         
-        SBULog.info("flush merged message : \(mergedList.count)")
+        Log.info("flush merged message : \(mergedList.count)")
         
         return mergedList
     }

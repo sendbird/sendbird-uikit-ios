@@ -120,7 +120,7 @@ public class SBUUnreadMessageInfoView: SBUView {
         addCount: UInt = 0,
         replaceCount: UInt = 0
     ) {
-        SBULog.info("addCount=\(addCount) replaceCount=\(replaceCount)")
+        Log.info("addCount=\(addCount) replaceCount=\(replaceCount)")
         
         if addCount > 0 {
             self.totalUnreadCount += addCount

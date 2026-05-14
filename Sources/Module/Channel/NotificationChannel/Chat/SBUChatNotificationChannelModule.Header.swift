@@ -160,7 +160,7 @@ extension SBUChatNotificationChannelModule {
         @available(*, unavailable, renamed: "SBUChatNotificationChannelModule.Header()")
         public override init(frame: CGRect) { super.init(frame: frame) }
         
-        deinit { SBULog.info(#function) }
+        deinit { Log.info(#function) }
         
         /// Configures ``SBUChatNotificationChannelModule/Header`` object with the ``delegate``.
         /// - Parameters:

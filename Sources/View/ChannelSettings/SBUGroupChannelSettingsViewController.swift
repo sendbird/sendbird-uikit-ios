@@ -69,7 +69,7 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
     /// - Parameter channel: Channel object
     required public init(channel: GroupChannel) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channel: channel)
         self.headerComponent = SBUModuleSet.GroupChannelSettingsModule.HeaderComponent.init()
@@ -80,7 +80,7 @@ open class SBUGroupChannelSettingsViewController: SBUBaseChannelSettingsViewCont
     /// - Parameter channelURL: Channel url string
     required public init(channelURL: String) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channelURL: channelURL)
         self.headerComponent = SBUModuleSet.GroupChannelSettingsModule.HeaderComponent.init()

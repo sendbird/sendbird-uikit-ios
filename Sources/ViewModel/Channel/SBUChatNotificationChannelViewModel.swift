@@ -247,7 +247,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
         completionHandler: ((BaseChannel?, SBError?) -> Void)? = nil
     ) {
         guard let channelURL = channelURL ?? self.channelURL else {
-            SBULog.error("Invalid ChannelURL")
+            Log.error("Invalid ChannelURL")
             let error = ChatError.invalidChannelURL.asSBError(
                 message: "Invalid ChannelURL"
             )
@@ -272,7 +272,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
                 return
             }
             
-            SBULog.info("[Request] Load channel: \(String(channelURL))")
+            Log.info("[Request] Load channel: \(String(channelURL))")
             GroupChannel.getChannel(url: channelURL) { [weak self] channel, error in
                 guard let self = self else {
                     completionHandler?(nil, error)
@@ -285,7 +285,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
                 }
                 
                 self.channel = channel
-                SBULog.info("[Succeed] Load channel request: \(String(describing: self.channel))")
+                Log.info("[Succeed] Load channel request: \(String(describing: self.channel))")
                 
                 self.updateLastSeenAt() // will mark as read
                 
@@ -348,7 +348,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
     
     private func canProceed(with channel: GroupChannel?, error: SBError?) -> Bool {
         if let error = error {
-            SBULog.error("[Failed] Load channel request: \(error.localizedDescription)")
+            Log.error("[Failed] Load channel request: \(error.localizedDescription)")
             
             if error.code == ChatError.nonAuthorized.rawValue {
                 self.delegate?.chatNotificationChannelViewModel(self, shouldDismissForChannel: nil)
@@ -395,7 +395,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
         startingPoint: Int64?,
         showsIndicator: Bool
     ) {
-        SBULog.info("""
+        Log.info("""
             loadInitialNotifications,
             startingPoint : \(String(describing: startingPoint))
             """
@@ -454,11 +454,11 @@ class SBUChatNotificationChannelViewModel: NSObject {
     func loadPrevNotifications() {
         guard let notificationCollection = self.notificationCollection else { return }
         guard self.prevLock.try() else {
-            SBULog.info("Prev notification already loading")
+            Log.info("Prev notification already loading")
             return
         }
         
-        SBULog.info("[Request] Prev notification list")
+        Log.info("[Request] Prev notification list")
         
         notificationCollection.loadPrevious { [weak self] notifications, error in
             guard let self = self else { return }
@@ -472,7 +472,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
             }
             
             guard let notifications = notifications, !notifications.isEmpty else { return }
-            SBULog.info("[Prev notification response] \(notifications.count) notifications")
+            Log.info("[Prev notification response] \(notifications.count) notifications")
             
             self.delegate?.chatNotificationChannelViewModel(
                 self,
@@ -487,7 +487,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
     /// Loads next notifications from `lastUpdatedTimestamp`.
     func loadNextNotifications() {
         guard self.nextLock.try() else {
-            SBULog.info("Next notification already loading")
+            Log.info("Next notification already loading")
             return
         }
         
@@ -507,7 +507,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
             }
             guard let notifications = notifications else { return }
             
-            SBULog.info("[Next notification Response] \(notifications.count) notifications")
+            Log.info("[Next notification Response] \(notifications.count) notifications")
             
             self.delegate?.chatNotificationChannelViewModel(
                 self,
@@ -590,7 +590,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
     /// Deletes a notification with notification object.
     /// - Parameter notification: `BaseMessage` based class object
     //    func deleteNotification(notification: BaseMessage) {
-    //        SBULog.info("[Request] Delete notification: \(notification.description)")
+    //        Log.info("[Request] Delete notification: \(notification.description)")
     //        self.channel?.deleteMessage(notification, completionHandler: nil)
     //    }
     
@@ -604,7 +604,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
         needUpdateNewNotification: Bool = false,
         needReload: Bool
     ) {
-        SBULog.info("First : \(String(describing: notifications?.first)), Last : \(String(describing: notifications?.last))")
+        Log.info("First : \(String(describing: notifications?.first)), Last : \(String(describing: notifications?.last))")
         
         var needsToMarkAsRead = false
         
@@ -696,7 +696,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
         completionHandler: @escaping (Bool) -> Void
     ) {
         guard let uncachedKeys = self.templateLoadCache.uncachedKeys(from: keys) else {
-            SBULog.info("[Request] All requested keys are already marked as failed or are loading: \(keys)")
+            Log.info("[Request] All requested keys are already marked as failed or are loading: \(keys)")
             completionHandler(false)
             return
         }
@@ -705,7 +705,7 @@ class SBUChatNotificationChannelViewModel: NSObject {
         
         SBUMessageTemplateManager.loadTemplateList(type: .notification, keys: uncachedKeys) { [weak self] success in
             guard let self = self else { return }
-            SBULog.info("[Request] Load request completed - success: \(success)")
+            Log.info("[Request] Load request completed - success: \(success)")
             
             self.templateLoadCache.didLoadKeys(form: uncachedKeys, success: success)
 
@@ -717,11 +717,11 @@ class SBUChatNotificationChannelViewModel: NSObject {
 // MARK: - ConnectionDelegate
 extension SBUChatNotificationChannelViewModel: ConnectionDelegate {
     func didSucceedReconnection() {
-        SBULog.info("Did succeed reconnection")
+        Log.info("Did succeed reconnection")
         
         SendbirdUI.updateUserInfo { error in
             if let error = error {
-                SBULog.error("[Failed] Update user info: \(error.localizedDescription)")
+                Log.error("[Failed] Update user info: \(error.localizedDescription)")
             }
         }
         
@@ -740,11 +740,11 @@ extension SBUChatNotificationChannelViewModel: GroupChannelDelegate {
         
         switch message {
         case is UserMessage:
-            SBULog.info("Did receive user message: \(message)")
+            Log.info("Did receive user message: \(message)")
         case is FileMessage:
-            SBULog.info("Did receive file message: \(message)")
+            Log.info("Did receive file message: \(message)")
         case is AdminMessage:
-            SBULog.info("Did receive admin message: \(message)")
+            Log.info("Did receive admin message: \(message)")
         default:
             break
         }
@@ -773,7 +773,7 @@ extension SBUChatNotificationChannelViewModel: MessageCollectionDelegate {
         addedMessages messages: [BaseMessage]
     ) {
         // -> pending, -> receive new notification
-        SBULog.info("messageCollection addedNotifications : \(messages.count)")
+        Log.info("messageCollection addedNotifications : \(messages.count)")
         switch context.source {
         case .eventMessageReceived:
             self.markAsRead()
@@ -796,7 +796,7 @@ extension SBUChatNotificationChannelViewModel: MessageCollectionDelegate {
         updatedMessages messages: [BaseMessage]
     ) {
         // pending -> failed, pending -> succeded, failed -> Pending
-        SBULog.info("messageCollection updatedNotifications : \(messages.count)")
+        Log.info("messageCollection updatedNotifications : \(messages.count)")
         
         self.delegate?.chatNotificationChannelViewModel(
             self,
@@ -817,7 +817,7 @@ extension SBUChatNotificationChannelViewModel: MessageCollectionDelegate {
         channel: GroupChannel,
         deletedMessages messages: [BaseMessage]
     ) {
-        SBULog.info("messageCollection deletedNotifications : \(messages.count)")
+        Log.info("messageCollection deletedNotifications : \(messages.count)")
         self.delegate?.chatNotificationChannelViewModel(self, deletedNotifications: messages)
         self.deleteNotificationsInList(notificationIds: messages.compactMap({ $0.messageId }), needReload: true)
     }
@@ -827,7 +827,7 @@ extension SBUChatNotificationChannelViewModel: MessageCollectionDelegate {
         context: MessageContext,
         updatedChannel channel: GroupChannel
     ) {
-        SBULog.info("messageCollection changedChannel")
+        Log.info("messageCollection changedChannel")
         self.delegate?.chatNotificationChannelViewModel(
             self,
             didChangeChannel: channel,
@@ -840,7 +840,7 @@ extension SBUChatNotificationChannelViewModel: MessageCollectionDelegate {
         context: MessageContext,
         deletedChannel channelURL: String
     ) {
-        SBULog.info("messageCollection deletedChannel")
+        Log.info("messageCollection deletedChannel")
         self.delegate?.chatNotificationChannelViewModel(
             self,
             didChangeChannel: nil,
@@ -849,7 +849,7 @@ extension SBUChatNotificationChannelViewModel: MessageCollectionDelegate {
     }
     
     func didDetectHugeGap(_ collection: MessageCollection) {
-        SBULog.info("messageCollection didDetectHugeGap")
+        Log.info("messageCollection didDetectHugeGap")
         self.notificationCollection?.dispose()
         
         var startingPoint: Int64?

@@ -68,7 +68,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     /// - Parameter channel: The object of the channel to search for
     required public init(channel: BaseChannel) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channel: channel)
         self.headerComponent = SBUModuleSet.MessageSearchModule.HeaderComponent.init()
@@ -77,7 +77,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     
     required public init(channelURL: String) {
         super.init(nibName: nil, bundle: nil)
-        SBULog.info("")
+        Log.info("")
         
         self.createViewModel(channelURL: channelURL)
         self.headerComponent = SBUModuleSet.MessageSearchModule.HeaderComponent.init()
@@ -111,7 +111,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     }
     
     deinit {
-        SBULog.info("")
+        Log.info("")
         self.viewModel = nil
         self.headerComponent = nil
         self.listComponent = nil
@@ -208,7 +208,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
                              messageListParams: MessageListParams? = nil) {
         // result only has group channel for now.
         guard message.channelType == .group else {
-            SBULog.warning("Not a group channel.")
+            Log.warning("Not a group channel.")
             return
         }
         
@@ -243,7 +243,7 @@ open class SBUMessageSearchViewController: SBUBaseViewController, SBUMessageSear
     }
     
     open override func errorHandler(_ message: String?, _ code: NSInteger? = nil) {
-        SBULog.error("Did receive error: \(message ?? "")")
+        Log.error("Did receive error: \(message ?? "")")
     }
     
     // MARK: - SBUMessageSearchModuleHeaderDelegate

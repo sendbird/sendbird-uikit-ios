@@ -26,7 +26,7 @@ extension String {
                 String(self[Range($0.range, in: self)!])
             }
         } catch let error {
-            SBULog.error("invalid regex: \(error.localizedDescription)")
+            Log.error("invalid regex: \(error.localizedDescription)")
             return []
         }
     }
@@ -44,7 +44,7 @@ extension String {
             )
             return removingRegexString
         } catch let error {
-            SBULog.error("failed removing regex: \(error.localizedDescription)")
+            Log.error("failed removing regex: \(error.localizedDescription)")
             return self
         }
     }
