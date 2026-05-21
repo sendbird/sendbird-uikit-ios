@@ -1,5 +1,20 @@
 # Changelog
 
+### v3.35.3 (May 21, 2026)
+
+### Improvements
+  - Fixed the Liquid Glass create-channel `UIMenu` on `SBUGroupChannelListViewController`'s
+  right-bar button so it respects dashboard configuration and the
+  `enableCreateChannelTypeSelector` flag. Super group and broadcast actions are now omitted when
+  `SBUAvailable.isSupportSuperGroupChannel()` / `isSupportBroadcastChannel()` is `false`, matching
+   the non-Liquid-Glass code path. When only group channels are available, the menu is omitted
+  entirely and the tap falls back to the standard create-channel action. (CLNP-8523) (#1412)
+    - Added `SBUGroupChannelListModuleHeaderDelegate.groupChannelListModuleShouldEnableCreateChann
+  elTypeSelector(_:)` — new delegate method the header uses to query whether the type selector is
+  enabled. Has a default extension implementation returning `true`, so existing conformers are
+  unaffected.
+    - Added `SBUGroupChannelListViewController.groupChannelListModuleShouldEnableCreateChannelType
+  Selector(_:)` — default override that returns `enableCreateChannelTypeSelector`
 ### v3.35.2 (May 14, 2026)
 
 ### Added
