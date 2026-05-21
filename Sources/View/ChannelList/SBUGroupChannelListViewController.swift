@@ -379,7 +379,13 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
             self.didSelectCreateBroadcastChannel()
         }
     }
-    
+
+    open func groupChannelListModuleShouldEnableCreateChannelTypeSelector(
+        _ headerComponent: SBUBaseChannelListModule.Header
+    ) -> Bool {
+        self.enableCreateChannelTypeSelector
+    }
+
     // MARK: - SBUGroupChannelListModuleListDelegate
     open func baseChannelListModule(
         _ listComponent: SBUBaseChannelListModule.List,

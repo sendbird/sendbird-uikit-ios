@@ -32,6 +32,18 @@ public protocol SBUGroupChannelListModuleHeaderDelegate: SBUBaseChannelListModul
         _ headerComponent: SBUBaseChannelListModule.Header,
         didSelectCreateChannelType type: SBUCreateGroupChannelType
     )
+
+    /// Asks the delegate whether the channel-type selector is currently enabled.
+    /// Used by the Liquid Glass code path to decide whether to attach the create-channel
+    /// UIMenu, mirroring the `enableCreateChannelTypeSelector` gate that the non-Liquid-Glass
+    /// path consults in `showCreateChannelOrTypeSelector()`.
+    /// - Parameter headerComponent: The header component asking.
+    /// - Returns: `true` if the type selector is enabled (default). `false` to suppress the
+    ///   selector and route the tap straight to standard group-channel creation.
+    /// - Since: 3.35.3
+    func groupChannelListModuleShouldEnableCreateChannelTypeSelector(
+        _ headerComponent: SBUBaseChannelListModule.Header
+    ) -> Bool
 }
 
 extension SBUGroupChannelListModuleHeaderDelegate {
@@ -39,6 +51,10 @@ extension SBUGroupChannelListModuleHeaderDelegate {
         _ headerComponent: SBUBaseChannelListModule.Header,
         didSelectCreateChannelType type: SBUCreateGroupChannelType
     ) { }
+
+    func groupChannelListModuleShouldEnableCreateChannelTypeSelector(
+        _ headerComponent: SBUBaseChannelListModule.Header
+    ) -> Bool { true }
 }
 
 extension SBUGroupChannelListModule {
@@ -76,19 +92,16 @@ extension SBUGroupChannelListModule {
         }
         
         override func createDefaultRightButton() -> SBUBarButtonItem {
-            let buttonAction: Selector?
-            if SendbirdUI.config.common.shouldApplyLiquidGlass {
-                buttonAction = nil
-            } else {
-                buttonAction = #selector(onTapRightBarButton)
-            }
-            
+            // Always wire the action selector so the button has a working tap target
+            // when the Liquid Glass UIMenu is intentionally omitted (e.g. only group
+            // channel is supported on the dashboard). UIKit ignores the selector while
+            // `.menu` is non-nil, so this is safe on both code paths. (CLNP-8523)
             return SBUModuleSet.GroupChannelListModule.HeaderComponent.RightBarButton.init(
                 image: SBUIconSetType.iconCreate.image(to: SBUIconSetType.Metric.defaultIconSize),
                 landscapeImagePhone: nil,
                 style: .plain,
                 target: self,
-                action: buttonAction
+                action: #selector(onTapRightBarButton)
             )
         }
         
@@ -97,7 +110,9 @@ extension SBUGroupChannelListModule {
         func makeCreateChannelTypeContextMenu() -> UIMenu? {
             let tintColor = theme?.channelTypeSelectorItemTintColor
 
-            let group = UIAction(
+            var actions: [UIAction] = []
+
+            actions.append(UIAction(
                 title: SBUStringSet.ChannelType_GroupChannel,
                 image: SBUIconSetType.iconChat.image(
                     with: tintColor,
@@ -105,27 +120,37 @@ extension SBUGroupChannelListModule {
                 )
             ) { _ in
                 self.delegate?.groupChannelListModule(self, didSelectCreateChannelType: .group)
-            }
-            let superGroup = UIAction(
-                title: SBUStringSet.ChannelType_SuperGroupChannel,
-                image: SBUIconSetType.iconSupergroup.image(
-                    with: tintColor,
-                    to: SBUIconSetType.Metric.defaultIconSizeSmall
-                )
-            ) { _ in
-                self.delegate?.groupChannelListModule(self, didSelectCreateChannelType: .superGroup)
-            }
-            let broadcast = UIAction(
-                title: SBUStringSet.ChannelType_BroadcastChannel,
-                image: SBUIconSetType.iconBroadcast.image(
-                    with: tintColor,
-                    to: SBUIconSetType.Metric.defaultIconSizeSmall
-                )
-            ) { _ in
-                self.delegate?.groupChannelListModule(self, didSelectCreateChannelType: .broadcast)
+            })
+
+            if SBUAvailable.isSupportSuperGroupChannel() {
+                actions.append(UIAction(
+                    title: SBUStringSet.ChannelType_SuperGroupChannel,
+                    image: SBUIconSetType.iconSupergroup.image(
+                        with: tintColor,
+                        to: SBUIconSetType.Metric.defaultIconSizeSmall
+                    )
+                ) { _ in
+                    self.delegate?.groupChannelListModule(self, didSelectCreateChannelType: .superGroup)
+                })
             }
 
-            return UIMenu(title: "Channel type", children: [group, superGroup, broadcast])
+            if SBUAvailable.isSupportBroadcastChannel() {
+                actions.append(UIAction(
+                    title: SBUStringSet.ChannelType_BroadcastChannel,
+                    image: SBUIconSetType.iconBroadcast.image(
+                        with: tintColor,
+                        to: SBUIconSetType.Metric.defaultIconSizeSmall
+                    )
+                ) { _ in
+                    self.delegate?.groupChannelListModule(self, didSelectCreateChannelType: .broadcast)
+                })
+            }
+
+            // Only `.group` available → omit the menu so the tap falls back to the
+            // action selector path (`showCreateChannelOrTypeSelector` → `.group`). (CLNP-8523)
+            guard actions.count > 1 else { return nil }
+
+            return UIMenu(title: "Channel type", children: actions)
         }
         
         // MARK: - LifeCycle
@@ -165,7 +190,24 @@ extension SBUGroupChannelListModule {
             super.setupViews()
 
             if #available(iOS 26, *), SendbirdUI.config.common.shouldApplyLiquidGlass {
-                rightBarButton?.menu = self.makeCreateChannelTypeContextMenu()
+                // Mirror the non-Liquid-Glass gate: skip the menu entirely when the
+                // view controller disabled the type selector via
+                // `enableCreateChannelTypeSelector = false`. (CLNP-8523)
+                let enableTypeSelector = self.delegate?
+                    .groupChannelListModuleShouldEnableCreateChannelTypeSelector(self) ?? true
+                let menu = enableTypeSelector ? self.makeCreateChannelTypeContextMenu() : nil
+                rightBarButton?.menu = menu
+
+                // When a UIBarButtonItem has both a `target`/`action` and a `.menu`,
+                // UIKit treats the action as the primary tap target and demotes the
+                // menu to a long-press affordance. Clear the action while the menu
+                // is attached so the menu becomes the primary tap behavior.
+                // `createDefaultRightButton()` always wires the action selector, so
+                // the menu-omitted path needs no restoration here. (CLNP-8523)
+                if menu != nil {
+                    rightBarButton?.target = nil
+                    rightBarButton?.action = nil
+                }
             }
         }
         
