@@ -151,7 +151,7 @@ open class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDelegat
     }
 
     open override func setupStyles() {
-        self.view.backgroundColor = theme.backgroundColorAdaptive
+        self.view.backgroundColor = theme.$backgroundColorAdaptive.nonAdaptiveValue
     }
 
     // MARK: - UITableView relations
@@ -227,7 +227,9 @@ open class SBUMenuSheetViewController: SBUBaseViewController, UITableViewDelegat
         let didSelect = message?.reactions
             .first { $0.key == emoji.key }?.sampledUserIds
             .contains(currentUesr.userId) ?? false
-        cell.isSelected = didSelect
+        DispatchQueue.main.async {
+            cell.isSelected = didSelect
+        }
 
         return cell
     }

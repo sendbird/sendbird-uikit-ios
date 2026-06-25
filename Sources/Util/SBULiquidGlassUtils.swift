@@ -17,6 +17,24 @@ public enum SBULiquidGlassUtils {
     public static func createGlassEffectView(
         isInteractive: Bool = false
     ) -> UIVisualEffectView? {
+        createGlassEffectView(tintColor: nil, isInteractive: isInteractive)
+    }
+
+    /// Tint-aware factory, config-gated. Internal-only overload so the public
+    /// ABI surface stays the same; new tint-aware callers in the SDK route
+    /// through here.
+    /// - Parameters:
+    ///   - tintColor: Color applied to `UIGlassEffect.tintColor`. `nil` keeps
+    ///     the system default material.
+    ///   - isInteractive: Whether the glass effect should be interactive.
+    ///     Default is `false`.
+    /// - Returns: A UIVisualEffectView with glass effect, or `nil` if Liquid
+    ///   Glass is disabled, or compile-/runtime-unavailable.
+    /// - Since: 3.35.4
+    static func createGlassEffectView(
+        tintColor: UIColor?,
+        isInteractive: Bool = false
+    ) -> UIVisualEffectView? {
         guard SendbirdUI.config.common.shouldApplyLiquidGlass else { return nil }
 
         #if compiler(>=6.2)
@@ -24,11 +42,26 @@ public enum SBULiquidGlassUtils {
 
         let glassEffect = UIGlassEffect()
         glassEffect.isInteractive = isInteractive
+        if let tintColor {
+            glassEffect.tintColor = tintColor
+        }
 
-        return UIVisualEffectView(effect: glassEffect)
+        let view = UIVisualEffectView(effect: glassEffect)
+        view.overrideUserInterfaceStyle = sbuThemeOverrideStyle
+        return view
         #else
         return nil
         #endif
+    }
+
+    /// Resolves the `overrideUserInterfaceStyle` that should be applied to any
+    /// `UIVisualEffectView` rendering `UIGlassEffect`. Without this override
+    /// the system glass material follows `traitCollection.userInterfaceStyle`
+    /// (OS-level appearance) and ignores `SBUTheme.colorScheme`, so a dark
+    /// SBU theme on a light-mode device still renders a light glass base.
+    /// - Since: 3.35.4
+    private static var sbuThemeOverrideStyle: UIUserInterfaceStyle {
+        SBUTheme.colorScheme == .dark ? .dark : .light
     }
     
     /// Util function that creates a glass effect view, and also sets up layout and style. 
@@ -51,7 +84,8 @@ public enum SBULiquidGlassUtils {
         glassEffect.isInteractive = isInteractive
 
         let glassEffectView = UIVisualEffectView(effect: glassEffect)
-        
+        glassEffectView.overrideUserInterfaceStyle = sbuThemeOverrideStyle
+
         // layout
         glassEffectView.setupLayouts(
             frame: frame,

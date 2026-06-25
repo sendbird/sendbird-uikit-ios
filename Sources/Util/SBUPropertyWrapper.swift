@@ -190,6 +190,21 @@ public struct SBUAdaptive<T: SBUAdaptiveCompatible> {
         }
     }
 
+    /// The base value, returned regardless of the current Liquid Glass mode.
+    ///
+    /// Use this from a consumer site as a narrow escape hatch when the value
+    /// resolved under Liquid Glass mode is wrong for that specific UI — e.g.
+    /// when a Liquid Glass-adaptive background that resolves to `UIColor.clear`
+    /// would make a sheet or popup unreadable. Prefer the regular `wrappedValue`
+    /// everywhere else so Liquid Glass behavior stays consistent across the
+    /// rest of the SDK; reach for this only at the call sites that demonstrably
+    /// regressed under Liquid Glass.
+    ///
+    /// - Since: 3.35.4
+    var nonAdaptiveValue: T {
+        baseValue
+    }
+
     /// Provides access to the wrapper itself for calling mutating methods.
     /// Use the `$` prefix to access this value (e.g., `$backgroundColor`).
     public var projectedValue: Self {
