@@ -150,7 +150,7 @@ open class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDe
     }
 
     open override func setupStyles() {
-        self.view.backgroundColor = theme.backgroundColorAdaptive
+        self.view.backgroundColor = theme.$backgroundColorAdaptive.nonAdaptiveValue
     }
 
     // MARK: - Common
@@ -199,7 +199,9 @@ open class SBUEmojiListViewController: SBUBaseViewController, UICollectionViewDe
         let didSelect = self.message?.reactions
             .first { $0.key == emoji.key }?
             .sampledUserIds.contains(currentUesr.userId) ?? false
-        cell.isSelected = didSelect
+        DispatchQueue.main.async {
+            cell.isSelected = didSelect
+        }
         
         return cell
     }

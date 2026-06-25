@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 	s.name = "SendbirdUIMessageTemplate"
-	s.version = "3.35.3"
+	s.version = "3.35.4"
 	s.summary = "SendbirdUIMessageTemplate based on SendbirdChatSDK"
 	s.description = "Sendbird UI MessageTemplate is a framework composed of basic Message Template UI components based on SendbirdChatSDK."
 	s.homepage = "https://sendbird.com"
@@ -15,10 +15,10 @@ Pod::Spec.new do |s|
 	"Kai" => "kai.lee@sendbird.com"
   	}
 	s.platform = :ios, "13.0"
-	s.source = { :http => "https://github.com/sendbird/sendbird-uikit-ios/releases/download/#{s.version}/SendbirdUIMessageTemplate.zip", :sha1 => "73d6518f0c1a8bc0d8818e3745f108b4eefccbf6" }
+	s.source = { :http => "https://github.com/sendbird/sendbird-uikit-ios/releases/download/#{s.version}/SendbirdUIMessageTemplate.zip", :sha1 => "4c38b450a2979986d8ac2d0d73f4aa93413e8c2b" }
 	s.ios.vendored_frameworks = 'SendbirdUIMessageTemplate/SendbirdUIMessageTemplate.xcframework'
 	s.ios.frameworks = ["UIKit", "Foundation", "CoreData", "SendbirdChatSDK"]
 	s.requires_arc = true
-	s.dependency "SendbirdChatSDK", ">= 4.39.4"
+	s.dependency "SendbirdChatSDK", ">= 4.39.6"
 	s.ios.library = "icucore"
 end

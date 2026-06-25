@@ -1,5 +1,14 @@
 # Changelog
 
+### v3.35.4 (Jun 25, 2026)
+
+### Improvements
+
+- Improved the Liquid Glass navigation bar to better match the iOS 26 native look. (CLNP-8629) (#1428)
+- Fixed an issue in Liquid Glass mode where the reaction emoji picker and the long-press menu sheet appeared with a transparent background. (CLNP-8641) (#1429)
+- Fixed an issue where emojis the current user had already reacted with were not shown as highlighted in the emoji picker and in the long-press action sheet's reaction row. (CLNP-8611) (#1430)
+- Updated `SendbirdChatSDK` dependency to 4.39.6.
+
 ### v3.35.3 (May 21, 2026)
 
 ### Improvements
