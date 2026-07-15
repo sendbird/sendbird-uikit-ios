@@ -253,7 +253,6 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
     ///    - text: String value
     ///    - parentMessage: The parent message. The default value is `nil` when there's no parent message.
     open func sendUserMessage(text: String, parentMessage: BaseMessage? = nil) {
-        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let messageParams = UserMessageCreateParams(message: text)
         
         if let parentMessage = parentMessage,
@@ -508,7 +507,6 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
     ///   - text: String to be updated
     /// - Since: 1.0.9
     public func updateUserMessage(message: UserMessage, text: String) {
-        let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let messageParams = UserMessageUpdateParams(message: text)
         
         SBUGlobalCustomParams.userMessageParamsUpdateBuilder?(messageParams)

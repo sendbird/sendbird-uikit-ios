@@ -1313,7 +1313,7 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     open func onTapSendButton(_ sender: Any) {
         self.delegate?.messageInputView(
             self,
-            didSelectSend: self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            didSelectSend: self.textView?.text ?? ""
         )
         self.endTypingMode()
         self.placeholderLabel.isHidden = !(self.textView?.text.isEmpty ?? true)
@@ -1336,16 +1336,18 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
     
     @objc
     open func onTapSaveButton(_ sender: Any) {
-        let editedText = self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let editedText = self.textView?.text ?? ""
+
+        // Empty guard mirrors the send-side check at SBUBaseChannelModule.Input.swift:285.
+        // Blocks whitespace-only edits from reaching Chat SDK without mutating payload. (CLNP-8711)
+        guard !editedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+
         guard basedText != editedText else {
             self.endEditMode()
             self.delegate?.messageInputViewDidEndTyping()
             return
         }
-        self.delegate?.messageInputView(
-            self,
-            didSelectEdit: self.textView?.text.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        )
+        self.delegate?.messageInputView(self, didSelectEdit: editedText)
     }
     
     // MARK: - Internal methods

@@ -1486,8 +1486,8 @@ extension SBUGroupChannelModule.List {
         with messageCell: SBUBaseMessageCell,
         indexPath: IndexPath
     ) {
-        messageCell.messageTemplateActionHandler = { [weak self, indexPath] action in
-            guard let self = self, let message = messageCell.message else { return }
+        messageCell.messageTemplateActionHandler = { [weak self, weak messageCell, indexPath] action in
+            guard let self = self, let message = messageCell?.message else { return }
             
             // Action Events
             switch action.type {
