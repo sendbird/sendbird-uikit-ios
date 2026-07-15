@@ -282,7 +282,7 @@ extension SBUBaseChannelModule {
         }
         
         public func messageInputView(_ messageInputView: SBUMessageInputView, didSelectSend text: String) {
-            guard text.count > 0 else { return }
+            guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
             
             var parentMessage: BaseMessage?
             switch messageInputView.option {

@@ -1,5 +1,12 @@
 # Changelog
 
+### v3.35.5 (Jul 15, 2026)
+
+### Improvements
+- User messages are now sent and edited exactly as typed — leading and trailing whitespace and newlines are no longer trimmed from outgoing messages. Messages consisting only of whitespace are still blocked from being sent.
+    - Note: `SBUGlobalCustomParams.userMessageParamsSendBuilder` / `userMessageParamsUpdateBuilder` now receive the untrimmed `message` text.
+- Fixed a memory leak where every rendered message cell was retained after closing a channel, caused by a retain cycle in `messageTemplateActionHandler`.
+
 ### v3.35.4 (Jun 25, 2026)
 
 ### Improvements

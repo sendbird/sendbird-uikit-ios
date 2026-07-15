@@ -910,7 +910,7 @@ extension SBUMessageThreadModule {
                     parentMessage: self.parentMessage
                 )
             } else {
-                guard text.count > 0 else { return }
+                guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
                 messageInputView.setMode(.none)
                 
                 self.baseDelegate?.baseChannelModule(
