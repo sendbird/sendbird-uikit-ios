@@ -103,9 +103,14 @@ https://github.com/sendbird/sendbird-uikit-ios-spm.git
 
 #### - CocoaPods
 
+> **Note**: On December 2, 2026, the public CocoaPods trunk will become read-only and will no longer accept new pod versions. We recommend migrating to Swift Package Manager for dependency management. To continue using CocoaPods, add the Sendbird spec source to the top of your `Podfile` as shown below.
+
 1. Add `SendBirdUIKit` into your `Podfile` in Xcode as below:
 
 ```bash
+source 'https://github.com/sendbird/sendbird-ios-distribution.git'
+source 'https://cdn.cocoapods.org/'
+
 platform :ios, '13.0'
 use_frameworks!
 
