@@ -59,9 +59,17 @@ public enum SBULiquidGlassUtils {
     /// the system glass material follows `traitCollection.userInterfaceStyle`
     /// (OS-level appearance) and ignores `SBUTheme.colorScheme`, so a dark
     /// SBU theme on a light-mode device still renders a light glass base.
+    ///
+    /// Apps that theme SendbirdUIKit with trait-based dynamic `UIColor`s can opt
+    /// out through `SBUTheme.liquidGlassAppearance`. `.system` returns
+    /// `.unspecified`, which leaves the glass view inheriting the device trait —
+    /// the tint and the material then follow the device without a rebuild.
     /// - Since: 3.35.4
     private static var sbuThemeOverrideStyle: UIUserInterfaceStyle {
-        SBUTheme.colorScheme == .dark ? .dark : .light
+        if SBUTheme.liquidGlassAppearanceValue == .system {
+            return .unspecified
+        }
+        return SBUTheme.colorScheme == .dark ? .dark : .light
     }
     
     /// Util function that creates a glass effect view, and also sets up layout and style. 

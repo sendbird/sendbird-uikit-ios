@@ -25,7 +25,7 @@ final class GeneralSignInViewController: UIViewController {
     
     var sampleAppType: SampleAppType = .basicUsage
     
-    #if INSPECTION
+    #if INSPECTION || REGION_SELECTION
     var region: Region = .production
     #endif
     
@@ -87,7 +87,7 @@ final class GeneralSignInViewController: UIViewController {
         self.userIdTextField.text = UserDefaults.loadUserId(type: self.sampleAppType)
         self.nicknameTextField.text = UserDefaults.loadNickname(type: self.sampleAppType)
         
-        #if INSPECTION
+        #if INSPECTION || REGION_SELECTION
         self.setupRegionSelectionView()
         #endif
         
@@ -145,7 +145,7 @@ final class GeneralSignInViewController: UIViewController {
             nickname: nickname
         )
         
-        #if INSPECTION
+        #if INSPECTION || REGION_SELECTION
         let region = UserDefaults.loadRegion(type: self.sampleAppType)
         SBUGlobals.apiHost = region.apiHost(appId: appId)
         SBUGlobals.wsHost = region.wsHost(appId: appId)
@@ -186,6 +186,10 @@ final class GeneralSignInViewController: UIViewController {
         UserDefaults.saveAppId(type: self.sampleAppType, appId: appId)
         UserDefaults.saveUserId(type: self.sampleAppType, userId: userId)
         UserDefaults.saveNickname(type: self.sampleAppType, nickname: nickname)
+
+        #if INSPECTION || REGION_SELECTION
+        UserDefaults.saveAppId(type: self.sampleAppType, region: self.region, appId: appId)
+        #endif
     }
     
     func openViewController() {

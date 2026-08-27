@@ -19,6 +19,15 @@ public enum SBUThemeColorScheme {
     case dark
 }
 
+/// The appearance that Liquid Glass follows.
+/// - Since: 3.36.0
+public enum SBULiquidGlassAppearance {
+    /// Follows `SBUTheme.colorScheme`. This is the default.
+    case theme
+    /// Follows the device's system appearance.
+    case system
+}
+
 public class SBUTheme {
     public init(groupChannelListTheme: SBUGroupChannelListTheme = .light,
                 groupChannelCellTheme: SBUGroupChannelCellTheme = .light,
@@ -59,6 +68,17 @@ public class SBUTheme {
         self.notificationTheme = .light
     }
     
+    /// Replaces every component theme with the ones in `theme`.
+    ///
+    /// - IMPORTANT: Any color the app assigned to an individual theme — say
+    /// `SBUTheme.channelTheme.navigationBarGradientTint` — is dropped by this
+    /// call. Set the theme first, then apply the app's own colors. Doing it in
+    /// the other order silently discards them.
+    ///
+    /// ```swift
+    /// SBUTheme.set(theme: .dark)                            // 1. replaces the themes
+    /// SBUTheme.channelTheme.navigationBarGradientTint = tint // 2. then customize
+    /// ```
     public static func set(theme: SBUTheme) {
         self.colorScheme = theme.colorScheme
         self.shared = theme
@@ -66,6 +86,23 @@ public class SBUTheme {
     
     /// Sets color scheme of UIKit
     /// - Parameter colorScheme: colorScheme type
+    ///
+    /// - IMPORTANT: This resets every component theme to the SDK defaults for the
+    /// given scheme, so any color the app assigned to an individual theme is
+    /// dropped. Set the color scheme first, then re-apply the app's own colors —
+    /// on every call, not once at launch.
+    ///
+    /// ```swift
+    /// // On every appearance change
+    /// SBUTheme.set(colorScheme: isDark ? .dark : .light)      // 1. resets the themes
+    /// SBUTheme.channelTheme.navigationBarGradientTint = tint  // 2. re-apply
+    /// visibleViewController?.updateStyles()                   // 3. restyle what is on screen
+    /// ```
+    ///
+    /// An app that themes SendbirdUIKit entirely with trait-based dynamic
+    /// `UIColor`s does not need this call at all — UIKit re-resolves those colors
+    /// when the device appearance changes. See ``liquidGlassAppearance`` for the
+    /// Liquid Glass side of that setup.
     ///
     /// - Since: 3.5.0
     public static func set(colorScheme: SBUThemeColorScheme) {
@@ -306,6 +343,52 @@ public class SBUTheme {
     
     /// Color scheme of Sendbird UIKit (internal property)
     var colorScheme: SBUThemeColorScheme = .light
+
+    /// - Since: 3.36.0
+    private static var _liquidGlassAppearance: SBULiquidGlassAppearance = .theme
+
+    /// Determines which appearance Liquid Glass follows. Defaults to `.theme`.
+    ///
+    /// This sets the trait on every glass view, so it governs both the glass
+    /// material and any trait-based dynamic `UIColor` used as its tint. In
+    /// practice the tint is what shows: an opaque tint covers most of the
+    /// material, so the light/dark difference in the material itself is subtle.
+    ///
+    /// Use `.system` only when the app themes SendbirdUIKit with trait-based
+    /// dynamic `UIColor`s. The glass then follows the device the same way
+    /// ordinary components already do, and `SBUTheme.set(colorScheme:)` is not
+    /// needed to keep it in sync.
+    ///
+    /// Set this at app launch, before the first Sendbird screen is shown.
+    ///
+    /// ```swift
+    /// if #available(iOS 26.0, *) {
+    ///     SBUTheme.liquidGlassAppearance = .system
+    /// }
+    /// ```
+    ///
+    /// - Warning: Keep `.theme` when the app themes SendbirdUIKit with static
+    /// colors. `.system` lets the glass material follow the device while a
+    /// static tint stays where it is, so the chrome ends up out of step with
+    /// the rest of the screen.
+    /// - Important: A glass view reads this value once, when it is created.
+    /// Changing the value while a Sendbird screen is on display does not
+    /// restyle the glass already on that screen; the screen has to be rebuilt
+    /// first. Treat the value as launch-time configuration rather than a
+    /// runtime switch.
+    /// - Since: 3.36.0
+    @available(iOS 26.0, *)
+    public static var liquidGlassAppearance: SBULiquidGlassAppearance {
+        get { _liquidGlassAppearance }
+        set { _liquidGlassAppearance = newValue }
+    }
+
+    /// The appearance Liquid Glass follows, readable without an iOS 26
+    /// availability check.
+    /// - Since: 3.36.0
+    static var liquidGlassAppearanceValue: SBULiquidGlassAppearance {
+        _liquidGlassAppearance
+    }
     
     // Channel List
     private var groupChannelListTheme: SBUGroupChannelListTheme

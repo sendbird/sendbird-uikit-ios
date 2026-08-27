@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.36.0 (Aug 27, 2026)
+
+### Improvements
+- Fixed the Liquid Glass navigation bar keeping its previous color when the appearance changed while a channel list or channel screen was on screen. Apps that theme `navigationBarGradientTint` with a trait-based dynamic `UIColor` were affected, because the update guard compared only the tint object and a dynamic color is the same object across appearances.
+- Added `SBUTheme.liquidGlassAppearance`. Set it to `.system` to let Liquid Glass follow the device appearance instead of `SBUTheme.colorScheme`, which suits apps that theme SendbirdUIKit with trait-based dynamic `UIColor`s. Defaults to `.theme`, so existing behavior is unchanged. See `LiquidGlassAppearanceCustomManager` in QuickStart for both setups.
+
 ### v3.35.5 (Jul 15, 2026)
 
 ### Improvements

@@ -48,7 +48,44 @@ class MainChannelTabbarController: UITabBarController {
         self.viewControllers = tabbarItems
         
         self.setupStyles()
-        
+
+        // Liquid Glass appearance sample. Uncomment one of the two cases below,
+        // whichever matches how the app supplies its theme colors. See
+        // `LiquidGlassAppearanceCustomManager`.
+        //
+        // Both belong here, on the container that hosts the Sendbird screens,
+        // rather than at launch. QuickStart's home screen runs
+        // `SBUTheme.set(theme:)` and `GlobalSetCustomManager.setDefault()` every
+        // time it appears, and those two replace every component theme, so colors
+        // assigned before them are dropped.
+        //
+        // Case 1. The app themes SendbirdUIKit with trait-based dynamic
+        // `UIColor`s. Apply once, here. Liquid Glass and the ordinary components
+        // then both follow the device: no appearance observer, and no
+        // `SBUTheme.set(colorScheme:)` call.
+        //
+        // LiquidGlassAppearanceCustomManager.applyDynamicColorTheme()
+        //
+        // Case 2. The app themes SendbirdUIKit with static colors, one per color
+        // scheme. `SBUTheme.liquidGlassAppearance` stays at its default `.theme`,
+        // so the app owns the sync: every appearance change re-applies the colors
+        // and restyles the screen on display. Register once, here, so the handler
+        // stays alive for as long as the Sendbird screens do.
+        //
+        // if #available(iOS 17.0, *) {
+        //     _ = registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (self: Self, _: UITraitCollection) in
+        //         LiquidGlassAppearanceCustomManager.applyStaticColorTheme(
+        //             isDark: self.traitCollection.userInterfaceStyle == .dark,
+        //             visibleViewController: (self.selectedViewController as? UINavigationController)?
+        //                 .visibleViewController as? SBUBaseViewController
+        //         )
+        //     }
+        // }
+        //
+        // The Dark theme switch in My settings runs `SBUTheme.set(theme:)` and
+        // `updateTheme(isDarkMode:)`, which fight both cases. Leave that switch
+        // alone while trying either one.
+
         SendbirdChat.addUserEventDelegate(self, identifier: self.sbu_className)
         
         self.loadTotalUnreadMessageCount()
