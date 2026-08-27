@@ -436,6 +436,7 @@
 		CEA58DF10426228CE71D3B5D /* SBUModerationsModule.Header.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82A0BB18E923E1EC32EBBFC /* SBUModerationsModule.Header.swift */; };
 		CEAB107D9E148A1448B8D01D /* SBUStringSet.Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = A69E57F71BF374625203BAD3 /* SBUStringSet.Deprecated.swift */; };
 		CF94275B179357EF4B2CF348 /* ConnectView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CC5C18901EE173180BB25C9F /* ConnectView.xib */; };
+		D0A36E4BE8546610B3ACC898 /* LiquidGlassAppearanceCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A321D777D9784541B157B6BF /* LiquidGlassAppearanceCustomManager.swift */; };
 		D0D452754600FAA8BB9F82D2 /* SBUAdminMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECEB9E2345B03AC18BA5329 /* SBUAdminMessageCell.swift */; };
 		D10EA603141B516B5C2D5A8E /* SBUModuleSet.Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACCFC590F4754D03042244B /* SBUModuleSet.Deprecated.swift */; };
 		D1648F7368266C6289CA9C5E /* SBUGroupChannelListModule.List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41A98DC874AEAB4493534515 /* SBUGroupChannelListModule.List.swift */; };
@@ -933,6 +934,7 @@
 		A2C1F5C2C819FE79C4223758 /* SBUBaseChannelListModule.Header.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelListModule.Header.swift; sourceTree = "<group>"; };
 		A2C4DE913333F92724230927 /* SBUFontSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUFontSet.swift; sourceTree = "<group>"; };
 		A2C8B9B8ACEF7BFD4E0EDABF /* SBUMessageThreadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUMessageThreadViewModel.swift; sourceTree = "<group>"; };
+		A321D777D9784541B157B6BF /* LiquidGlassAppearanceCustomManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassAppearanceCustomManager.swift; sourceTree = "<group>"; };
 		A3837EC8A55E0857C0891EF2 /* MainOpenChannelTabbarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainOpenChannelTabbarController.swift; sourceTree = "<group>"; };
 		A3E3D00E36AC37C744C172B2 /* MemberListVC_Cell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListVC_Cell.swift; sourceTree = "<group>"; };
 		A43EA4B59C42F807C76F7B74 /* ChannelVC_AdditionalFeatures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelVC_AdditionalFeatures.swift; sourceTree = "<group>"; };
@@ -2013,6 +2015,7 @@
 				C7368083040846A8BFD1A786 /* CreateChannelCustomManager.swift */,
 				D52175BB76AF7926133CF704 /* GlobalSetCustomManager.swift */,
 				56585FF472897189202B81E3 /* InviteUserCustomManager.swift */,
+				A321D777D9784541B157B6BF /* LiquidGlassAppearanceCustomManager.swift */,
 				F781C196C840F15272F5D1C0 /* MemberListCustomManager.swift */,
 				2FF0C3A9D41F9CA7E230D440 /* MessageTranslationMessageCell.swift */,
 				F0F6E578BF4A8F50AC7929B4 /* OpenChannelCustomManager.swift */,
@@ -3210,8 +3213,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B681577BB72BB55817BE43E6 /* NotificationService */,
 				8FC66CB764B9B97C95E00B1F /* QuickStart */,
+				B681577BB72BB55817BE43E6 /* NotificationService */,
 			);
 		};
 /* End PBXProject section */
@@ -3319,6 +3322,7 @@
 				4D876D744765ED547B7DCE05 /* InviteUserCustomManager.swift in Sources */,
 				AF529FD7A016441500B37840 /* InviteUserVC_Cell.swift in Sources */,
 				F7F4EF519DF5193542B02CF0 /* InviteUserVC_UserList.swift in Sources */,
+				D0A36E4BE8546610B3ACC898 /* LiquidGlassAppearanceCustomManager.swift in Sources */,
 				3C09757B8F0E2A770B427896 /* LiveStreamChannelCell.swift in Sources */,
 				F17AAF5981B6824CAC23C3A5 /* LiveStreamChannelListModule.List.swift in Sources */,
 				538AF7C4BC1CCB21DFE4948B /* LiveStreamChannelListViewController.swift in Sources */,
@@ -3837,7 +3841,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.35.5;
+				MARKETING_VERSION = 3.36.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -3865,7 +3869,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.35.5;
+				MARKETING_VERSION = 3.36.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4010,7 +4014,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.35.5;
+				MARKETING_VERSION = 3.36.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4038,7 +4042,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.35.5;
+				MARKETING_VERSION = 3.36.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4087,7 +4091,7 @@
 			repositoryURL = "https://github.com/sendbird/sendbird-uikit-ios-spm";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 3.35.5;
+				minimumVersion = 3.36.0;
 			};
 		};
 		A4CD81EE92C875D0E22463C6 /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */ = {

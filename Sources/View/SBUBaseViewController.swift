@@ -54,6 +54,12 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     /// Used to check if navigation bar update is needed.
     /// - Since: 3.34.0
     var previousLiquidGlassNavBarBackgroundTint = UIColor()
+    /// Caches the color scheme the liquid glass navigation bar was last built with.
+    /// A trait-based dynamic `UIColor` is the same object across appearance
+    /// changes, so the tint alone cannot detect that the effective appearance
+    /// changed. `nil` until the bar is built for the first time.
+    /// - Since: 3.36.0
+    var previousLiquidGlassNavBarColorScheme: SBUThemeColorScheme?
 
     // MARK: - Lifecycle
     open override func loadView() {
@@ -127,6 +133,7 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
     /// - Since: 3.34.0
     func shouldUpdateLiquidGlassNavigationBar(gradientBackgroundTint: UIColor) -> Bool {
         gradientBackgroundTint != previousLiquidGlassNavBarBackgroundTint
+            || SBUTheme.colorScheme != previousLiquidGlassNavBarColorScheme
     }
     
     /// This function setups navigationBar's background color and shadow color.
@@ -159,6 +166,7 @@ open class SBUBaseViewController: UIViewController, UINavigationControllerDelega
             if #available(iOS 26.0, *) {
                 // update
                 self.previousLiquidGlassNavBarBackgroundTint = gradientBackgroundTint
+                self.previousLiquidGlassNavBarColorScheme = SBUTheme.colorScheme
                 
                 self.setupLiquidGlassNavigationBar(gradientBackgroundTint: gradientBackgroundTint)
             }

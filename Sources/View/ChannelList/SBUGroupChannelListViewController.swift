@@ -246,7 +246,12 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
                 #if SWIFTUI
                 if let groupChannelViewBuilder = self.groupChannelViewBuilder {
                     let view = groupChannelViewBuilder(channelURL, nil, messageListParams)
-                    let channelVC = UIHostingController(rootView: view)
+                    // `SBUSwiftUIHostingController` hides the navigation bar, so the key
+                    // function view must render its header in-content — force the internal
+                    // navigation controller path regardless of window state. (SBISSUE-21868)
+                    let channelVC = SBUSwiftUIHostingController(
+                        rootView: view.environment(\.sbuAlwaysWrapNavigation, true)
+                    )
                     self.navigationController?.pushViewControllerNonFlickering(channelVC, animated: true)
                     return
                 }
