@@ -16,9 +16,13 @@ public class SBUEmojiManager {
     
     // MARK: - Private property
     static let shared = SBUEmojiManager()
-    private var container: EmojiContainer? {
-        didSet { self.didSetContainer() }
-    }
+    /// Serial queue for the `UserDefaults` cache: read/decode on restore, serialize/write on save.
+    /// No explicit QoS: it inherits the submitter's (the connect flow runs on the main queue).
+    static let cacheQueue = DispatchQueue(label: "\(SBUConstant.bundleIdentifier).queue.emoji.cache")
+    /// Main-thread only.
+    private var container: EmojiContainer?
+    /// Hash of the container currently persisted in `UserDefaults`. Main-thread only.
+    private var persistedEmojiHash: String?
     private var emojiHash: String? {
         container?.emojiHash
     }
@@ -136,58 +140,93 @@ public class SBUEmojiManager {
     }
     
     /// Loads all Emojis from ChatSDK.
+    ///
+    /// Cache restore (`UserDefaults` read + decode) and cache save (serialize + `UserDefaults` write) run on
+    /// `cacheQueue`, never on the caller's thread. The container is only assigned on the main thread.
+    /// The cache is written only when the emoji hash changed; restoring from cache never writes it back.
     /// - Parameter completionHandler: The callback that includes either `EmojiContainer` or `SBError`.
+    ///   Always called asynchronously on the main thread.
     public static func loadAllEmojis(completionHandler: @escaping (
         _ container: EmojiContainer?,
         _ error: SBError?) -> Void
     ) {
-        guard let appInfo = SendbirdChat.getAppInfo(),
-              self.shared.emojiHash == nil || appInfo.isEmojiUpdateNeeded(prevEmojiHash: shared.emojiHash ?? "")
-        else {
-            completionHandler(shared.container, nil)
-            return
-        }
-        
-        Log.info("[Request] Load all emojis")
-        
-        // Load from cached data first.
-        if let cachedContainer = UserDefaults.standard.data(forKey: SBUEmojiManager.kEmojiCacheKey) {
-            let container = EmojiContainer.build(fromSerializedData: cachedContainer)
-            shared.container = container
-        }
-        
-        SendbirdChat.getAllEmojis { container, error in
-            if let error = error {
-                if let cachedContainer = shared.container, container == nil {
-                    Log.info("[Succeed] Load all emojis from cache")
-                    completionHandler(cachedContainer, nil)
-                } else {
-                    Log.error("[Failed] Load all emojis: \(error.localizedDescription)")
-                    completionHandler(nil, error)
-                }
+        Thread.executeOnMain {
+            guard let appInfo = SendbirdChat.getAppInfo(),
+                  self.shared.emojiHash == nil || appInfo.isEmojiUpdateNeeded(prevEmojiHash: shared.emojiHash ?? "")
+            else {
+                let container = shared.container
+                Thread.executeOnMainAsync { completionHandler(container, nil) }
                 return
             }
             
-            guard let container = container else {
-                if let cachedContainer = shared.container {
-                    Log.info("[Succeed] Load all emojis from cache")
-                    completionHandler(cachedContainer, nil)
-                } else {
-                    Log.error("[Failed] Load all emojis: EmojiContainer is not set")
-                    completionHandler(nil, nil)
-                }
-                return
-            }
+            Log.info("[Request] Load all emojis")
             
-            Log.info("[Succeed] Load all emojis")
-            shared.container = container
-            completionHandler(container, nil)
+            // 1. Restore from the cached data first (off the main thread), without writing it back.
+            self.restoreContainerFromCache { restored in
+                // 2. Fetch from the server. Persist only if the hash changed.
+                SendbirdChat.getAllEmojis { container, error in
+                    Thread.executeOnMain {
+                        if let error = error {
+                            if let cachedContainer = shared.container, container == nil {
+                                Log.info("[Succeed] Load all emojis from cache")
+                                completionHandler(cachedContainer, nil)
+                            } else {
+                                Log.error("[Failed] Load all emojis: \(error.localizedDescription)")
+                                completionHandler(nil, error)
+                            }
+                            return
+                        }
+                        
+                        guard let container = container else {
+                            if let cachedContainer = shared.container {
+                                Log.info("[Succeed] Load all emojis from cache")
+                                completionHandler(cachedContainer, nil)
+                            } else {
+                                Log.error("[Failed] Load all emojis: EmojiContainer is not set")
+                                completionHandler(nil, nil)
+                            }
+                            return
+                        }
+                        
+                        Log.info("[Succeed] Load all emojis")
+                        shared.setContainer(container, persist: restored?.emojiHash != container.emojiHash)
+                        completionHandler(container, nil)
+                    }
+                }
+            }
         }
     }
     
-    private func didSetContainer() {
-        if let serializedContainer = container?.serialize() {
-            UserDefaults.standard.setValue(serializedContainer, forKey: SBUEmojiManager.kEmojiCacheKey)
+    /// Reads and decodes the cached container on `cacheQueue`, then assigns it on the main thread.
+    /// Does not write the cache back. `completionHandler` runs on the main thread with the restored container.
+    private static func restoreContainerFromCache(completionHandler: @escaping (EmojiContainer?) -> Void) {
+        cacheQueue.async {
+            var restored: EmojiContainer?
+            if let cachedContainer = UserDefaults.standard.data(forKey: SBUEmojiManager.kEmojiCacheKey) {
+                restored = EmojiContainer.build(fromSerializedData: cachedContainer)
+            }
+            Thread.executeOnMain {
+                if let restored = restored {
+                    shared.container = restored
+                    shared.persistedEmojiHash = restored.emojiHash
+                }
+                completionHandler(restored)
+            }
+        }
+    }
+    
+    /// Main-thread only. Assigns the container and, if `persist` is set and the hash differs from the
+    /// persisted one, serializes and writes it to `UserDefaults` on `cacheQueue`.
+    private func setContainer(_ container: EmojiContainer, persist: Bool) {
+        self.container = container
+        
+        guard persist, container.emojiHash != self.persistedEmojiHash else { return }
+        self.persistedEmojiHash = container.emojiHash
+        
+        SBUEmojiManager.cacheQueue.async {
+            if let serializedContainer = container.serialize() {
+                UserDefaults.standard.setValue(serializedContainer, forKey: SBUEmojiManager.kEmojiCacheKey)
+            }
         }
     }
     

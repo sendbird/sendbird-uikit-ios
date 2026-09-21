@@ -9,6 +9,11 @@
 import Foundation
 
 extension Thread {
+    /// Schedules the handler asynchronously on the main queue, even when called on the main thread.
+    static func executeOnMainAsync(_ handler: @escaping () -> Void) {
+        DispatchQueue.main.async { handler() }
+    }
+
     static func executeOnMain(_ handler: @escaping () -> Void) {
         if Thread.isMainThread {
             handler()

@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.36.1 (Sep 21, 2026)
+
+### Improvements
+- Fixed app hangs during `SendbirdUI.connectAndUpdates`. The emoji container, the dashboard config, the message template list and the notification channel settings were read, decoded and written on the main thread; that cache work now runs off the main thread. The load order and the completion timing are unchanged.
+- Fixed a crash in `SBUCacheManager` that could occur when a cached dashboard config file was unreadable and a legacy `UserDefaults` value existed.
+
 ### v3.36.0 (Aug 27, 2026)
 
 ### Improvements

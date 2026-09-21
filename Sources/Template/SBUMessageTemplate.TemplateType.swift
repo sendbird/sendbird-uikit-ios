@@ -122,7 +122,7 @@ extension SBUMessageTemplate.TemplateType: MessageTemplateProvider {
     internal func provide(key: String) -> TemplateModel? {
         return SBUCacheManager
             .template(with: self)
-            .getTemplate(forKey: key)
+            .getMemoryTemplate(forKey: key)
     }
 }
 
