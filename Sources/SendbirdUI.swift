@@ -21,6 +21,12 @@ public class SendbirdUI {
     /// Checks dashboard configuration load status
     static var isDashboardConfigLoaded: Bool = false
     
+    /// Posted on the main thread when the dashboard configuration has been applied to `SendbirdUI.config`
+    /// (from cache or from the server) during the connect flow.
+    /// `connectIfNeeded` can complete before this point when local caching has a cached user,
+    /// so a screen that depends on dashboard config can observe this to refresh.
+    static let didLoadDashboardConfigNotification = Notification.Name("com.sendbird.uikit.didLoadDashboardConfig")
+    
     // MARK: - Initialize
     
     /// This function is used to initializes SDK with applicationId.

@@ -153,10 +153,14 @@ extension SBUNotificationChannelManager {
 }
 
 extension SBUNotificationChannelManager {
+    /// Loads the global notification channel settings for the connect flow.
+    ///
+    /// Cache reads/decodes and writes run on the notification-setting disk queue;
+    /// theme application and `completionHandler` are always on the main thread.
     static func loadGlobalNotificationChannelSettings(completionHandler: ((_ success: Bool) -> Void)?) {
-        let cachedUpdatedAt = SBUCacheManager.NotificationSetting.lastUpdatedTime
         let serverUpdatedAt = SendbirdChat.getAppInfo()?.notificationInfo?.settingsUpdatedAt ?? 0
         
+        // Called on the main thread.
         let loadCompletionHandler: (
             ([SBUNotificationChannelManager.GlobalNotificationSettings.Theme]?) -> Void
         ) = { loadedTheme in
@@ -165,42 +169,51 @@ extension SBUNotificationChannelManager {
                 return
             }
             
-            let themeMode = SBUCacheManager.NotificationSetting.themeMode
-            
-            if loadedThemes.count > 0 {
-                let notificationTheme = loadedThemes[0]
-                // INFO: Currently only one theme is used. Structured with the theme array for further expansion.
-                self.setGlobalNotificationChannelTheme(
-                    with: notificationTheme,
-                    globalThemeMode: themeMode
-                )
-            }
-            
-            completionHandler?(true)
-        }
-        
-        if cachedUpdatedAt < serverUpdatedAt {
-            SendbirdChat.getGlobalNotificationChannelSetting { globalNotificationChannelSetting, error in
-                guard error == nil else {
-                    Log.error(error)
-                    completionHandler?(false)
-                    return
+            SBUCacheManager.NotificationSetting.loadThemeMode { themeMode in
+                if loadedThemes.count > 0 {
+                    let notificationTheme = loadedThemes[0]
+                    // INFO: Currently only one theme is used. Structured with the theme array for further expansion.
+                    self.setGlobalNotificationChannelTheme(
+                        with: notificationTheme,
+                        globalThemeMode: themeMode
+                    )
                 }
                 
-                let responseJson = globalNotificationChannelSetting?.jsonPayload ?? ""
-
-                if let settings = self.parseNotificationChannelSettings(responseJson) {
-                    SBUCacheManager.NotificationSetting.save(settings: settings)
-                    SBUCacheManager.NotificationSetting.lastUpdatedTime = settings.updatedAt
+                completionHandler?(true)
+            }
+        }
+        
+        SBUCacheManager.NotificationSetting.loadLastUpdatedTime { cachedUpdatedAt in
+            if cachedUpdatedAt < serverUpdatedAt {
+                SendbirdChat.getGlobalNotificationChannelSetting { globalNotificationChannelSetting, error in
+                    guard error == nil else {
+                        Log.error(error)
+                        Thread.executeOnMain { completionHandler?(false) }
+                        return
+                    }
                     
-                    loadCompletionHandler(settings.themes)
-                } else {
-                    completionHandler?(false)
+                    let responseJson = globalNotificationChannelSetting?.jsonPayload ?? ""
+                    
+                    // Decode off the main thread, on the same queue the cache writes use.
+                    SBUCacheManager.NotificationSetting.performOnDiskQueue {
+                        let settings = self.parseNotificationChannelSettings(responseJson)
+                        Thread.executeOnMain {
+                            if let settings = settings {
+                                SBUCacheManager.NotificationSetting.save(settings: settings)
+                                SBUCacheManager.NotificationSetting.lastUpdatedTime = settings.updatedAt
+                                
+                                loadCompletionHandler(settings.themes)
+                            } else {
+                                completionHandler?(false)
+                            }
+                        }
+                    }
+                }
+            } else { // updatedAt 조건 안걸리면 cache 된 templateList 만 로드시켜둠
+                SBUCacheManager.NotificationSetting.loadAllThemesArray { loadedThemes in
+                    loadCompletionHandler(loadedThemes)
                 }
             }
-        } else { // updatedAt 조건 안걸리면 cache 된 templateList 만 로드시켜둠
-            let loadedThemes = SBUCacheManager.NotificationSetting.loadAllThemesArray()
-            loadCompletionHandler(loadedThemes)
         }
     }
     

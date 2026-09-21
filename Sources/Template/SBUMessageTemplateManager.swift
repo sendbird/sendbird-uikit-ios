@@ -30,35 +30,50 @@ public class SBUMessageTemplateManager: NSObject {
 
 // for view model
 extension SBUMessageTemplateManager {
+    /// Loads the template list for the connect flow.
+    ///
+    /// Cache token read, template decode and writes run on the template disk queue;
+    /// `completionHandler` is always called on the main thread.
     static func loadTemplateList(
         type: SBUMessageTemplate.TemplateType,
         completionHandler: ((_ success: Bool) -> Void)?
     ) {
         let cache = SBUCacheManager.template(with: type)
-        
-        let cachedToken = Int64(cache.lastToken) ?? 0
         let serverToken = type.getRemoteToken()
         
-        guard cachedToken < serverToken else {
-            let success = cache.loadAllTemplates() != nil
-            completionHandler?(success)
-            return
-        }
-        
-        type.loadTemplateList(token: cache.lastToken) { json, token in
-            guard let templateList = MessageTemplate.templateList(from: json) else {
-                completionHandler?(false)
+        cache.loadLastToken { lastToken in
+            let cachedToken = Int64(lastToken) ?? 0
+            
+            guard cachedToken < serverToken else {
+                cache.loadAllTemplates { templates in
+                    completionHandler?(templates != nil)
+                }
                 return
             }
             
-            cache.save(templates: templateList)
-            cache.lastToken = token ?? ""
-            cache.loadAllTemplates()
-            
-            completionHandler?(true)           
+            type.loadTemplateList(token: lastToken) { json, token in
+                // Parse the response off the main thread.
+                cache.performOnDiskQueue {
+                    guard let templateList = MessageTemplate.templateList(from: json) else {
+                        Thread.executeOnMain { completionHandler?(false) }
+                        return
+                    }
+                    
+                    Thread.executeOnMain {
+                        // Update the memory cache on main; disk encoding and writes remain asynchronous.
+                        cache.save(templates: templateList)
+                        cache.lastToken = token ?? ""
+                        cache.loadAllTemplates { _ in
+                            completionHandler?(true)
+                        }
+                    }
+                }
+            }
         }
     }
     
+    /// Restores requested keys from disk before fetching missing keys from the server.
+    /// Parsing and disk writes run off main; memory updates and completion run on main.
     static func loadTemplateList(
         type: SBUMessageTemplate.TemplateType,
         keys: [String],
@@ -66,20 +81,29 @@ extension SBUMessageTemplateManager {
     ) {
         let cache = SBUCacheManager.template(with: type)
         
-        type.loadTemplateList(keys: keys) { json, _ in
-            guard let templateList = MessageTemplate.templateList(from: json) else {
-                completionHandler?(false)
+        cache.loadTemplates(forKeys: keys) {
+            let missingKeys = Array(Set(keys.filter { cache.getMemoryTemplate(forKey: $0) == nil })).sorted()
+            guard !missingKeys.isEmpty else {
+                completionHandler?(true)
                 return
             }
-            
-            cache.save(templates: templateList)
-            cache.loadAllTemplates()
-            
-            // FIXED: https://sendbird.atlassian.net/browse/CLNP-6062
-            if templateList.count < keys.count {
-                completionHandler?(false)
-            } else {
-                completionHandler?(true)
+
+            type.loadTemplateList(keys: missingKeys) { json, _ in
+                cache.performOnDiskQueue {
+                    guard let templateList = MessageTemplate.templateList(from: json) else {
+                        Thread.executeOnMain { completionHandler?(false) }
+                        return
+                    }
+
+                    Thread.executeOnMain {
+                        // Memory is updated on main; encode and disk writes are queued asynchronously.
+                        cache.save(templates: templateList)
+                        // All requested keys must be available before the view model marks them loaded.
+                        // Replaces the `templateList.count < keys.count` check from CLNP-6062: checking
+                        // actual availability also covers a response that omits a requested key.
+                        completionHandler?(keys.allSatisfy { cache.getMemoryTemplate(forKey: $0) != nil })
+                    }
+                }
             }
         }
     }
