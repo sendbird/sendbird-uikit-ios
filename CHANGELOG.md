@@ -1,5 +1,10 @@
 # Changelog
 
+### v3.36.2 (Sep 22, 2026)
+
+### Improvements
+- Removed the deprecated `package(name:url:from:)` form from the Swift Package Manager manifest. Consumers building against `sendbird-uikit-ios-spm` no longer see the `'package(name:url:from:)' is deprecated: use package(url:from:) instead` warning. The package identity for the Chat SDK dependency is now the URL-derived `sendbird-chat-sdk-ios`, which is referenced only inside that manifest. No public API, product or binary change.
+
 ### v3.36.1 (Sep 21, 2026)
 
 ### Improvements
