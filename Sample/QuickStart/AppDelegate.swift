@@ -35,10 +35,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         return true
     }
     
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        application.applicationIconBadgeNumber = 0
-    }
-    
     func initializeRemoteNotification() {
         let center = UNUserNotificationCenter.current()
         center.delegate = self

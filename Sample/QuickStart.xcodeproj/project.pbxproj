@@ -343,6 +343,7 @@
 		A37522222D21889E328B3130 /* AIChatBotSignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5AFCA30BC1E493AC342DB7 /* AIChatBotSignInViewController.swift */; };
 		A41581E47D6F1E1336A9CF7E /* SendbirdUIMessageTemplate in Frameworks */ = {isa = PBXBuildFile; productRef = 1A9837068C5F36FF6F7E3E7C /* SendbirdUIMessageTemplate */; };
 		A523F8025C531141B6653750 /* SBUQuoteMessageInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB1ECDEC0DB639520C076044 /* SBUQuoteMessageInputView.swift */; };
+		A56F24D95EB506D8DA976349 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0519D00BBC80E0FA9B3EF09 /* SceneDelegate.swift */; };
 		A5B385A883418EC552058BBD /* SBUOpenChannelSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EDC6B5A4E06D4F9E6166EE2 /* SBUOpenChannelSettingsViewController.swift */; };
 		A677185CEB21987CA0E8A7BC /* SBURegisterOperatorModule.Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59312F75EF45989D14D5E20A /* SBURegisterOperatorModule.Deprecated.swift */; };
 		A6B78F6ADA3514C55C3A04B4 /* CreateChannelCustomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7368083040846A8BFD1A786 /* CreateChannelCustomManager.swift */; };
@@ -1004,6 +1005,7 @@
 		BF42E372E23EDCB4C6B9E036 /* BaseMesssage+SBUIKit.Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaseMesssage+SBUIKit.Deprecated.swift"; sourceTree = "<group>"; };
 		BF991E12A4F1CFBAD7859643 /* SBUFormFieldView.Deprecated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUFormFieldView.Deprecated.swift; sourceTree = "<group>"; };
 		C0350FCBBBAC2BE614D88FF9 /* UIStackView.SBUIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStackView.SBUIKit.swift; sourceTree = "<group>"; };
+		C0519D00BBC80E0FA9B3EF09 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C29D0DEE55C323314F5E0B32 /* SBUBaseChannelListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUBaseChannelListViewModel.swift; sourceTree = "<group>"; };
 		C34BAAC8CA9048A52C0204D6 /* SBUQuotedUserMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUQuotedUserMessageView.swift; sourceTree = "<group>"; };
 		C431BB67BF34AB40FE75C87C /* SBUDownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SBUDownloadManager.swift; sourceTree = "<group>"; };
@@ -2173,6 +2175,7 @@
 				49BBC7DDD507E9E01F953ABC /* Assets.xcassets */,
 				6CF7162EFE0EE634A74A8D85 /* Info.plist */,
 				54738A17EFAA5A55C27FCBA3 /* QuickStart.entitlements */,
+				C0519D00BBC80E0FA9B3EF09 /* SceneDelegate.swift */,
 				9025529DFA82D4C194EB5391 /* ViewController.swift */,
 				9FA67BC7CF7CA16088AD7D56 /* Base */,
 				094189D8BF37978BE68B47E2 /* Customize */,
@@ -3758,6 +3761,7 @@
 				16CBF789FF7278E55A5FEFFB /* SBUVoicePlayer.swift in Sources */,
 				8ED207A5F50242340F262509 /* SBUVoiceRecorder.swift in Sources */,
 				C71C5C4827FAD824A0419100 /* SampleManager.swift in Sources */,
+				A56F24D95EB506D8DA976349 /* SceneDelegate.swift in Sources */,
 				23A84417BFD9B780CCCFD673 /* SendbirdChat+SBUIKit.swift in Sources */,
 				FC36968996EBFED437D10B4C /* SendbirdUI.Deprecated.swift in Sources */,
 				2123BD09DF18EA06E021CDD2 /* SendbirdUI.swift in Sources */,
@@ -3841,7 +3845,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.36.2;
+				MARKETING_VERSION = 3.36.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -3869,7 +3873,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.36.2;
+				MARKETING_VERSION = 3.36.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4014,7 +4018,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.36.2;
+				MARKETING_VERSION = 3.36.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4042,7 +4046,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.36.2;
+				MARKETING_VERSION = 3.36.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sendbird.uikit.sample.NotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -4091,7 +4095,7 @@
 			repositoryURL = "https://github.com/sendbird/sendbird-uikit-ios-spm";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 3.36.2;
+				minimumVersion = 3.36.3;
 			};
 		};
 		A4CD81EE92C875D0E22463C6 /* XCRemoteSwiftPackageReference "sendbird-chat-sdk-ios" */ = {
@@ -4099,7 +4103,7 @@
 			repositoryURL = "https://github.com/sendbird/sendbird-chat-sdk-ios";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.39.6;
+				minimumVersion = 4.39.12;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

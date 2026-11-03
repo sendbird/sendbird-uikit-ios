@@ -1,5 +1,11 @@
 # Changelog
 
+### v3.36.3 (Nov 03, 2026)
+
+### Improvements
+- Raised the minimum Chat SDK version to 4.39.12.
+- Fixed the duplicate `SendbirdChatWrapper` class warning shown when the app links other Sendbird SDKs.
+
 ### v3.36.2 (Sep 22, 2026)
 
 ### Improvements
