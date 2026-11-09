@@ -17,14 +17,18 @@ extension SBUCacheManager {
         static let diskCache = DiskCache(cacheType: "image")
         static let memoryCache = MemoryCache()
         
+        /// - Parameter preservesTransparency: `true` 이면 디스크에 PNG 로 저장한다. JPEG 는 투명 영역을
+        ///   불투명하게 바꾸므로 투명도가 있을 수 있는 이미지(GIF 첫 프레임 등)에 쓴다.
         @discardableResult
         static func save(
             image: UIImage,
             fileName: String,
             subPath: String,
+            preservesTransparency: Bool = false,
             completionHandler: SBUImageCacheCompletionHandler? = nil
         ) -> UIImage? {
-            guard let data = image.jpegData(compressionQuality: 1.0) else {
+            let encoded = preservesTransparency ? image.pngData() : image.jpegData(compressionQuality: 1.0)
+            guard let data = encoded else {
                 completionHandler?(nil, nil, image)
                 return image
             }
@@ -96,6 +100,29 @@ extension SBUCacheManager {
                 
                 return nil
             }
+        }
+        
+        /// 썸네일 조회. 디스크에 여러 프레임 이미지가 있으면(예전 버전이 GIF 원본을 썸네일로 저장한 경우)
+        /// 전체 animation 을 만들지 않고 첫 프레임만 `size` 안에 들어가게 디코드한다.
+        /// 그 밖에는 `get(fileName:subPath:)` 과 같다.
+        static func getThumbnail(fileName: String, subPath: String, fitting size: CGSize, scale: CGFloat) -> UIImage? {
+            let key = key(fileName: fileName, subPath: subPath)
+            if let memoryImage = self.memoryCache.get(key: key) {
+                return memoryImage
+            }
+            // 디스크에 없을 때만 `get` 으로 넘긴다(quoted 캐시 정리). 읽은 데이터는 다시 읽지 않고 한 번만 디코드한다.
+            guard let diskData = self.diskCache.get(key: key) else {
+                return self.get(fileName: fileName, subPath: subPath)
+            }
+            let decoded: UIImage?
+            if let source = CGImageSourceCreateWithData(diskData as CFData, nil), CGImageSourceGetCount(source) > 1 {
+                decoded = UIImage.firstFrameThumbnail(source: source, fitting: size, scale: scale)
+            } else {
+                decoded = UIImage.createImage(from: diskData as Data)
+            }
+            guard let image = decoded else { return nil }
+            self.memoryCache.set(key: key, image: image)
+            return image
         }
         
         static func createCacheFileName(

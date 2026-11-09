@@ -86,8 +86,18 @@ extension SBUUserListModule {
             self.dataSource?.userListModule(self, channelForTableView: self.tableView)
         }
         public var userList: [SBUUser] {
-            self.dataSource?.userListModule(self, usersInTableView: self.tableView) ?? []
+            if let drawnUserList = self.drawnUserList { return drawnUserList }
+            self.drawnUserList = self.latestUserList
+            return self.drawnUserList ?? []
         }
+
+        // 화면이 쓰는 사본. table view가 아는 행 수와 어긋나지 않도록 reload할 때만 바꾼다.
+        @SBUAtomic private var drawnUserList: [SBUUser]?
+
+        var latestUserList: [SBUUser]? {
+            self.dataSource?.userListModule(self, usersInTableView: self.tableView)
+        }
+
         public var userListType: ChannelUserListType = .none
         
         func createDefualtEmptyView() -> SBUEmptyView {
@@ -198,7 +208,7 @@ extension SBUUserListModule {
             if self.userListType == .muted ||
                 self.userListType == .banned {
                 
-                if !self.userList.isEmpty {
+                if self.latestUserList?.isEmpty == false {
                     self.updateEmptyView(type: .none)
                 } else {
                     self.updateEmptyView(
@@ -210,6 +220,8 @@ extension SBUUserListModule {
             }
             
             DispatchQueue.main.async { [weak self] in
+                // 사본 교체와 reload는 같은 main 실행에서 한다.
+                self?.drawnUserList = self?.latestUserList
                 self?.tableView.reloadData()
             }
         }

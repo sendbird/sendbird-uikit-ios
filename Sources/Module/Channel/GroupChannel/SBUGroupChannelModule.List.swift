@@ -1313,12 +1313,7 @@ extension SBUGroupChannelModule.List {
             fileName: fileMessage.name
         ) { [weak self] filePath, _ in
 
-            var playtime: Double = 0
-            let metaArrays = message.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
-            if metaArrays.count > 0 {
-                let value = metaArrays[0].value[0]
-                playtime = Double(value) ?? 0
-            }
+            let playtime = SBUVoiceFileInfo.playtime(of: message)
             
             guard let filePath = filePath else {
                 self?.pauseAllVoicePlayer()

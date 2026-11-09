@@ -274,6 +274,37 @@ extension UIImage {
         return UIGraphicsGetImageFromCurrentImageContext() ?? self
     }
     
+    /// 여러 프레임 이미지(GIF 등)의 첫 프레임만 `size`(point) 안에 들어가게 디코드한다.
+    ///
+    /// 썸네일은 첫 프레임만 보여 주므로, 전체 animation 을 원본 크기로 만들면 프레임 수만큼 비트맵이 생긴다.
+    /// 원본보다 크게 키우지 않는다. `size` 가 0 이하이면 첫 프레임을 원본 크기로 디코드한다.
+    static func firstFrameThumbnail(source: CGImageSource, fitting size: CGSize, scale: CGFloat) -> UIImage? {
+        let scale = scale > 0 ? scale : 1
+        var options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceShouldCacheImmediately: true
+        ]
+        if let maxPixelSize = self.maxPixelSize(source: source, fitting: size, scale: scale) {
+            options[kCGImageSourceThumbnailMaxPixelSize] = maxPixelSize
+        }
+        guard let cgImage = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
+        return UIImage(cgImage: cgImage, scale: scale, orientation: .up)
+    }
+
+    /// 너비와 높이가 모두 `size` 안에 들어가는 긴 변의 pixel 수. 썸네일 API 는 긴 변 하나만 받는다.
+    private static func maxPixelSize(source: CGImageSource, fitting size: CGSize, scale: CGFloat) -> CGFloat? {
+        guard size.width > 0, size.height > 0, size.width.isFinite, size.height.isFinite,
+              let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any],
+              let width = (properties[kCGImagePropertyPixelWidth] as? NSNumber)?.doubleValue,
+              let height = (properties[kCGImagePropertyPixelHeight] as? NSNumber)?.doubleValue,
+              width > 0, height > 0 else {
+            return nil
+        }
+        let ratio = min(1, Double(size.width * scale) / width, Double(size.height * scale) / height)
+        return max(1, (max(width, height) * ratio).rounded(.down))
+    }
+    
     class func createImage(from data: Data) -> UIImage? {
         if let source = CGImageSourceCreateWithData(data as CFData, nil),
            CGImageSourceGetCount(source) > 1 {
@@ -335,24 +366,27 @@ extension UIImage {
         var images = [CGImage]()
         var delays = [Int]()
         
+        // 손상된 GIF 는 일부 프레임만 디코드에 실패할 수 있다. 프레임과 지연을 같이 모아야
+        // 두 배열 길이가 어긋나 images[i] 가 범위를 넘는 일이 없다.
         (0..<count).forEach {
-            if let image = CGImageSourceCreateImageAtIndex(source, $0, nil) {
-                images.append(image)
-            }
+            guard let image = CGImageSourceCreateImageAtIndex(source, $0, nil) else { return }
             
             let delaySeconds = UIImage.delayForImageAtIndex($0, source: source)
             
+            images.append(image)
             delays.append(Int(delaySeconds * 1000.0)) // Seconds to ms
         }
+        
+        guard images.isEmpty == false else { return nil }
         
         let duration = delays.reduce(0, +)
         
         let gcd = gcdForArray(delays)
         
         var frames: [UIImage] = []
-        (0..<count).forEach {
-            let frame = UIImage(cgImage: images[$0])
-            let frameCount = gcd == 0 ? 0 : Int(delays[$0] / gcd)
+        zip(images, delays).forEach { image, delay in
+            let frame = UIImage(cgImage: image)
+            let frameCount = gcd == 0 ? 0 : Int(delay / gcd)
             frames.append(contentsOf: [UIImage](repeating: frame, count: frameCount))
         }
         
@@ -390,6 +424,33 @@ class SBUImageDownloader {
     ) -> URLSessionDataTask? {
         URLSession(configuration: .default).dataTask(with: url) { data, _, error in
             completion(data, error)
+        }
+    }
+    
+    /// 영상처럼 큰 파일을 메모리에 올리지 않고 임시 파일로 받는다.
+    ///
+    /// AVFoundation 이 확장자로 형식을 알아보므로 받은 파일을 `pathExtension` 이름으로 옮긴다.
+    /// 받은 파일은 부른 쪽이 다 쓴 뒤 지운다. 실패하거나 취소되면 파일 없이 한 번 부른다.
+    func downloadFile(
+        from url: URL,
+        pathExtension: String,
+        completion: @escaping (URL?, Error?) -> Void
+    ) -> URLSessionTask? {
+        URLSession(configuration: .default).downloadTask(with: url) { location, _, error in
+            guard let location = location, error == nil else {
+                completion(nil, error)
+                return
+            }
+            let fileURL = FileManager.default.temporaryDirectory
+                .appendingPathComponent(UUID().uuidString)
+                .appendingPathExtension(pathExtension)
+            do {
+                try FileManager.default.moveItem(at: location, to: fileURL)
+            } catch {
+                completion(nil, error)
+                return
+            }
+            completion(fileURL, nil)
         }
     }
 }

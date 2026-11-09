@@ -49,6 +49,8 @@ open class SBUParentMessageInfoReactionView: SBUMessageReactionView {
         self.sameCellWidth = true
 
         let hasMoreEmoji = self.hasMoreEmoji()
+        // 기본 configure 를 부르지 않으므로 여기서 직접 저장한다.
+        self.moreEmojiRowSnapshot = hasMoreEmoji
         let cellSizes = reactions.reduce(0) {
             $0 + self.getCellSize(count: $1.sampledUserIds.count).width
         }
@@ -76,8 +78,7 @@ open class SBUParentMessageInfoReactionView: SBUMessageReactionView {
     open override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard !reactions.isEmpty else { return 1 }
         
-        let hasMoreEmoji = self.hasMoreEmoji()
-        if hasMoreEmoji {
+        if self.showsMoreEmojiRow() {
             return self.reactions.count + 1
         } else {
             return self.reactions.count

@@ -804,7 +804,7 @@ extension SBUGroupChannelModule {
                 ($0.userId != SBUGlobals.currentUser?.userId)
             }
             
-            if filteredMembers.count > config.suggestionLimit {
+            if filteredMembers.count > config.clampedSuggestionLimit {
                 // Remove buffer member
                 filteredMembers.removeLast()
             }

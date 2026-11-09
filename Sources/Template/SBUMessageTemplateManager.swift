@@ -114,7 +114,14 @@ extension SBUMessageTemplateManager {
         completionHandler: ((_ success: Bool) -> Void)?
     ) {
         let dispatchGroup = DispatchGroup()
+        // 캐시 적중은 실행 큐에서, 받은 이미지는 main 에서 센다. 두 곳이 같은 값을 바꾸므로 잠금으로 묶는다.
+        let loadCountLock = NSLock()
         var loadCount = 0
+        let countLoaded = {
+            loadCountLock.lock()
+            loadCount += 1
+            loadCountLock.unlock()
+        }
         
         exeucuteQueue.async {
             for (_, url) in cacheData {
@@ -131,9 +138,10 @@ extension SBUMessageTemplateManager {
                     fileName: fileName,
                     subPath: SBUCacheManager.PathType.template
                 ) != nil {
-                    loadCount += 1
+                    countLoaded()
                     dispatchGroup.leave()
-                    return
+                    // 이 항목만 건너뛴다. return 은 클로저 전체를 끝내 나머지 이미지와 completion 을 건너뛴다.
+                    continue
                 }
                 
                 UIImageView.getOriginalImage(
@@ -141,18 +149,21 @@ extension SBUMessageTemplateManager {
                     subPath: SBUCacheManager.PathType.template
                 ) { image, _ in
                     if image != nil {
-                        loadCount += 1
+                        countLoaded()
                     }
                     dispatchGroup.leave()
                 }
             }
             
             let result = dispatchGroup.wait(timeout: .now() + .seconds(10)) // timeout: 10 second
+            loadCountLock.lock()
+            let loadedCount = loadCount
+            loadCountLock.unlock()
         
             Thread.executeOnMain {
                 switch result {
                 case .success:
-                    completionHandler?(cacheData.count == loadCount)
+                    completionHandler?(cacheData.count == loadedCount)
                 case .timedOut:
                     completionHandler?(false)
                 }

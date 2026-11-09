@@ -436,37 +436,64 @@ extension SBUCacheManager {
 extension SBUCacheManager {
     // MARK: - MemoryCache
     class MemoryCacheForTemplate {
-        var lastToken: String?
-        var templateList: [String: MessageTemplate]?
+        // 셀의 조회(main), 템플릿 응답 저장, 아무 스레드에서나 불리는 공개 초기화 API 가 겹친다.
+        // 사전과 토큰의 읽기, 쓰기, 초기화를 이 잠금 하나로 묶는다.
+        private let lock = NSLock()
+        private var _lastToken: String?
+        private var _templateList: [String: MessageTemplate]?
+        
+        var lastToken: String? {
+            get { self.locked { self._lastToken } }
+            set { self.locked { self._lastToken = newValue } }
+        }
+        
+        var templateList: [String: MessageTemplate]? {
+            get { self.locked { self._templateList } }
+            set { self.locked { self._templateList = newValue } }
+        }
         
         // MARK: - Memory Cache
         func set(templates: [MessageTemplate]) {
-            for template in templates {
-                set(key: template.key, template: template)
+            self.locked {
+                for template in templates {
+                    self.setLocked(key: template.key, template: template)
+                }
             }
         }
         
         func set(key: String, template: MessageTemplate) {
-            if self.templateList == nil { self.templateList = [:] }
-            self.templateList?[key] = template
+            self.locked { self.setLocked(key: key, template: template) }
+        }
+        
+        /// `lock` 을 잡은 채로만 부른다.
+        private func setLocked(key: String, template: MessageTemplate) {
+            if self._templateList == nil { self._templateList = [:] }
+            self._templateList?[key] = template
         }
         
         func get(key: String) -> MessageTemplate? {
-            guard let template = self.templateList?[key] else { return nil }
-            return template as MessageTemplate
+            self.locked { self._templateList?[key] }
         }
         
         func getAllTemplates() -> [String: MessageTemplate]? {
-            return templateList
+            self.locked { self._templateList }
         }
         
         func remove(key: String) {
-            self.templateList?.removeValue(forKey: key)
+            self.locked { _ = self._templateList?.removeValue(forKey: key) }
         }
         
         func resetCache() {
-            self.lastToken = nil
-            self.templateList = nil
+            self.locked {
+                self._lastToken = nil
+                self._templateList = nil
+            }
+        }
+        
+        private func locked<T>(_ work: () -> T) -> T {
+            self.lock.lock()
+            defer { self.lock.unlock() }
+            return work()
         }
     }
 }

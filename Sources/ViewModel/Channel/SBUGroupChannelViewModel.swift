@@ -138,7 +138,12 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     
     /// Data fields for templates to cache load states
     /// - Since: 3.29.0
-    var templateLoadCache: [String: SBUMessageTemplate.TemplateCacheState] = [:] // template-key : load-state
+    var templateLoadCache: [String: SBUMessageTemplate.TemplateCacheState] { // template-key : load-state
+        // 캐시 초기화로 메모리에서 사라진 템플릿은 성공으로 보지 않는다. 셀이 다시 받게 된다.
+        get { self.storedTemplateLoadCache.removingSuccessMissingFromMemory(type: .message) }
+        set { self.storedTemplateLoadCache = newValue }
+    }
+    private var storedTemplateLoadCache: [String: SBUMessageTemplate.TemplateCacheState] = [:]
     
     // MARK: - LifeCycle
     required public init(
@@ -246,7 +251,8 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 
                 self.channel = channel
                 self.channelURL = channel?.channelURL
-                Log.info("[Succeed] Load channel request: \(String(describing: self.channel))")
+                // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
+                Log.info("[Succeed] Load channel request: \(self.channel?.channelURL ?? "")")
                 
                 // background refresh to check if user is banned or not.
                 self.refreshChannel()
@@ -820,7 +826,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     params.nicknameStartsWithFilter = filterText
                     
                     // +1 is buffer for when the current user is included in the search results
-                    params.limit = UInt(config.suggestionLimit) + 1
+                    params.limit = UInt(config.clampedSuggestionLimit) + 1
                     self.query = channel.createMemberListQuery(params: params)
                     
                     self.query?.loadNextPage { [weak self] members, _ in
@@ -848,7 +854,7 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                     }
                     let memberCount = matchedMembers.count
                     // +1 is buffer for when the current user is included in the search results
-                    let limit = (SBUGlobals.userMentionConfig?.suggestionLimit ?? 0) + 1
+                    let limit = (SBUGlobals.userMentionConfig?.clampedSuggestionLimit ?? 0) + 1
                     let splitCount = min(memberCount, Int(limit))
                     
                     let resultMembers = Array(matchedMembers[0..<splitCount])
@@ -1125,7 +1131,8 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         var startingPoint: Int64?
         let indexPathsForStartingPoint = self.dataSource?.groupChannelViewModel(self, startingPointIndexPathsForChannel: self.channel as? GroupChannel)
         let visibleRowCount = indexPathsForStartingPoint?.count ?? 0
-        let visibleCenterIdx = indexPathsForStartingPoint?[visibleRowCount / 2].row ?? 0
+        // 보이는 행이 없으면(빈 배열) [0] 접근이 크래시하므로 nil 일 때처럼 0번을 쓴다.
+        let visibleCenterIdx = indexPathsForStartingPoint?[safe: visibleRowCount / 2]?.row ?? 0
         if visibleCenterIdx < self.fullMessageList.count {
             startingPoint = self.fullMessageList[visibleCenterIdx].createdAt
         }

@@ -473,40 +473,72 @@ extension SBUCacheManager {
     
     // MARK: - MemoryCache
     class MemoryCacheForNotificationSetting {
-        var lastUpdatedTime: Int64?
-        var themeMode: String?
-        var themeList: [String: SBUNotificationChannelManager.GlobalNotificationSettings.Theme]?
+        // 알림 셀의 조회(main), 설정 응답 저장, 아무 스레드에서나 불리는 공개 초기화 API 가 겹친다.
+        // 테마 사전과 값들의 읽기, 쓰기, 초기화를 이 잠금 하나로 묶는다.
+        private let lock = NSLock()
+        private var _lastUpdatedTime: Int64?
+        private var _themeMode: String?
+        private var _themeList: [String: SBUNotificationChannelManager.GlobalNotificationSettings.Theme]?
+        
+        var lastUpdatedTime: Int64? {
+            get { self.locked { self._lastUpdatedTime } }
+            set { self.locked { self._lastUpdatedTime = newValue } }
+        }
+        
+        var themeMode: String? {
+            get { self.locked { self._themeMode } }
+            set { self.locked { self._themeMode = newValue } }
+        }
+        
+        var themeList: [String: SBUNotificationChannelManager.GlobalNotificationSettings.Theme]? {
+            get { self.locked { self._themeList } }
+            set { self.locked { self._themeList = newValue } }
+        }
         
         // MARK: - Memory Cache
         func set(themes: [SBUNotificationChannelManager.GlobalNotificationSettings.Theme]) {
-            for theme in themes {
-                set(key: theme.key, theme: theme)
+            self.locked {
+                for theme in themes {
+                    self.setLocked(key: theme.key, theme: theme)
+                }
             }
         }
         
         func set(key: String, theme: SBUNotificationChannelManager.GlobalNotificationSettings.Theme) {
-            if self.themeList == nil { self.themeList = [:] }
-            self.themeList?[key] = theme
+            self.locked { self.setLocked(key: key, theme: theme) }
+        }
+        
+        /// `lock` 을 잡은 채로만 부른다.
+        private func setLocked(key: String, theme: SBUNotificationChannelManager.GlobalNotificationSettings.Theme) {
+            if self._themeList == nil { self._themeList = [:] }
+            self._themeList?[key] = theme
         }
         
         func get(key: String) -> SBUNotificationChannelManager.GlobalNotificationSettings.Theme? {
-            guard let theme = self.themeList?[key] else { return nil }
-            return theme as SBUNotificationChannelManager.GlobalNotificationSettings.Theme
+            self.locked { self._themeList?[key] }
         }
         
         func getAllThemes() -> [String: SBUNotificationChannelManager.GlobalNotificationSettings.Theme]? {
-            return themeList
+            self.locked { self._themeList }
         }
         
         func remove(key: String) {
-            self.themeList?.removeValue(forKey: key)
+            self.locked { _ = self._themeList?.removeValue(forKey: key) }
         }
         
         // MARK: Reset
         func resetCache() {
-            self.lastUpdatedTime = nil
-            self.themeMode = nil
-            self.themeList = nil
+            self.locked {
+                self._lastUpdatedTime = nil
+                self._themeMode = nil
+                self._themeList = nil
+            }
+        }
+        
+        private func locked<T>(_ work: () -> T) -> T {
+            self.lock.lock()
+            defer { self.lock.unlock() }
+            return work()
         }
     }
 }

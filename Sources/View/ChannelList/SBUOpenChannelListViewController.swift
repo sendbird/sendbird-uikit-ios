@@ -277,7 +277,8 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
         _ listComponent: SBUBaseChannelListModule.List,
         didSelectRowAt indexPath: IndexPath
     ) {
-        guard let channel = self.viewModel?.channelList[indexPath.row] else { return }
+        // 행 번호는 화면 기준이므로 화면이 쓰는 사본에서 읽는다.
+        guard let channel = listComponent.baseChannelList?[safe: indexPath.row] else { return }
         self.showChannel(channelURL: channel.channelURL)
         
         #if SWIFTUI

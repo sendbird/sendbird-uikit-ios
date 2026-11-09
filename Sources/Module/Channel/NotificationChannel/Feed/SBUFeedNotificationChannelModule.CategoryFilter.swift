@@ -75,9 +75,15 @@ extension SBUFeedNotificationChannelModule {
         weak var dataSource: SBUFeedNotificationChannelModuleCategoryFilterDataSource?
         
         /// The category filter
+        // 채널 값은 reload 전에 바뀔 수 있으므로, 화면은 reload 때 찍은 스냅샷만 읽는다.
         var categories: [NotificationCategory]? {
-            self.dataSource?.categoriesForFeedNotificationChannelModule(self)
+            if self.categoriesSnapshot == nil {
+                self.categoriesSnapshot = self.dataSource?.categoriesForFeedNotificationChannelModule(self)
+            }
+            return self.categoriesSnapshot
         }
+        
+        private var categoriesSnapshot: [NotificationCategory]?
         
         var selectedIndex: Int = 0
 
@@ -141,12 +147,11 @@ extension SBUFeedNotificationChannelModule {
         }
 
         public func reloadCollectionView() {
-            if Thread.isMainThread {
+            // 스냅샷 교체와 reload 를 메인에서 함께 처리해 셀 개수와 내용이 어긋나지 않게 한다.
+            Thread.executeOnMain { [weak self] in
+                guard let self = self else { return }
+                self.categoriesSnapshot = self.dataSource?.categoriesForFeedNotificationChannelModule(self)
                 self.collectionView.reloadData()
-            } else {
-                DispatchQueue.main.async { [weak self] in
-                    self?.collectionView.reloadData()
-                }
             }
         }
     }

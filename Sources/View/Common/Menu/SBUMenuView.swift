@@ -168,7 +168,6 @@ class SBUMenuView: NSObject {
         self.backgroundView.addTarget(self, action: #selector(dismiss), for: .touchUpInside)
 
         let totalHeight = CGFloat(items.count) * itemHeight + (topBottomMargin * 2)
-        print("++ DEBUG: items.count=\(items.count), itemHeight=\(itemHeight), topBottomMargin=\(topBottomMargin), totalHeight=\(totalHeight)")
         var originY: CGFloat = 0.0
         var originX: CGFloat = 0.0
 

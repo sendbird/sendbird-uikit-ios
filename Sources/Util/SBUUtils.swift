@@ -282,8 +282,13 @@ extension SBUUtils {
 extension SBUUtils {
     static func convertToPlayTime(_ time: TimeInterval) -> String {
         // time -> ms | return format -> 00:00
-        let min = Int(time / 1000 / 60)
-        let sec = Int(time / 1000) % 60
+        // 초가 NaN, 무한대이거나 Int 범위를 넘으면 Int 변환에서 앱이 종료되므로 0으로 표시합니다.
+        let seconds = time / 1000
+        guard seconds.isFinite,
+              seconds >= Double(Int.min),
+              seconds < Double(Int.max) else { return "00:00" }
+        let min = Int(seconds / 60)
+        let sec = Int(seconds) % 60
         let strTime = String(format: "%02d:%02d", min, sec)
         return strTime
     }

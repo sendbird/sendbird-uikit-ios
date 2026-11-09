@@ -557,7 +557,8 @@ extension SBUAlertView {
         
         // AlertView has a countdown.
         if let countDownSeconds {
-            let remaining = Int(countDownSeconds)
+            // UInt가 Int.max보다 크면 Int 변환에서 앱이 종료되므로 Int.max로 맞춥니다.
+            let remaining = Int(clamping: countDownSeconds)
             self.countdownRemainingSeconds = remaining
             self.baseCountdownMessage = message
             self.message = self.countdownMessage(for: remaining)

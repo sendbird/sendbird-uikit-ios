@@ -234,7 +234,9 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     }
 
     func updateListContentInsetForLiquidGlass() {
+        // The insets below assume a flipped list that extends under the input component.
         guard SendbirdUI.config.common.shouldApplyLiquidGlass,
+              self.baseListComponent?.isTransformedList == true,
               let inputComponent = self.baseInputComponent else { return }
 
         let inputTopInView = inputComponent.frame.minY

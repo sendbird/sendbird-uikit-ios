@@ -79,7 +79,8 @@ open class SBUCreateOpenChannelViewModel: SBUBaseViewModel {
                 return
             }
 
-            Log.info("[Succeed] Create open channel: \(channel?.description ?? "")")
+            // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
+            Log.info("[Succeed] Create open channel: \(channel?.channelURL ?? "")")
             self.delegates.forEach { $0.createOpenChannelViewModel(self, didCreateChannel: channel) }
         }
     }

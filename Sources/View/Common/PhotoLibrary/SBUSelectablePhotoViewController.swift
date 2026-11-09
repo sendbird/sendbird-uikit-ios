@@ -292,7 +292,8 @@ extension SBUSelectablePhotoViewController: UICollectionViewDelegate, UICollecti
                 }
             default:
                 // not supported
-                print("not supported")
+                // 고객 앱 콘솔에 print로 찍지 않고 SDK 로그로 남긴다.
+                Log.warning("Not supported media type: \(asset.mediaType.rawValue)")
                 self.dismiss(animated: true, completion: nil)
                 return
             }
@@ -307,10 +308,11 @@ extension SBUSelectablePhotoViewController: PHPhotoLibraryChangeObserver {
     /// It reloads the collection view with the changes of preselected photos videos.
     /// - Since: 2.2.6
     open func photoLibraryDidChange(_ changeInstance: PHChange) {
-        guard let details = changeInstance.changeDetails(for: self.fetchResult) else { return }
-        self.fetchResult = details.fetchResultAfterChanges
-        DispatchQueue.main.async { [weak self] in
+        // 이 콜백은 백그라운드로 온다. 데이터 교체와 reload 를 메인에서 함께 해서 이전 index 로 읽지 않게 한다.
+        Thread.executeOnMain { [weak self] in
             guard let self = self else { return }
+            guard let details = changeInstance.changeDetails(for: self.fetchResult) else { return }
+            self.fetchResult = details.fetchResultAfterChanges
             self.collectionView.reloadData()
         }
     }

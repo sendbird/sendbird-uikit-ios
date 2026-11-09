@@ -962,17 +962,10 @@ extension SBUMessageThreadModule.List {
             
             var voicefileInfo: SBUVoiceFileInfo?
             if self?.voiceFileInfos[fileMessage.cacheKey] == nil {
-                var playtime: Double = 0
-                let metaArrays = message.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
-                if metaArrays.count > 0 {
-                    let value = metaArrays[0].value[0]
-                    playtime = Double(value) ?? 0
-                }
-                
                 voicefileInfo = SBUVoiceFileInfo(
                     fileName: fileMessage.name,
                     filePath: filePath,
-                    playtime: playtime,
+                    playtime: SBUVoiceFileInfo.playtime(of: message),
                     currentPlayTime: 0
                 )
                 
@@ -1044,17 +1037,10 @@ extension SBUMessageThreadModule.List {
             
             var voicefileInfo: SBUVoiceFileInfo?
             if self?.voiceFileInfos[fileMessage.cacheKey] == nil {
-                var playtime: Double = 0
-                let metaArrays = fileMessage.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
-                if metaArrays.count > 0 {
-                    let value = metaArrays[0].value[0]
-                    playtime = Double(value) ?? 0
-                }
-                
                 voicefileInfo = SBUVoiceFileInfo(
                     fileName: fileMessage.name,
                     filePath: filePath,
-                    playtime: playtime,
+                    playtime: SBUVoiceFileInfo.playtime(of: fileMessage),
                     currentPlayTime: 0
                 )
                 

@@ -33,23 +33,18 @@ extension SBUCacheManager.Image {
                     completionHandler: completionHandler
                 )
             case .video:
-                guard let asset = messageParams.file?.getAVAsset() else { break }
-                
-                let avAssetImageGenerator = AVAssetImageGenerator(asset: asset)
-                avAssetImageGenerator.appliesPreferredTrackTransform = true
-                let cmTime = CMTimeMake(value: 2, timescale: 1)
-                guard let cgImage = try? avAssetImageGenerator
-                    .copyCGImage(at: cmTime, actualTime: nil) else {
-                    break
+                guard let file = messageParams.file else { break }
+                let subPath = fileMessage.channelURL
+                // 보내기 버튼을 누른 main 에서 불린다. 영상을 파일로 쓰고 프레임을 뽑는 일은 백그라운드에서 한다.
+                DispatchQueue.global(qos: .userInitiated).async {
+                    guard let image = file.videoThumbnail() else { return }
+                    self.save(
+                        image: image,
+                        fileName: fileName,
+                        subPath: subPath,
+                        completionHandler: completionHandler
+                    )
                 }
-                
-                let image = UIImage(cgImage: cgImage)
-                self.save(
-                    image: image,
-                    fileName: fileName,
-                    subPath: fileMessage.channelURL,
-                    completionHandler: completionHandler
-                )
             default:
                 break
             }

@@ -123,13 +123,7 @@ open class SBUVoiceContentView: SBUBaseFileContentView {
     }
     
     func reset() {
-        let metaArrays = message.metaArrays(keys: [SBUConstant.voiceMessageDurationKey])
-        if metaArrays.count > 0 {
-            let value = metaArrays[0].value[0]
-            self.updateVoiceContentStatus(.none, time: Double(value) ?? 0)
-        } else {
-            self.updateVoiceContentStatus(.none)
-        }
+        self.updateVoiceContentStatus(.none, time: SBUVoiceFileInfo.playtime(of: message))
         
         self.statusButton.layer.removeAnimation(forKey: SBUAnimation.Key.spin.identifier)
     }

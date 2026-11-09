@@ -212,7 +212,8 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                         return
                     }
                     
-                    Log.info("[Succeed] Load channel request: \(String(describing: self.channel))")
+                    // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
+                    Log.info("[Succeed] Load channel request: \(channel?.channelURL ?? "")")
                     self.channel = channel
                     
                     self.refreshChannel()

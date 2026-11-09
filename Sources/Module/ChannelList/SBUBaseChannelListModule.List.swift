@@ -74,8 +74,23 @@ extension SBUBaseChannelListModule {
         /// The object that acts as the data source of the list component. The data source must adopt the `SBUBaseChannelListModuleListDataSource`.
         public weak var baseDataSource: SBUBaseChannelListModuleListDataSource?
         
-        /// The current channel list object from `channelListModule(_:channelsInTableView:)` data source method.
+        /// The channel list the table view is drawn from. It takes the latest value of `baseChannelListModule(_:channelsInTableView:)` when `reloadTableView()` runs or, in `SBUGroupChannelListModule.List` and `SBUOpenChannelListModule.List`, when the table view asks for its row count.
+        /// - Important: If a subclass overrides `tableView(_:numberOfRowsInSection:)` without calling `super`, only the SDK's `reloadTableView()` updates this list. A direct `tableView.reloadData()`, or a `reloadTableView()` override that does not call `super`, then leaves it unchanged.
         public var baseChannelList: [BaseChannel]? {
+            if let drawnChannelList = self.drawnChannelList { return drawnChannelList }
+            self.drawnChannelList = self.latestChannelList
+            return self.drawnChannelList
+        }
+
+        // 화면이 쓰는 사본. table view가 행 수를 물을 때 바꾸므로 table view가 아는 행 수와 같다. 행 수 메서드를 직접 부르면 어긋날 수 있어 행을 읽을 때는 [safe:]를 쓴다.
+        @SBUAtomic private var drawnChannelList: [BaseChannel]?
+
+        // 사본이 private이고 override는 다른 파일에 있어서 내부 메서드로 연다.
+        func refreshDrawnChannelList() {
+            self.drawnChannelList = self.latestChannelList
+        }
+
+        var latestChannelList: [BaseChannel]? {
             self.baseDataSource?.baseChannelListModule(self, channelsInTableView: self.tableView)
         }
         
@@ -133,7 +148,7 @@ extension SBUBaseChannelListModule {
         ///   - channelCell: `SBUBaseChannelCell` object
         ///   - indexPath: An index path representing the `channelCell`
         open func configureCell(_ channelCell: SBUBaseChannelCell?, indexPath: IndexPath) {
-            guard let channel = self.baseChannelList?[indexPath.row] else { return }
+            guard let channel = self.baseChannelList?[safe: indexPath.row] else { return }
             
             channelCell?.configure(channel: channel)
             channelCell?.setupStyles()
@@ -205,6 +220,8 @@ extension SBUBaseChannelListModule {
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
         public func reloadTableView() {
             DispatchQueue.main.async { [weak self] in
+                // numberOfRowsInSection을 super 없이 override해도 새 목록을 읽도록 여기서도 바꾼다.
+                self?.refreshDrawnChannelList()
                 self?.tableView.reloadData()
             }
         }

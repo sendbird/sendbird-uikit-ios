@@ -40,7 +40,12 @@ extension SBUCacheManager {
             for (index, component) in components.enumerated() {
                 if let componentNumber = Int(component) {
                     let power = pow(10.0, 3.0 * (2.0 - Double(index)))
-                    number += componentNumber * Int(power)
+                    // 저장된 버전 문자열에 큰 숫자가 있으면 곱셈이나 덧셈이 넘쳐 앱이 종료되므로,
+                    // 넘치면 가장 오래된 버전(0)으로 보고 이미지 캐시를 한 번 비우게 합니다.
+                    let (product, productOverflow) = componentNumber.multipliedReportingOverflow(by: Int(power))
+                    let (sum, sumOverflow) = number.addingReportingOverflow(product)
+                    if productOverflow || sumOverflow { return 0 }
+                    number = sum
                 }
             }
             
