@@ -50,7 +50,8 @@ extension SBUGroupChannelListModule {
             set { self.baseDataSource = newValue }
         }
         
-        /// The current channel list object from `baseChannelListModule(_:channelsInTableView:)` data source method.
+        /// The channel list the table view is drawn from. It takes the latest value of `baseChannelListModule(_:channelsInTableView:)` when `reloadTableView()` runs or when the table view asks for its row count.
+        /// - Important: If a subclass overrides `tableView(_:numberOfRowsInSection:)` without calling `super`, only the SDK's `reloadTableView()` updates this list. A direct `tableView.reloadData()`, or a `reloadTableView()` override that does not call `super`, then leaves it unchanged.
         public var channelList: [GroupChannel]? {
             self.baseChannelList as? [GroupChannel]
         }
@@ -141,7 +142,7 @@ extension SBUGroupChannelListModule {
         /// - Parameter indexPath: An index path representing the `channelCell`
         /// - Returns: `UIContextualAction` object.
         public func leaveContextualAction(with indexPath: IndexPath) -> UIContextualAction? {
-            guard let channel = self.channelList?[indexPath.row] else { return nil }
+            guard let channel = self.channelList?[safe: indexPath.row] else { return nil }
             
             let size = tableView.visibleCells[0].frame.height
             let itemSize: CGFloat = 40.0
@@ -180,7 +181,7 @@ extension SBUGroupChannelListModule {
         /// - Parameter indexPath: An index path representing the `channelCell`
         /// - Returns: `UIContextualAction` object.
         public func alarmContextualAction(with indexPath: IndexPath) -> UIContextualAction? {
-            guard let channel = self.channelList?[indexPath.row] else { return nil }
+            guard let channel = self.channelList?[safe: indexPath.row] else { return nil }
             
             let size = tableView.visibleCells[0].frame.height
             let itemSize: CGFloat = 40.0
@@ -232,7 +233,7 @@ extension SBUGroupChannelListModule {
         }
         #if INSPECTION
         func inspectContextualAction(with indexPath: IndexPath) -> UIContextualAction? {
-            guard let channel = self.channelList?[indexPath.row] else { return nil }
+            guard let channel = self.channelList?[safe: indexPath.row] else { return nil }
             
             let size = tableView.visibleCells[0].frame.height
             let itemSize: CGFloat = 40.0
@@ -323,6 +324,8 @@ extension SBUGroupChannelListModule.List {
     }
     
     open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // reloadTableView를 super 없이 override해도 새 목록을 읽도록 여기서 바꾼다.
+        self.refreshDrawnChannelList()
         tableView.backgroundView?.isHidden = !(self.channelList?.isEmpty ?? true)
         
         return self.channelList?.count ?? 0

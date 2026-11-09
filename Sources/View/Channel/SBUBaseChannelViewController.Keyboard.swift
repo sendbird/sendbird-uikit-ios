@@ -140,10 +140,15 @@ extension SBUBaseChannelViewController {
 
             self.messageInputViewBottomConstraint?.constant = -(keyboardHeight-tabBarHeight+SBUConstant.messageInputViewKeyboardSpacing)
 
-            // For liquid glass mode: update content inset and scroll to bottom when keyboard shows
+            // For liquid glass mode: keep the newest message visible when keyboard shows.
+            // The newest message is the first row in a flipped list and the last row otherwise (message thread).
             if SendbirdUI.config.common.shouldApplyLiquidGlass,
-               self.baseListComponent?.isScrollNearByBottom == true {
-                self.baseListComponent?.scrollTableView(to: 0)
+               let listComponent = self.baseListComponent,
+               listComponent.isScrollNearByBottom {
+                let newestRow = listComponent.isTransformedList
+                ? 0
+                : (self.baseViewModel?.fullMessageList.count ?? 0) - 1
+                listComponent.scrollTableView(to: newestRow)
             }
         }
         self.view.layoutIfNeeded()

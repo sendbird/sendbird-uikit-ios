@@ -26,6 +26,12 @@ public class SBUUserMentionConfiguration: SBUMentionConfiguration {
     /// The limitation number of the users that displays on the suggested mention list view.
     public var suggestionLimit: Int = 15
     
+    /// 쓰는 곳에서 사용할 suggestionLimit입니다. 저장값은 그대로 둡니다.
+    /// 음수는 0으로, 버퍼 `+ 1`을 더해도 넘치지 않게 `Int.max - 1`까지로 맞춥니다.
+    var clampedSuggestionLimit: Int {
+        min(max(suggestionLimit, 0), Int.max - 1)
+    }
+
     /// The flag whether to use a custom suggested mention list.
     /// - Note: If you want to use a custom list, set this flag to `true` and use your user list after override `mentionManager(_:suggestedMentionUsersWith:)` dataSource in `SBUGroupChannelViewController` class.
     public var isCustomUserListUsed: Bool = false

@@ -97,7 +97,12 @@ class SBUChatNotificationChannelViewModel: NSObject {
     
     /// Data fields for templates to cache load states
     /// - Since: 3.29.0
-    var templateLoadCache: [String: SBUMessageTemplate.TemplateCacheState] = [:] // template-key : load-state
+    var templateLoadCache: [String: SBUMessageTemplate.TemplateCacheState] { // template-key : load-state
+        // 캐시 초기화로 메모리에서 사라진 템플릿은 성공으로 보지 않는다. 셀이 다시 받게 된다.
+        get { self.storedTemplateLoadCache.removingSuccessMissingFromMemory(type: .notification) }
+        set { self.storedTemplateLoadCache = newValue }
+    }
+    private var storedTemplateLoadCache: [String: SBUMessageTemplate.TemplateCacheState] = [:]
 
     /// Custom param set by user.
     var customizedNotificationListParams: MessageListParams?
@@ -285,7 +290,8 @@ class SBUChatNotificationChannelViewModel: NSObject {
                 }
                 
                 self.channel = channel
-                Log.info("[Succeed] Load channel request: \(String(describing: self.channel))")
+                // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
+                Log.info("[Succeed] Load channel request: \(self.channel?.channelURL ?? "")")
                 
                 self.updateLastSeenAt() // will mark as read
                 
@@ -858,7 +864,8 @@ extension SBUChatNotificationChannelViewModel: MessageCollectionDelegate {
             startingPointIndexPathsForChannel: self.channel
         )
         let visibleRowCount = indexPathsForStartingPoint?.count ?? 0
-        let visibleCenterIdx = indexPathsForStartingPoint?[visibleRowCount / 2].row ?? 0
+        // 보이는 행이 없으면(빈 배열) [0] 접근이 크래시하므로 nil 일 때처럼 0번을 쓴다.
+        let visibleCenterIdx = indexPathsForStartingPoint?[safe: visibleRowCount / 2]?.row ?? 0
         if visibleCenterIdx < self.notifications.count {
             startingPoint = self.notifications[visibleCenterIdx].createdAt
         }

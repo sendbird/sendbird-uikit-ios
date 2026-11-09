@@ -977,7 +977,8 @@ public class SendbirdUI {
                 Log.error("[Failed] Create channel request: There is no channel url.")
                 return
             }
-            Log.info("[Succeed] Create channel: \(channel?.description ?? "")")
+            // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
+            Log.info("[Succeed] Create channel: \(channelURL)")
             
             SendbirdUI.moveToChannel(channelURL: channelURL, messageListParams: messageListParams)
         }
@@ -1110,7 +1111,8 @@ extension SendbirdUI {
                     return
                 }
                 
-                Log.info("[Succeed] Create channel: \(channel.description)")
+                // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
+                Log.info("[Succeed] Create channel: \(channel.channelURL)")
                 
                 SendbirdUI.moveToChannel(channelURL: channel.channelURL,
                                          basedOnChannelList: false)

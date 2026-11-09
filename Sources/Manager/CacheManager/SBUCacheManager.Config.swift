@@ -356,8 +356,20 @@ extension SBUCacheManager {
     
     // MARK: - MemoryCache
     class MemoryCacheForConfig {
-        var lastUpdatedAt: Int64?
-        var config: SBUConfig?
+        // 공개 초기화 API(SBUConfig.resetCache)가 아무 스레드에서나 비우는 사이 조회와 저장이 겹친다.
+        private let lock = NSLock()
+        private var _lastUpdatedAt: Int64?
+        private var _config: SBUConfig?
+        
+        var lastUpdatedAt: Int64? {
+            get { self.locked { self._lastUpdatedAt } }
+            set { self.locked { self._lastUpdatedAt = newValue } }
+        }
+        
+        var config: SBUConfig? {
+            get { self.locked { self._config } }
+            set { self.locked { self._config = newValue } }
+        }
         
         // MARK: - Memory Cache
         func set(config: SBUConfig) {
@@ -378,8 +390,16 @@ extension SBUCacheManager {
         
         // MARK: - Reset
         func resetCache() {
-            self.lastUpdatedAt = nil
-            self.config = nil
+            self.locked {
+                self._lastUpdatedAt = nil
+                self._config = nil
+            }
+        }
+        
+        private func locked<T>(_ work: () -> T) -> T {
+            self.lock.lock()
+            defer { self.lock.unlock() }
+            return work()
         }
     }
 }

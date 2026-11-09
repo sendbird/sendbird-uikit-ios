@@ -265,15 +265,17 @@ internal extension UIImageView {
             )
             return nil
         }
-        let task = UIImage.sbu_imageDownloader.downloadImage(from: url) { [weak self] data, _ in
-            guard let self = self, let asset = data?.getAVAsset() else {
+        // 썸네일 한 장을 위해 영상 전체를 Data 로 받지 않고 파일로 받는다. 프레임을 뽑은 뒤 파일을 지운다.
+        let task = UIImage.sbu_imageDownloader.downloadFile(from: url, pathExtension: "mov") { [weak self] fileURL, _ in
+            defer { if let fileURL = fileURL { try? FileManager.default.removeItem(at: fileURL) } }
+            guard let self = self, let fileURL = fileURL else {
                 Thread.executeOnMain {
                     completion?(.init(status: .failure, urlString: urlString))
                 }
                 return
             }
             
-            let avAssetImageGenerator = AVAssetImageGenerator(asset: asset)
+            let avAssetImageGenerator = AVAssetImageGenerator(asset: AVURLAsset(url: fileURL))
             avAssetImageGenerator.appliesPreferredTrackTransform = true
             let cmTime = CMTimeMake(value: 2, timescale: 1)
             guard let cgImage = try? avAssetImageGenerator
@@ -314,9 +316,17 @@ internal extension UIImageView {
             cacheKey: cacheKey
         )
         let thumbnailFileName = "thumb_" + fileName
+        let thumbnailSize: CGSize = thumbnailSize ?? SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
+        // 정적 이미지의 `resize(with:)` 와 같은 scale 로 맞춘다.
+        let displayScale = UIGraphicsImageRendererFormat.default().scale
         
         // Load thumbnail cacheImage
-        if let thumbnailImage = SBUCacheManager.Image.get(fileName: thumbnailFileName, subPath: subPath) {
+        if let thumbnailImage = SBUCacheManager.Image.getThumbnail(
+            fileName: thumbnailFileName,
+            subPath: subPath,
+            fitting: thumbnailSize,
+            scale: displayScale
+        ) {
             let image = thumbnailImage.isAnimatedImage() ? thumbnailImage.images?.first : thumbnailImage
             self.setImage(
                 image,
@@ -344,7 +354,7 @@ internal extension UIImageView {
         
         let task = UIImage.sbu_imageDownloader.downloadImage(from: url) { [weak self] data, error in
             guard let self = self else { return }
-            guard let data = data, error == nil, let image = UIImage.createImage(from: data) else {
+            let failure = {
                 self.setImage(
                     errorImage,
                     urlString: urlString,
@@ -353,13 +363,31 @@ internal extension UIImageView {
                     autoset: autoset,
                     completion: completion
                 )
+            }
+            guard let data = data, error == nil else {
+                failure()
                 return
             }
             
-            if image.isAnimatedImage() {
-                SBUCacheManager.Image.save(data: data, fileName: thumbnailFileName, subPath: subPath)
+            // 썸네일은 GIF 의 첫 프레임만 보여 주므로, 전체 animation 을 만들지 않고 첫 프레임만 표시 크기로
+            // 디코드해 정적 이미지로 저장한다.
+            if let source = CGImageSourceCreateWithData(data as CFData, nil), CGImageSourceGetCount(source) > 1 {
+                guard let firstFrame = UIImage.firstFrameThumbnail(
+                    source: source,
+                    fitting: thumbnailSize,
+                    scale: displayScale
+                ) else {
+                    failure()
+                    return
+                }
+                SBUCacheManager.Image.save(
+                    image: firstFrame,
+                    fileName: thumbnailFileName,
+                    subPath: subPath,
+                    preservesTransparency: true
+                )
                 self.setImage(
-                    image.images?.first ?? image,
+                    firstFrame,
                     urlString: urlString,
                     tintColor: tintColor,
                     status: .success,
@@ -367,7 +395,10 @@ internal extension UIImageView {
                     completion: completion
                 )
             } else {
-                let thumbnailSize: CGSize = thumbnailSize ?? SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
+                guard let image = UIImage(data: data) else {
+                    failure()
+                    return
+                }
                 let thumbnailImage = image.resize(with: thumbnailSize)
                 SBUCacheManager.Image.save(image: thumbnailImage, fileName: thumbnailFileName, subPath: subPath)
                 self.setImage(

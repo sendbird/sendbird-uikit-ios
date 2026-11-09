@@ -221,10 +221,19 @@ extension SBUFeedNotificationChannelModule {
         
         /// The array of notification notifications in the channel. The value is returned by ``SBUFeedNotificationChannelModuleListDataSource/feedNotificationChannelModule(_:notificationInTableView:)`` data source method.
         var notifications: [BaseMessage] {
+            if let drawnNotifications = self.drawnNotifications { return drawnNotifications }
+            self.drawnNotifications = self.latestNotifications
+            return self.drawnNotifications ?? []
+        }
+
+        // 화면이 쓰는 사본. table view가 아는 행 수와 어긋나지 않도록 reload할 때만 바꾼다.
+        @SBUAtomic private var drawnNotifications: [BaseMessage]?
+
+        private var latestNotifications: [BaseMessage]? {
             self.dataSource?.feedNotificationChannelModule(
                 self,
                 notificationInTableView: self.tableView
-            ) ?? []
+            )
         }
         
         // MARK: - Logic properties (Private)
@@ -526,6 +535,7 @@ extension SBUFeedNotificationChannelModule {
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
         public func reloadTableView() {
             if Thread.isMainThread {
+                self.drawnNotifications = self.latestNotifications
                 self.isTableViewReloading = true
                 self.tableView.reloadData()
                 self.tableView.layoutIfNeeded()
@@ -538,6 +548,7 @@ extension SBUFeedNotificationChannelModule {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     
+                    self.drawnNotifications = self.latestNotifications
                     self.isTableViewReloading = true
                     self.tableView.reloadData()
                     self.tableView.layoutIfNeeded()

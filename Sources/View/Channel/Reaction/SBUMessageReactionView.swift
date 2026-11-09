@@ -58,6 +58,10 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
     var emojiLongPressHandler: ((_ emojiKey: String) -> Void)?
     var errorHandler: ((_ error: SBError) -> Void)?
 
+    // reload 때의 hasMoreEmoji() 값. 행 개수와 행 내용이 같은 값을 보게 한다.
+    // super.configure 를 부르지 않는 subclass 에서는 nil 로 남아 hasMoreEmoji() 를 바로 읽는다.
+    var moreEmojiRowSnapshot: Bool?
+
     public private(set) var collectionViewHeightConstraint: NSLayoutConstraint?
     public private(set) var collectionViewMinWidthContraint: NSLayoutConstraint?
 
@@ -138,8 +142,13 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
     }
 
     public func hasMoreEmoji(at indexPath: IndexPath) -> Bool {
-        return self.reactions.count < emojiList.count &&
-            self.reactions.count == indexPath.row
+        guard self.reactions.count == indexPath.row else { return false }
+        // 셀 개수를 정하는 값도 함께 봐서, 마지막 행이 범위 밖 reaction 으로 읽히지 않게 한다.
+        return self.reactions.count < emojiList.count || self.showsMoreEmojiRow()
+    }
+
+    func showsMoreEmojiRow() -> Bool {
+        self.moreEmojiRowSnapshot ?? self.hasMoreEmoji()
     }
     
     open func configure(
@@ -175,6 +184,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         self.enableEmojiLongPress = configuration.enableEmojiLongPress
         
         let hasMoreEmoji = hasMoreEmoji()
+        self.moreEmojiRowSnapshot = hasMoreEmoji
         let cellSizes = reactions.reduce(0) {
             $0 + self.getCellSize(count: $1.sampledUserIds.count).width
         }
@@ -218,7 +228,7 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
     ) -> Int {
         guard !reactions.isEmpty else { return 0 }
 
-        if hasMoreEmoji() {
+        if showsMoreEmojiRow() {
             return self.reactions.count + 1
         } else {
             return self.reactions.count
@@ -291,7 +301,8 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         guard !self.hasMoreEmoji(at: indexPath) else { return }
         guard !reactions.isEmpty else { return }
         
-        let reaction = reactions[indexPath.row]
+        // 행 개수를 따로 세는 subclass 에서는 reaction 범위 밖 행이 올 수 있다.
+        guard let reaction = reactions[safe: indexPath.row] else { return }
         self.emojiTapHandler?(reaction.key)
     }
     
@@ -302,7 +313,8 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         
         // Defense code for when different EmojiCategory had been applied in the past.
         // Block reaction add/delete if the selected emoji is no longer supported due to being filtered by EmojiCategory.
-        let emojiKey = reactions[indexPath.row].key
+        // 더보기 행에는 reaction 이 없으므로 선택 대상이 아니다.
+        guard let emojiKey = reactions[safe: indexPath.row]?.key else { return false }
         if !SBUEmojiManager.isEmojiAvailable(emojiKey: emojiKey, message: message) {
             let error = SBUError(code: .emojiUnsupported)
             Log.info(error.code.message)
@@ -322,8 +334,9 @@ open class SBUMessageReactionView: SBUView, UICollectionViewDelegate, UICollecti
         guard !self.hasMoreEmoji(at: indexPath) else { return self.getCellSize(count: 0) }
         guard !reactions.isEmpty else { return self.getCellSize(count: 0) }
 
-        let count = reactions[indexPath.row].sampledUserIds.count
-        return self.getCellSize(count: count)
+        // 행 개수를 따로 세는 subclass 에서는 reaction 범위 밖 행이 올 수 있다.
+        guard let reaction = reactions[safe: indexPath.row] else { return self.getCellSize(count: 0) }
+        return self.getCellSize(count: reaction.sampledUserIds.count)
     }
     
     /// Computes whether there are emojis left to react to a message with.

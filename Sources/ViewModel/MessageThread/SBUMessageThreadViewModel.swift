@@ -298,7 +298,8 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                 return
             }
             
-            Log.info("[Succeed] Load channel request: \(String(describing: self.channel))")
+            // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
+            Log.info("[Succeed] Load channel request: \(self.channel?.channelURL ?? "")")
             
             // background refresh to check if user is banned or not.
             self.refreshChannel()
@@ -1195,7 +1196,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                     params.nicknameStartsWithFilter = filterText
                     
                     // +1 is buffer for when the current user is included in the search results
-                    params.limit = UInt(config.suggestionLimit) + 1
+                    params.limit = UInt(config.clampedSuggestionLimit) + 1
                     self.query = channel.createMemberListQuery(params: params)
                     
                     self.query?.loadNextPage { [weak self] members, _ in
@@ -1225,7 +1226,7 @@ open class SBUMessageThreadViewModel: SBUBaseChannelViewModel {
                     }
                     let memberCount = matchedMembers.count
                     // +1 is buffer for when the current user is included in the search results
-                    let limit = (SBUGlobals.userMentionConfig?.suggestionLimit ?? 0) + 1
+                    let limit = (SBUGlobals.userMentionConfig?.clampedSuggestionLimit ?? 0) + 1
                     let splitCount = min(memberCount, Int(limit))
                     
                     let resultMembers = Array(matchedMembers[0..<splitCount])

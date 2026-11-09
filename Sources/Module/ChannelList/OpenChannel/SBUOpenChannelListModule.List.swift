@@ -38,7 +38,8 @@ extension SBUOpenChannelListModule {
             set { self.baseDataSource = newValue }
         }
         
-        /// The current channel list object from `baseChannelListModule(_:channelsInTableView:)` data source method.
+        /// The channel list the table view is drawn from. It takes the latest value of `baseChannelListModule(_:channelsInTableView:)` when `reloadTableView()` runs or when the table view asks for its row count.
+        /// - Important: If a subclass overrides `tableView(_:numberOfRowsInSection:)` without calling `super`, only the SDK's `reloadTableView()` updates this list. A direct `tableView.reloadData()`, or a `reloadTableView()` override that does not call `super`, then leaves it unchanged.
         public var channelList: [OpenChannel]? {
             self.baseChannelList as? [OpenChannel]
         }
@@ -190,6 +191,8 @@ extension SBUOpenChannelListModule.List {
     }
     
     open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        // reloadTableView를 super 없이 override해도 새 목록을 읽도록 여기서 바꾼다.
+        self.refreshDrawnChannelList()
         tableView.backgroundView?.isHidden = !(self.channelList?.isEmpty ?? true)
         
         return self.channelList?.count ?? 0

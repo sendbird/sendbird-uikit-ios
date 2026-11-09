@@ -43,8 +43,14 @@ extension SBUMessageThreadModule {
                 target: self,
                 action: nil
             )
+            self.emptyBarButton = emptyButton
+            self.emptyBarButtonImage = emptyButton.image
             return emptyButton
         }()
+
+        /// The `defaultEmptyBarButton` instance and the image it was created with. Used to tell whether the button still shows nothing.
+        private weak var emptyBarButton: UIBarButtonItem?
+        private weak var emptyBarButtonImage: UIImage?
         
         // MARK: - default views
         
@@ -135,6 +141,25 @@ extension SBUMessageThreadModule {
             
             self.rightBarButton?.tintColor = self.theme?.rightBarButtonTintColor
             self.rightBarButtons?.forEach { $0.tintColor = self.theme?.rightBarButtonTintColor }
+
+            self.updateEmptyBarButtonBackground()
+        }
+
+        /// Hides the liquid glass background of `defaultEmptyBarButton` only while it still shows nothing,
+        /// so an empty circle isn't drawn. Once the button gets an image or a custom view, the background comes back.
+        /// - Note: This runs only from `setupStyles` (`configure`, `viewWillAppear`, theme changes).
+        ///   If the button's image is changed after the screen appears, call `updateStyles()` to apply it.
+        /// - Note: "Empty" is judged by the image identity. If `SBUIconSet.iconEmpty` is replaced with a visible image,
+        ///   the background stays hidden.
+        private func updateEmptyBarButtonBackground() {
+            #if compiler(>=6.2)
+            if #available(iOS 26.0, *),
+               SendbirdUI.config.common.shouldApplyLiquidGlass,
+               let emptyBarButton = self.emptyBarButton {
+                emptyBarButton.hidesSharedBackground = emptyBarButton.customView == nil
+                && emptyBarButton.image === self.emptyBarButtonImage
+            }
+            #endif
         }
         
         // MARK: - Actions

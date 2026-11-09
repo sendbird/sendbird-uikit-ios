@@ -359,15 +359,10 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
         }
         
         // Video thumbnail size
-        else if let asset = fileData.getAVAsset() {
-            let avAssetImageGenerator = AVAssetImageGenerator(asset: asset)
-            avAssetImageGenerator.appliesPreferredTrackTransform = true
-            let cmTime = CMTimeMake(value: 2, timescale: 1)
-            if let cgImage = try? avAssetImageGenerator.copyCGImage(at: cmTime, actualTime: nil) {
-                let image = UIImage(cgImage: cgImage)
-                let thumbnailSize = ThumbnailSize.make(maxSize: image.size)
-                messageParams.thumbnailSizes = [thumbnailSize]
-            }
+        // 크기만 필요하므로 프레임을 디코드하지 않고 영상 트랙 크기(회전 반영)를 읽는다. 보내기를 누른 main 에서 불린다.
+        else if let videoSize = fileData.videoNaturalSize() {
+            let thumbnailSize = ThumbnailSize.make(maxSize: videoSize)
+            messageParams.thumbnailSizes = [thumbnailSize]
         }
         
         if let parentMessage = parentMessage,
