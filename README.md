@@ -92,6 +92,8 @@ codex plugin add sendbird-cli@sendbird
 
 Then call `$sendbird-cli:sendbird-setup` and `$sendbird-client:setup`.
 
+See the [Client plugin guide](https://tools.docs.sendbird.com/plugins/client) and the [CLI plugin guide](https://tools.docs.sendbird.com/plugins/cli) for setup details and example requests.
+
 The client plugin runs local shell scripts as hooks. Review [What runs on your machine](https://github.com/sendbird/sendbird-client-plugin#what-runs-on-your-machine) before installing.
 
 <br />
