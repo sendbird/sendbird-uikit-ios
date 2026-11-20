@@ -341,8 +341,9 @@ extension SBUChatNotificationChannelModule {
             notification: BaseMessage,
             indexPath: IndexPath
         ) {
-            cell.longPressHandlerToContent = { [weak self] in
-                guard let self = self else { return }
+            // handler는 cell이 들고 있으므로 cell도 약하게 잡아야 cell이 해제됩니다.
+            cell.longPressHandlerToContent = { [weak self, weak cell] in
+                guard let self = self, let cell else { return }
                 self.setLongTapGesture(cell, notification: notification, indexPath: indexPath)
             }
         }

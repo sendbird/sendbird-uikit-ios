@@ -71,7 +71,12 @@ open class SBUCreateChannelViewModel: SBUBaseViewModel {
     private var useCustomizedUsers = false
 
     @SBUAtomic private var isLoading = false
-    
+
+    /// 사용자 목록 한 페이지를 요청한다. `loadNextPage`는 final이라, 테스트가 응답을 보낼 큐와 순서를 정하려고 이 값을 바꿔 끼운다.
+    static var loadUserListPage: (ApplicationUserListQuery, @escaping UserListHandler) -> Void = { query, completion in
+        query.loadNextPage(completionHandler: completion)
+    }
+
     // MARK: - Life Cycle
     /// Initializes a new instance of `SBUCreateChannelViewModel`.
     ///
@@ -159,31 +164,37 @@ open class SBUCreateChannelViewModel: SBUBaseViewModel {
                 self.userListQuery = SendbirdChat.createApplicationUserListQuery(params: params)
             }
             
-            guard self.userListQuery?.hasNext == true else {
+            guard let query = self.userListQuery, query.hasNext else {
                 self.delegates.forEach { $0.shouldUpdateLoadingState(false) }
                 Log.info("All users have been loaded.")
                 return
             }
-            
-            self.userListQuery?.loadNextPage { [weak self] users, error in
-                guard let self = self else { return }
-                defer { self.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
-                
-                if let error = error {
-                    self.delegates.forEach { $0.didReceiveError(error, isBlocker: true) }
-                    return
+
+            SBUCreateChannelViewModel.loadUserListPage(query) { [weak self] users, error in
+                // Chat 콜백 큐를 바꾼 앱에서는 응답이 백그라운드에서 온다. 목록 반영과 화면 알림은 main에서 한다.
+                // main에서 불리면 지금처럼 바로 실행된다.
+                Thread.executeOnMain { [weak self] in
+                    guard let self else { return }
+                    // reset으로 query가 바뀐 뒤 온 이전 query 응답은 버린다. 목록, 오류, 로딩 해제는 새 query 응답이 맡는다.
+                    guard self.userListQuery === query else { return }
+                    defer { self.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
+
+                    if let error = error {
+                        self.delegates.forEach { $0.didReceiveError(error, isBlocker: true) }
+                        return
+                    }
+
+                    let filteredUsers = users?.filter { $0.userId != SBUGlobals.currentUser?.userId }
+
+                    guard let users = filteredUsers?.sbu_convertUserList() else { return }
+
+                    Log.info("[Response] \(users.count) users")
+
+                    guard !users.isEmpty else { return }
+
+                    self.userList += users
+                    self.delegates.forEach { $0.createChannelViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
                 }
-                
-                let filteredUsers = users?.filter { $0.userId != SBUGlobals.currentUser?.userId }
-                
-                guard let users = filteredUsers?.sbu_convertUserList() else { return }
-                
-                Log.info("[Response] \(users.count) users")
-                
-                guard !users.isEmpty else { return }
-                
-                self.userList += users
-                self.delegates.forEach { $0.createChannelViewModel(self, didChangeUsers: self.userList, needsToReload: true) }
             }
         }
     }
@@ -254,26 +265,30 @@ open class SBUCreateChannelViewModel: SBUBaseViewModel {
         self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
         
         GroupChannel.createChannel(params: params) { [weak self] channel, error in
-            defer { self?.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
-            guard let self = self else { return }
+            // Chat 콜백 큐를 바꾼 앱에서는 이 completion이 백그라운드에서 온다. 로딩 표시, 오류, 이동 delegate는 화면을 바꾸므로 main에서 부른다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain { [weak self] in
+                defer { self?.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
+                guard let self = self else { return }
             
-            if let error = error {
-                Log.error("""
-                    [Failed] Create channel request:
-                    \(String(error.localizedDescription))
-                    """)
-                self.delegates.forEach { $0.didReceiveError(error) }
-                return
-            }
+                if let error = error {
+                    Log.error("""
+                        [Failed] Create channel request:
+                        \(String(error.localizedDescription))
+                        """)
+                    self.delegates.forEach { $0.didReceiveError(error) }
+                    return
+                }
             
-            // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
-            Log.info("[Succeed] Create channel: \(channel?.channelURL ?? "")")
-            self.delegates.forEach {
-                $0.createChannelViewModel(
-                    self,
-                    didCreateChannel: channel,
-                    withMessageListParams: messageListParams
-                )
+                // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
+                Log.info("[Succeed] Create channel: \(channel?.channelURL ?? "")")
+                self.delegates.forEach {
+                    $0.createChannelViewModel(
+                        self,
+                        didCreateChannel: channel,
+                        withMessageListParams: messageListParams
+                    )
+                }
             }
         }
     }

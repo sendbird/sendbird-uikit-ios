@@ -110,6 +110,37 @@ extension SBUCacheManager {
             }
         }
         
+        /// 받은 임시 파일을 캐시 경로로 옮기고 그 경로를 돌려준다. 같은 경로에 파일이 있으면 바꾼다. 실패하면 nil.
+        ///
+        /// 임시 파일은 받기 콜백이 끝나면 지워지므로 기다려서 옮긴다. `set`, `rename`, `removeAll` 과 순서가 섞이지 않게 같은 큐에서 한다.
+        func moveItem(at location: URL, key: String) -> URL? {
+            diskQueue.sync {
+                let filePath = URL(fileURLWithPath: self.pathForKey(key))
+                do {
+                    try self.fileManager.createDirectory(
+                        at: filePath.deletingLastPathComponent(),
+                        withIntermediateDirectories: true,
+                        attributes: nil
+                    )
+                    if self.fileManager.fileExists(atPath: filePath.path) {
+                        _ = try self.fileManager.replaceItemAt(filePath, withItemAt: location)
+                    } else {
+                        try self.fileManager.moveItem(at: location, to: filePath)
+                    }
+                    return filePath
+                } catch {
+                    Log.error(error.localizedDescription)
+                    return nil
+                }
+            }
+        }
+        
+        /// 이미 예약한 디스크 작업이 끝날 때까지 기다린다. 큐는 `.background` 라 디스크가 바쁘면 쓰기가 크게 밀리는데,
+        /// 부른 스레드의 우선순위로 큐를 올려 끝낸다. 테스트가 쓰기 결과를 확인할 때 쓴다.
+        func waitForPendingWork() {
+            diskQueue.sync {}
+        }
+        
         func rename(key: String, newKey: String) {
             diskQueue.async {
                 let fileManager = self.fileManager

@@ -119,7 +119,7 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
         self.viewModel?.initChannelList()
     }
     
@@ -226,42 +226,48 @@ open class SBUGroupChannelListViewController: SBUBaseChannelListViewController, 
     ///   - messageListParams: If there is a messageListParams set directly for use in Channel, set it up here
     open override func showChannel(channelURL: String, messageListParams: MessageListParams? = nil) {
         GroupChannel.getChannel(url: channelURL) { [weak self] channel, error in
-            guard let self, error == nil, let channel = channel else { return }
-            
-            if channel.isChatNotification {
-                let channelVC = SBUViewControllerSet.ChatNotificationChannelViewController.init(
-                    channel: channel,
-                    notificationListParams: messageListParams,
-                    displaysLocalCachedListFirst: true
-                )
-                self.navigationController?.pushViewController(channelVC, animated: true)
-            } else if channel.isFeedChannel() {
-                let channelVC = SBUViewControllerSet.FeedNotificationChannelViewController.init(
-                    channelURL: channelURL,
-                    notificationListParams: messageListParams,
-                    displaysLocalCachedListFirst: true
-                )
-                self.navigationController?.pushViewController(channelVC, animated: true)
-            } else {
-                #if SWIFTUI
-                if let groupChannelViewBuilder = self.groupChannelViewBuilder {
-                    let view = groupChannelViewBuilder(channelURL, nil, messageListParams)
-                    // `SBUSwiftUIHostingController` hides the navigation bar, so the key
-                    // function view must render its header in-content — force the internal
-                    // navigation controller path regardless of window state. (SBISSUE-21868)
-                    let channelVC = SBUSwiftUIHostingController(
-                        rootView: view.environment(\.sbuAlwaysWrapNavigation, true)
+            guard error == nil, let channel = channel else { return }
+
+            // Chat 콜백 큐를 바꾼 앱에서는 completion이 백그라운드에서 온다. 화면 생성과 push는 main에서 한다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain {
+                guard let self else { return }
+
+                if channel.isChatNotification {
+                    let channelVC = SBUViewControllerSet.ChatNotificationChannelViewController.init(
+                        channel: channel,
+                        notificationListParams: messageListParams,
+                        displaysLocalCachedListFirst: true
                     )
-                    self.navigationController?.pushViewControllerNonFlickering(channelVC, animated: true)
-                    return
+                    self.navigationController?.pushViewController(channelVC, animated: true)
+                } else if channel.isFeedChannel() {
+                    let channelVC = SBUViewControllerSet.FeedNotificationChannelViewController.init(
+                        channelURL: channelURL,
+                        notificationListParams: messageListParams,
+                        displaysLocalCachedListFirst: true
+                    )
+                    self.navigationController?.pushViewController(channelVC, animated: true)
+                } else {
+                    #if SWIFTUI
+                    if let groupChannelViewBuilder = self.groupChannelViewBuilder {
+                        let view = groupChannelViewBuilder(channelURL, nil, messageListParams)
+                        // `SBUSwiftUIHostingController` hides the navigation bar, so the key
+                        // function view must render its header in-content — force the internal
+                        // navigation controller path regardless of window state. (SBISSUE-21868)
+                        let channelVC = SBUSwiftUIHostingController(
+                            rootView: view.environment(\.sbuAlwaysWrapNavigation, true)
+                        )
+                        self.navigationController?.pushViewControllerNonFlickering(channelVC, animated: true)
+                        return
+                    }
+                    #endif
+                    let channelVC = SBUViewControllerSet.GroupChannelViewController.init(
+                        channelURL: channelURL,
+                        messageListParams: messageListParams,
+                        displaysLocalCachedListFirst: true
+                    )
+                    self.navigationController?.pushViewController(channelVC, animated: true)
                 }
-                #endif
-                let channelVC = SBUViewControllerSet.GroupChannelViewController.init(
-                    channelURL: channelURL,
-                    messageListParams: messageListParams,
-                    displaysLocalCachedListFirst: true
-                )
-                self.navigationController?.pushViewController(channelVC, animated: true)
             }
         }
     }

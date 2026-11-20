@@ -293,6 +293,40 @@ extension SBUUtils {
         return strTime
     }
 
+    /// 진행 막대에 넣을 비율(0...1). 음성 메시지 셀과 녹음 입력창이 같이 쓴다.
+    /// 재생 시간이 0 이면 0 으로 나눈 NaN, 무한대가 진행 막대에 들어가므로, 나누는 값이 0 이하이거나 결과가 유한하지 않으면 0 이다.
+    static func progressRatio(_ value: Double, of total: Double) -> Float {
+        guard total > 0 else { return 0 }
+        let ratio = value / total
+        guard ratio.isFinite else { return 0 }
+        return Float(min(max(ratio, 0), 1))
+    }
+
+    /// 고른 파일을 통째로 메모리에 올리지 않고 매핑한 Data.
+    ///
+    /// 넘겨받은 파일(고객 앱이 open API 로 넘긴 파일, 사진 보관함 원본 등)을 그대로 매핑하면, 그 파일이 그 자리에서 다시 쓰여
+    /// 짧아진 뒤 Data 를 읽을 때 SIGBUS 로 종료된다. 그래서 SDK 만 아는 임시 사본(APFS 에서는 복사 없는 clone)을 매핑하고
+    /// 사본 경로는 바로 지운다. 매핑은 Data 가 살아 있는 동안 유지된다. 사본을 만들거나 읽지 못하면 예전처럼 통째로 읽는다.
+    /// 파일 이름과 MIME 은 호출하는 쪽이 고른 url 그대로 정한다.
+    static func mappedData(ofPickedFile url: URL) throws -> Data {
+        let fileManager = FileManager.default
+        // 심볼릭 링크면 copyItem 이 링크 자체를 복사한다. 상대 경로 링크는 임시 폴더로 옮기면 깨져 읽기가 실패하고,
+        // 절대 경로 링크는 사본이 아니라 원본을 매핑한다. 그래서 링크가 가리키는 실제 파일로 사본을 만든다.
+        let sourceURL = url.resolvingSymlinksInPath()
+        let copyURL = fileManager.temporaryDirectory.appendingPathComponent("sbu-picked-\(UUID().uuidString)")
+        do {
+            try fileManager.copyItem(at: sourceURL, to: copyURL)
+        } catch {
+            return try Data(contentsOf: url)
+        }
+        defer { try? fileManager.removeItem(at: copyURL) }
+        do {
+            return try Data(contentsOf: copyURL, options: .mappedIfSafe)
+        } catch {
+            return try Data(contentsOf: url)
+        }
+    }
+
 }
 
 extension SBUUtils {

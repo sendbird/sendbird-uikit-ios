@@ -34,10 +34,13 @@ protocol SBUFeedNotificationChannelViewModelDataSource: AnyObject {
 
 protocol SBUFeedNotificationChannelViewModelDelegate: SBUCommonViewModelDelegate {
     /// Called when the channel has been changed.
+    /// - Parameter refreshesCategoryFilter: 채널 새로 고침 응답일 때만 true다. 받는 쪽은 이 값으로 카테고리 필터를 다시 그린다.
+    ///   view model 상태로 두면 Chat 콜백 큐의 쓰기와 main의 읽기가 겹치므로 알림마다 값으로 넘긴다.
     func feedNotificationChannelViewModel(
         _ viewModel: SBUFeedNotificationChannelViewModel,
         didChangeChannel channel: FeedChannel?,
-        withContext context: FeedChannelContext
+        withContext context: FeedChannelContext,
+        refreshesCategoryFilter: Bool
     )
     
     /// Called when the channel has received a new notification.
@@ -186,9 +189,6 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     
     var selectedCategory: NotificationCategory? // 3.9.0
     
-    /// The flag that represents the channel was refreshed.
-    var shouldRefreshCategoryFilter: Bool = false // 3.9.0
-    
     // MARK: - LifeCycle
     init(
         channel: FeedChannel? = nil,
@@ -297,35 +297,51 @@ class SBUFeedNotificationChannelViewModel: NSObject {
             }
             
             let completionHandler: SendbirdChatSDK.FeedChannelHandler? = { channel, error in
+                // 오류 알림(화면 닫기, 차단 오류)은 부른 큐에서 보낸다. 화면 부분은 받는 VC가 main으로 넘기고 errorHandler는 그대로 부른다.
                 guard self.canProceed(with: channel, error: error) else {
                     self.delegate?.didReceiveError(error, isBlocker: true)
                     completionHandler?(nil, error)
                     return
                 }
-                
-                self.channel = channel
-                // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
-                Log.info("[Succeed] Load channel request: \(self.channel?.channelURL ?? "")")
 
-                self.updateLastSeenAt() // will mark as read
-                
-                // background refresh to update channel header.
-                self.refreshChannel()
-                
-                if SendbirdChat.getConnectState() == .closed {
+                // Chat 콜백 큐를 바꾼 앱에서는 이 응답이 백그라운드에서 온다. 채널 대입, 읽음 위치, 새로 고침 시작,
+                // 첫 목록 시작(목록 비우기와 collection 생성)은 main에서 한다.
+                // 연결이 닫혀 있을 때의 채널 변경 알림은 화면이 고객 override(didUpdateUnreadMessageCount)를 부르므로
+                // develop처럼 Chat 콜백 큐에서 보내고, 그 뒤에 첫 목록을 시작해 develop의 순서를 지킨다.
+                let startInitialLoad = {
+                    Thread.executeOnMain {
+                        self.loadInitialNotifications(
+                            startingPoint: self.startingPoint,
+                            showsIndicator: true
+                        )
+                    }
+                }
+                self.executeOnMainThenNotifyOnCallbackQueue({
+                    self.channel = channel
+                    // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
+                    Log.info("[Succeed] Load channel request: \(self.channel?.channelURL ?? "")")
+
+                    self.updateLastSeenAt() // will mark as read
+
+                    // background refresh to update channel header.
+                    self.refreshChannel()
+
+                    guard SendbirdChat.getConnectState() == .closed else {
+                        startInitialLoad()
+                        return false
+                    }
+                    return true
+                }, notify: {
                     let context = FeedChannelContext(source: .eventChannelChanged)
                     self.delegate?.feedNotificationChannelViewModel(
                         self,
                         didChangeChannel: channel,
-                        withContext: context
+                        withContext: context,
+                        refreshesCategoryFilter: false
                     )
                     completionHandler?(channel, nil)
-                }
-                
-                self.loadInitialNotifications(
-                    startingPoint: self.startingPoint,
-                    showsIndicator: true
-                )
+                    startInitialLoad()
+                })
             }
             
             FeedChannel.getChannel(url: channelURL, completionHandler: completionHandler)
@@ -334,27 +350,18 @@ class SBUFeedNotificationChannelViewModel: NSObject {
     
     /// This function refreshes channel.
     func refreshChannel() {
-        self.shouldRefreshCategoryFilter = false
         if let channel = self.channel {
             channel.refresh { [weak self] error in
                 guard let self = self else { return }
-                self.shouldRefreshCategoryFilter = true
-                defer { self.shouldRefreshCategoryFilter = false }
-                guard self.canProceed(with: channel, error: error) == true else {
-                    let context = FeedChannelContext(source: .eventChannelChanged)
-                    self.delegate?.feedNotificationChannelViewModel(
-                        self,
-                        didChangeChannel: channel,
-                        withContext: context
-                    )
-                    return
-                }
-                
+                // 오류 알림과 채널 변경 알림은 develop처럼 부른 큐(Chat 콜백 큐)에서 보낸다. 화면은 받는 VC가 main으로 넘긴다.
+                // 카테고리 필터 갱신 여부는 view model 상태에 쓰지 않고 이 알림의 값으로 넘긴다.
+                _ = self.canProceed(with: channel, error: error)
                 let context = FeedChannelContext(source: .eventChannelChanged)
                 self.delegate?.feedNotificationChannelViewModel(
                     self,
                     didChangeChannel: channel,
-                    withContext: context
+                    withContext: context,
+                    refreshesCategoryFilter: true
                 )
             }
         } else if let channelURL = self.channelURL {
@@ -398,6 +405,22 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         }
     }
     
+    /// 목록과 화면 상태 작업(`work`)은 main에서 하고, `work`가 true를 돌려주면 이어서 고객 override에 닿는 알림(`notify`)을
+    /// develop처럼 Chat 콜백 큐에서 보낸다. 응답이 main에서 왔으면(기본 설정) 둘 다 지금처럼 바로 실행된다.
+    private func executeOnMainThenNotifyOnCallbackQueue(
+        _ work: @escaping () -> Bool,
+        notify: @escaping () -> Void
+    ) {
+        guard !Thread.isMainThread else {
+            if work() { notify() }
+            return
+        }
+        DispatchQueue.main.async {
+            guard work() else { return }
+            SendbirdChat.performCompletionHandlerDelegateQueue(notify)
+        }
+    }
+    
     // MARK: - Load Notifications
     
     /// Loads initial notifications in channel.
@@ -423,43 +446,51 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         self.notificationCollection?.startCollection(
             initPolicy: initPolicy,
             cacheResultHandler: { [weak self] cacheResult, error in
-                guard let self = self else { return }
-                
-                defer { self.displaysLocalCachedListFirst = false }
-                
+                // 오류 알림은 고객이 받는 지점(didReceiveError override, errorHandler)이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다.
                 if let error = error {
-                    self.delegate?.didReceiveError(error, isBlocker: false)
-                    return
+                    self?.delegate?.didReceiveError(error, isBlocker: false)
                 }
-                
-                // prevent empty view showing
-                if cacheResult == nil, cacheResult?.isEmpty == true { return }
-                
-                self.isInitialLoading = true
-                self.upsertNotificationsInList(
-                    notifications: cacheResult,
-                    needReload: self.displaysLocalCachedListFirst
-                )
-                
+                // Chat 콜백 큐를 바꾼 앱에서는 이 응답이 백그라운드에서 온다. 첫 목록 반영은 main에서 처리한다.
+                // main에서 불리면 지금처럼 바로 실행된다.
+                Thread.executeOnMain { [weak self] in
+                    guard let self = self else { return }
+
+                    defer { self.displaysLocalCachedListFirst = false }
+
+                    guard error == nil else { return }
+
+                    // prevent empty view showing
+                    if cacheResult == nil, cacheResult?.isEmpty == true { return }
+
+                    self.isInitialLoading = true
+                    self.upsertNotificationsInList(
+                        notifications: cacheResult,
+                        needReload: self.displaysLocalCachedListFirst
+                    )
+                }
             }, apiResultHandler: { [weak self] apiResult, error in
-                guard let self = self else { return }
-                
-                if let error = error {
-                    // ignore error if using local caching
-                    if !SendbirdChat.isLocalCachingEnabled {
-                        self.delegate?.didReceiveError(error, isBlocker: false)
+                // 오류 알림은 고객이 받는 지점이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다.
+                // ignore error if using local caching
+                if let error = error, !SendbirdChat.isLocalCachingEnabled {
+                    self?.delegate?.didReceiveError(error, isBlocker: false)
+                }
+                // Chat 콜백 큐를 바꾼 앱에서는 이 응답이 백그라운드에서 온다. 첫 목록 반영은 main에서 처리한다.
+                // main에서 불리면 지금처럼 바로 실행된다.
+                Thread.executeOnMain { [weak self] in
+                    guard let self = self else { return }
+
+                    guard error == nil else {
+                        self.isInitialLoading = false
+                        return
                     }
-                    
+
+                    if self.initPolicy == .cacheAndReplaceByApi {
+                        self.clearNotificationList()
+                    }
+
                     self.isInitialLoading = false
-                    return
+                    self.upsertNotificationsInList(notifications: apiResult, needReload: true)
                 }
-                
-                if self.initPolicy == .cacheAndReplaceByApi {
-                    self.clearNotificationList()
-                }
-                
-                self.isInitialLoading = false
-                self.upsertNotificationsInList(notifications: apiResult, needReload: true)
             }
         )
     }
@@ -475,55 +506,67 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         Log.info("[Request] Prev notification list")
         
         notificationCollection.loadPrevious { [weak self] notifications, error in
-            guard let self = self else { return }
-            defer {
-                self.prevLock.unlock()
-            }
-            
+            // 오류 알림은 고객이 받는 지점이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다. lock은 그 뒤 main에서 푼다.
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
-                return
+                self?.delegate?.didReceiveError(error, isBlocker: false)
             }
-            
-            guard let notifications = notifications, !notifications.isEmpty else { return }
-            Log.info("[Prev notification response] \(notifications.count) notifications")
-            
-            self.delegate?.feedNotificationChannelViewModel(
-                self,
-                shouldUpdateScrollInNotificationList: notifications,
-                forContext: nil,
-                keepsScroll: false
-            )
-            self.upsertNotificationsInList(notifications: notifications, needReload: true)
+            // Chat 콜백 큐를 바꾼 앱에서는 페이지 응답이 백그라운드에서 온다. 스크롤 갱신과 목록 반영은 main에서 처리한다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain { [weak self] in
+                guard let self = self else { return }
+                defer {
+                    self.prevLock.unlock()
+                }
+
+                guard error == nil else { return }
+
+                guard let notifications = notifications, !notifications.isEmpty else { return }
+                Log.info("[Prev notification response] \(notifications.count) notifications")
+
+                self.delegate?.feedNotificationChannelViewModel(
+                    self,
+                    shouldUpdateScrollInNotificationList: notifications,
+                    forContext: nil,
+                    keepsScroll: false
+                )
+                self.upsertNotificationsInList(notifications: notifications, needReload: true)
+            }
         }
     }
     
     /// Loads next notifications from `lastUpdatedTimestamp`.
     func loadNextNotifications() {
+        // 잠금을 쥔 뒤에 collection이 없어 돌아가면 잠금이 풀리지 않아 다음 페이지를 다시 불러오지 못한다.
+        // loadPrevNotifications처럼 collection을 먼저 확인한다.
+        guard let notificationCollection = self.notificationCollection else { return }
         guard self.nextLock.try() else {
             Log.info("Next notification already loading")
             return
         }
         
-        guard let notificationCollection = self.notificationCollection else { return }
         self.isLoadingNext = true
         
         notificationCollection.loadNext { [weak self] notifications, error in
-            guard let self = self else { return }
-            defer {
-                self.nextLock.unlock()
-                self.isLoadingNext = false
-            }
-            
+            // 오류 알림은 고객이 받는 지점이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다. lock과 로딩 표시는 그 뒤 main에서 푼다.
             if let error = error {
-                self.delegate?.didReceiveError(error, isBlocker: false)
-                return
+                self?.delegate?.didReceiveError(error, isBlocker: false)
             }
-            guard let notifications = notifications else { return }
-            
-            Log.info("[Next notification Response] \(notifications.count) notifications")
-            
-            self.upsertNotificationsInList(notifications: notifications, needReload: true)
+            // Chat 콜백 큐를 바꾼 앱에서는 페이지 응답이 백그라운드에서 온다. 목록 반영은 main에서 처리한다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain { [weak self] in
+                guard let self = self else { return }
+                defer {
+                    self.nextLock.unlock()
+                    self.isLoadingNext = false
+                }
+
+                guard error == nil else { return }
+                guard let notifications = notifications else { return }
+
+                Log.info("[Next notification Response] \(notifications.count) notifications")
+
+                self.upsertNotificationsInList(notifications: notifications, needReload: true)
+            }
         }
     }
     
@@ -629,7 +672,10 @@ class SBUFeedNotificationChannelViewModel: NSObject {
         
         if needsToMarkAsRead {
             self.markAsRead { [weak self] _ in
-                self?.sortAllNotificationList(needReload: needReload)
+                // 읽음 처리 결과는 Chat 콜백 큐에서 온다. 정렬과 목록 알림은 main에서 한다.
+                Thread.executeOnMain { [weak self] in
+                    self?.sortAllNotificationList(needReload: needReload)
+                }
             }
         } else {
             self.sortAllNotificationList(needReload: needReload)
@@ -752,8 +798,14 @@ extension SBUFeedNotificationChannelViewModel: ConnectionDelegate {
             }
         }
         
-        self.markAsRead { [weak self] _ in
-            self?.refreshChannel()
+        // 재연결 알림과 읽음 처리 결과는 Chat delegate 큐에서 온다. 채널을 읽는 읽음 처리와 새로 고침 시작
+        // (카테고리 필터 갱신 표시 끄기 포함)은 main에서 한다. main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            self?.markAsRead { [weak self] _ in
+                Thread.executeOnMain { [weak self] in
+                    self?.refreshChannel()
+                }
+            }
         }
     }
 }
@@ -762,33 +814,41 @@ extension SBUFeedNotificationChannelViewModel: ConnectionDelegate {
 extension SBUFeedNotificationChannelViewModel: FeedChannelDelegate {
     // Received notification
     func channel(_ channel: BaseChannel, didReceive message: BaseMessage) {
-        guard self.channel?.channelURL == channel.channelURL else { return }
-        guard self.notificationListParams.belongsTo(message) else { return }
+        // Chat 콜백 큐를 바꾼 앱에서는 채널 이벤트가 백그라운드에서 온다. 채널 확인과 화면의 스크롤 위치 읽기는 main에서 하고,
+        // 새 알림 알림은 화면이 고객 override(didUpdateUnreadMessageCount)를 부르므로 develop처럼 Chat 콜백 큐에서 보낸다.
+        // main에서 불리면 지금처럼 바로 실행된다.
+        var receivingChannel: FeedChannel?
+        self.executeOnMainThenNotifyOnCallbackQueue({ [weak self] in
+            guard let self = self else { return false }
+            guard self.channel?.channelURL == channel.channelURL else { return false }
+            guard self.notificationListParams.belongsTo(message) else { return false }
         
-        switch message {
-        case is UserMessage:
-            Log.info("Did receive user notification: \(message)")
-        case is FileMessage:
-            Log.info("Did receive file notification: \(message)")
-        case is AdminMessage:
-            Log.info("Did receive admin notification: \(message)")
-        default:
-            break
-        }
-        
-        let isScrollBottom = self.dataSource?.feedNotificationChannelViewModel(
-            self,
-            isScrollNearBottomInChannel: self.channel
-        )
-        if self.hasNext == true || isScrollBottom == false {
-            if let channel = self.channel {
-                self.delegate?.feedNotificationChannelViewModel(
-                    self,
-                    didReceiveNewNotification: message,
-                    forChannel: channel
-                )
+            switch message {
+            case is UserMessage:
+                Log.info("Did receive user notification: \(message)")
+            case is FileMessage:
+                Log.info("Did receive file notification: \(message)")
+            case is AdminMessage:
+                Log.info("Did receive admin notification: \(message)")
+            default:
+                break
             }
-        }
+        
+            let isScrollBottom = self.dataSource?.feedNotificationChannelViewModel(
+                self,
+                isScrollNearBottomInChannel: self.channel
+            )
+            guard self.hasNext == true || isScrollBottom == false, let currentChannel = self.channel else { return false }
+            receivingChannel = currentChannel
+            return true
+        }, notify: { [weak self] in
+            guard let self = self, let receivingChannel = receivingChannel else { return }
+            self.delegate?.feedNotificationChannelViewModel(
+                self,
+                didReceiveNewNotification: message,
+                forChannel: receivingChannel
+            )
+        })
     }
 }
 
@@ -799,21 +859,26 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
         channel: FeedChannel,
         addedMessages messages: [BaseMessage]
     ) {
-        // -> pending, -> receive new notification
-        Log.info("notificationCollection addedMessages : \(messages.count)")
-        switch context.source {
-        case .eventMessageReceived:
-            self.markAsRead()
-        default: break
-        }
+        // Chat 콜백 큐를 바꾼 앱에서는 collection 콜백이 백그라운드에서 온다. collection 콜백은 모두 main에서 도착 순서대로 처리한다
+        // (수정 뒤 삭제처럼 이어 온 콜백의 목록 변경 순서가 뒤집히지 않게). main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            // -> pending, -> receive new notification
+            Log.info("notificationCollection addedMessages : \(messages.count)")
+            switch context.source {
+            case .eventMessageReceived:
+                self.markAsRead()
+            default: break
+            }
         
-        self.delegate?.feedNotificationChannelViewModel(
-            self,
-            shouldUpdateScrollInNotificationList: messages,
-            forContext: context,
-            keepsScroll: true
-        )
-        self.upsertNotificationsInList(notifications: messages, needReload: true)
+            self.delegate?.feedNotificationChannelViewModel(
+                self,
+                shouldUpdateScrollInNotificationList: messages,
+                forContext: context,
+                keepsScroll: true
+            )
+            self.upsertNotificationsInList(notifications: messages, needReload: true)
+        }
     }
     
     func notificationCollection(
@@ -822,21 +887,25 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
         channel: FeedChannel,
         updatedMessages messages: [BaseMessage]
     ) {
-        // pending -> failed, pending -> succeded, failed -> Pending
-        Log.info("notificationCollection updatedNotifications : \(messages.count)")
+        // collection 콜백은 모두 main에서 도착 순서대로 처리한다(addedMessages 주석 참고).
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            // pending -> failed, pending -> succeded, failed -> Pending
+            Log.info("notificationCollection updatedNotifications : \(messages.count)")
         
-        self.delegate?.feedNotificationChannelViewModel(
-            self,
-            shouldUpdateScrollInNotificationList: messages,
-            forContext: context,
-            keepsScroll: false
-        )
+            self.delegate?.feedNotificationChannelViewModel(
+                self,
+                shouldUpdateScrollInNotificationList: messages,
+                forContext: context,
+                keepsScroll: false
+            )
         
-        self.upsertNotificationsInList(
-            notifications: messages,
-            needUpdateNewNotification: false,
-            needReload: true
-        )
+            self.upsertNotificationsInList(
+                notifications: messages,
+                needUpdateNewNotification: false,
+                needReload: true
+            )
+        }
     }
     
     func notificationCollection(
@@ -845,9 +914,13 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
         channel: FeedChannel,
         deletedMessages messages: [BaseMessage]
     ) {
-        Log.info("notificationCollection deletedNotifications : \(messages.count)")
-        self.delegate?.feedNotificationChannelViewModel(self, deletedNotifications: messages)
-        self.deleteNotificationsInList(notificationIds: messages.compactMap({ $0.messageId }), needReload: true)
+        // collection 콜백은 모두 main에서 도착 순서대로 처리한다(addedMessages 주석 참고).
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            Log.info("notificationCollection deletedNotifications : \(messages.count)")
+            self.delegate?.feedNotificationChannelViewModel(self, deletedNotifications: messages)
+            self.deleteNotificationsInList(notificationIds: messages.compactMap({ $0.messageId }), needReload: true)
+        }
     }
     
     func notificationCollection(
@@ -855,11 +928,14 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
         context: FeedChannelContext,
         deletedChannel channelURL: String
     ) {
+        // 채널 변경 알림은 화면이 고객 override(didUpdateUnreadMessageCount)를 부르므로 develop처럼 Chat 콜백 큐에서 보낸다.
+        // 화면 닫기는 받는 VC가 main으로 넘기며, 다른 collection 콜백과 같이 main 큐에 도착 순서대로 들어간다.
         Log.info("notificationCollection deletedChannel")
         self.delegate?.feedNotificationChannelViewModel(
             self,
             didChangeChannel: nil,
-            withContext: context
+            withContext: context,
+            refreshesCategoryFilter: false
         )
     }
     
@@ -868,32 +944,39 @@ extension SBUFeedNotificationChannelViewModel: NotificationCollectionDelegate {
         context: FeedChannelContext,
         updatedChannel: FeedChannel
     ) {
+        // 채널 변경 알림은 develop처럼 Chat 콜백 큐에서 보낸다(deletedChannel 주석 참고). 화면 갱신은 받는 VC가 main으로 넘긴다.
         self.delegate?.feedNotificationChannelViewModel(
             self,
             didChangeChannel: updatedChannel,
-            withContext: context
+            withContext: context,
+            refreshesCategoryFilter: false
         )
     }
     
     func didDetectHugeGap(_ collection: NotificationCollection) {
-        Log.info("notificationCollection didDetectHugeGap")
-        self.notificationCollection?.dispose()
+        // collection 콜백은 모두 main에서 도착 순서대로 처리한다(addedMessages 주석 참고).
+        // 시작 위치를 정하려고 화면의 보이는 행을 읽으므로 main에서 해야 한다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            Log.info("notificationCollection didDetectHugeGap")
+            self.notificationCollection?.dispose()
         
-        var startingPoint: Int64?
-        let indexPathsForStartingPoint = self.dataSource?.feedNotificationChannelViewModel(
-            self,
-            startingPointIndexPathsForChannel: self.channel
-        )
-        let visibleRowCount = indexPathsForStartingPoint?.count ?? 0
-        // 보이는 행이 없으면(빈 배열) [0] 접근이 크래시하므로 nil 일 때처럼 0번을 쓴다.
-        let visibleCenterIdx = indexPathsForStartingPoint?[safe: visibleRowCount / 2]?.row ?? 0
-        if visibleCenterIdx < self.notifications.count {
-            startingPoint = self.notifications[visibleCenterIdx].createdAt
+            var startingPoint: Int64?
+            let indexPathsForStartingPoint = self.dataSource?.feedNotificationChannelViewModel(
+                self,
+                startingPointIndexPathsForChannel: self.channel
+            )
+            let visibleRowCount = indexPathsForStartingPoint?.count ?? 0
+            // 보이는 행이 없으면(빈 배열) [0] 접근이 크래시하므로 nil 일 때처럼 0번을 쓴다.
+            let visibleCenterIdx = indexPathsForStartingPoint?[safe: visibleRowCount / 2]?.row ?? 0
+            if visibleCenterIdx < self.notifications.count {
+                startingPoint = self.notifications[visibleCenterIdx].createdAt
+            }
+        
+            self.loadInitialNotifications(
+                startingPoint: startingPoint,
+                showsIndicator: false
+            )
         }
-        
-        self.loadInitialNotifications(
-            startingPoint: startingPoint,
-            showsIndicator: false
-        )
     }
 }

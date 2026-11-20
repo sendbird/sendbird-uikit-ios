@@ -36,7 +36,7 @@ open class SBUBaseSelectUserViewController: SBUBaseViewController, SBUBaseSelect
     // MARK: - Lifecycle
     open override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
     }
     
     open override func viewWillAppear(_ animated: Bool) {

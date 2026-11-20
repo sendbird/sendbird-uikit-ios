@@ -479,10 +479,17 @@ extension SBUMessageThreadModule {
             
             if self.tableView.frame != .zero {
                 Thread.executeOnMain { [weak self] in
+                    // 사본 교체와 reload는 같은 main 실행에서 한다.
+                    self?.refreshDrawnMessageList()
                     self?.tableView.reloadData()
                     if needsToLayout {
                         self?.tableView.layoutIfNeeded()
                     }
+                }
+            } else {
+                // 크기가 0이면 reload는 건너뛴다. 크기가 생길 때 table view가 행 수를 다시 물으므로 사본만 바꿔 둔다.
+                Thread.executeOnMain { [weak self] in
+                    self?.refreshDrawnMessageList()
                 }
             }
         }

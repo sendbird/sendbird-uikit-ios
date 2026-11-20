@@ -67,21 +67,25 @@ open class SBUCreateOpenChannelViewModel: SBUBaseViewModel {
         self.delegates.forEach { $0.shouldUpdateLoadingState(true) }
 
         OpenChannel.createChannel(params: params) { [weak self] channel, error in
-            defer { self?.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
-            guard let self = self else { return }
+            // Chat 콜백 큐를 바꾼 앱에서는 이 completion이 백그라운드에서 온다. 로딩 표시, 오류, 이동 delegate는 화면을 바꾸므로 main에서 부른다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain { [weak self] in
+                defer { self?.delegates.forEach { $0.shouldUpdateLoadingState(false) } }
+                guard let self = self else { return }
 
-            if let error = error {
-                Log.error("""
-                    [Failed] Create open channel request:
-                    \(String(error.localizedDescription))
-                    """)
-                self.delegates.forEach { $0.didReceiveError(error) }
-                return
+                if let error = error {
+                    Log.error("""
+                        [Failed] Create open channel request:
+                        \(String(error.localizedDescription))
+                        """)
+                    self.delegates.forEach { $0.didReceiveError(error) }
+                    return
+                }
+
+                // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
+                Log.info("[Succeed] Create open channel: \(channel?.channelURL ?? "")")
+                self.delegates.forEach { $0.createOpenChannelViewModel(self, didCreateChannel: channel) }
             }
-
-            // 채널 전체(description)를 문자열로 만들지 않고 URL만 남긴다.
-            Log.info("[Succeed] Create open channel: \(channel?.channelURL ?? "")")
-            self.delegates.forEach { $0.createOpenChannelViewModel(self, didCreateChannel: channel) }
         }
     }
 

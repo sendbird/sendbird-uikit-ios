@@ -240,7 +240,7 @@ open class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
             self.progressTimeLabel.textColor = self.theme.progressDeactivatedTimeColor
         case .recording:
             if Float(Int(time) / 500) > 0.1 {
-                progress = Float(time / SBUGlobals.voiceMessageConfig.recorder.maxRecordingTime)
+                progress = SBUUtils.progressRatio(time, of: SBUGlobals.voiceMessageConfig.recorder.maxRecordingTime)
             }
             let isEvenSeconds = Int(time / 500) % 2 == 1
             self.progressRecordingIcon.isHidden = isEvenSeconds
@@ -250,12 +250,14 @@ open class SBUVoiceMessageInputView: NSObject, SBUViewLifeCycle {
             let remainingTime = (self.voiceFileInfo?.playtime ?? 0) - time
             self.progressTimeLabel.text = SBUUtils.convertToPlayTime(remainingTime)
             let playtime = self.voiceFileInfo?.playtime ?? 1.0
-            progress = Float(time / playtime)
+            // 재생 시간이 0 이면 0 으로 나눈 값이 진행 막대에 들어가므로 공용 계산으로 0...1 로 자른다.
+            progress = SBUUtils.progressRatio(time, of: playtime)
         case .pause:
             let remainingTime = (self.voiceFileInfo?.playtime ?? 0) - time
             self.progressTimeLabel.text = SBUUtils.convertToPlayTime(remainingTime)
             let playtime = self.voiceFileInfo?.playtime ?? 1.0
-            progress = Float(time / playtime)
+            // 재생 시간이 0 이면 0 으로 나눈 값이 진행 막대에 들어가므로 공용 계산으로 0...1 로 자른다.
+            progress = SBUUtils.progressRatio(time, of: playtime)
         case .finishPlaying:
             break
         }

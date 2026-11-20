@@ -761,14 +761,19 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
                 self.errorHandler(error.localizedDescription)
             }
             
-            if dismissAction != nil {
-                dismissAction?()
-            } else {
-                if let navigationController = self.navigationController,
-                   navigationController.viewControllers.count > 1 {
-                    navigationController.popViewController(animated: true)
+            // 나가기 응답은 Chat 콜백 큐(백그라운드일 수 있음)에서 온다.
+            // navigation 상태 읽기와 pop, dismiss는 main에서 한다. main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain { [weak self] in
+                guard let self = self else { return }
+                if self.dismissAction != nil {
+                    self.dismissAction?()
                 } else {
-                    self.dismiss(animated: true, completion: nil)
+                    if let navigationController = self.navigationController,
+                       navigationController.viewControllers.count > 1 {
+                        navigationController.popViewController(animated: true)
+                    } else {
+                        self.dismiss(animated: true, completion: nil)
+                    }
                 }
             }
         })
@@ -908,50 +913,56 @@ open class SBUOpenChannelViewController: SBUBaseChannelViewController, SBUOpenCh
         didChangeChannel channel: BaseChannel?,
         withContext context: MessageContext
     ) {
-        guard channel != nil else {
-            if self.isLastInNavigationStack() {
-                // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
-                self.onClickBack()
+        // Chat 콜백 큐를 바꾼 앱에서는 이 콜백이 백그라운드에서 온다. 헤더, 입력창, 목록 갱신과 화면 닫기는 main에서 한다.
+        // main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            
+            guard channel != nil else {
+                if self.isLastInNavigationStack() {
+                    // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
+                    self.onClickBack()
+                }
+                return
             }
-            return
-        }
         
-        #if SWIFTUI
-        if self.listComponent?.viewConverter.tableView.entireContent != nil {
-            self.listComponent?.applyViewConverter(.entireContent)
-        }
-        #endif
+            #if SWIFTUI
+            if self.listComponent?.viewConverter.tableView.entireContent != nil {
+                self.listComponent?.applyViewConverter(.entireContent)
+            }
+            #endif
         
-        // channel changed
-        switch context.source {
-        case .channelChangelog:
-            self.updateChannelTitle()
-            self.updateChannelStatus()
-            self.updateChannelInfoView()
-            self.updateBarButton()
-            self.inputComponent?.updateMessageInputModeState()
-            self.listComponent?.reloadTableView()
+            // channel changed
+            switch context.source {
+            case .channelChangelog:
+                self.updateChannelTitle()
+                self.updateChannelStatus()
+                self.updateChannelInfoView()
+                self.updateBarButton()
+                self.inputComponent?.updateMessageInputModeState()
+                self.listComponent?.reloadTableView()
             
-        case .eventChannelChanged:
-            self.updateChannelTitle()
-            self.updateChannelStatus()
-            self.updateChannelInfoView()
-            self.updateBarButton()
-            self.inputComponent?.updateMessageInputModeState()
+            case .eventChannelChanged:
+                self.updateChannelTitle()
+                self.updateChannelStatus()
+                self.updateChannelInfoView()
+                self.updateBarButton()
+                self.inputComponent?.updateMessageInputModeState()
             
-        case .eventChannelFrozen, .eventChannelUnfrozen,
-                .eventUserMuted, .eventUserUnmuted,
-                .eventOperatorUpdated,
-                .eventUserBanned: // Other User Banned
-            self.updateChannelTitle()
-            self.updateBarButton()
-            self.inputComponent?.updateMessageInputModeState()
+            case .eventChannelFrozen, .eventChannelUnfrozen,
+                    .eventUserMuted, .eventUserUnmuted,
+                    .eventOperatorUpdated,
+                    .eventUserBanned: // Other User Banned
+                self.updateChannelTitle()
+                self.updateBarButton()
+                self.inputComponent?.updateMessageInputModeState()
             
-        case .eventChannelMemberCountChanged:
-            self.updateChannelTitle()
-            self.listComponent?.reloadTableView()
+            case .eventChannelMemberCountChanged:
+                self.updateChannelTitle()
+                self.listComponent?.reloadTableView()
             
-        default: break
+            default: break
+            }
         }
     }
 }

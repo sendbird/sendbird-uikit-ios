@@ -459,7 +459,10 @@ extension SBUNotificationCell: TemplateViewGeneratorDelegate {
 
 extension SBUNotificationCell: TemplateViewGeneratorDataSource {
     func templateView(_ templateView: TemplateSyntax.TemplateView, imageFor urlString: String, named fileName: String, in subPath: String) -> UIImage? {
-        SBUCacheManager.Image.get(fileName: fileName, subPath: subPath)
+        // 셀을 그리는 중(main)이다. 상한을 넘는 GIF 는 만들 때 모든 프레임을 디코드하므로 여기서 만들지 않고 nil 을 돌려,
+        // 렌더러의 `loadImage` 가 main 밖에서 만들게 한다(렌더러 쪽 메모리 캐시에 남는다). 한 번 그렇게 판정한 키는 디스크를
+        // 다시 읽지 않는다. 그 밖의 이미지는 develop 처럼 바로 돌려준다(그리는 중 레이아웃이 그대로다).
+        SBUCacheManager.Image.getUnlessDecodingAllFrames(fileName: fileName, subPath: subPath)
     }
     
     func templateView(_ templateView: TemplateSyntax.TemplateView, rootViewFor identifier: String) -> UIView? {

@@ -134,10 +134,11 @@ extension SBUMessageTemplateManager {
                     needPathExtension: true
                 )
                 
-                if SBUCacheManager.Image.get(
+                // 있는지만 본다. `get` 은 이미지를 만들어(상한을 넘는 GIF 는 모든 프레임 디코드) 여기서는 버려진다.
+                if SBUCacheManager.Image.cachedImageExists(
                     fileName: fileName,
                     subPath: SBUCacheManager.PathType.template
-                ) != nil {
+                ) {
                     countLoaded()
                     dispatchGroup.leave()
                     // 이 항목만 건너뛴다. return 은 클로저 전체를 끝내 나머지 이미지와 completion 을 건너뛴다.

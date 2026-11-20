@@ -370,9 +370,42 @@ extension SBUBaseChannelModule {
             self.baseDataSource?.baseChannelModule(self, sentMessagesInTableView: self.tableView) ?? []
         }
         
-        /// The array of all messages includes the sent, the failed and the pending. The value is returned by `baseChannelModule(_:fullMessagesInTableView:)` data source method.
+        /// The array of all messages the table view is drawn from. It includes the sent, the failed and the pending messages, and takes the latest value of `baseChannelModule(_:fullMessagesInTableView:)` when the table view first asks for its row count and when `reloadTableView(needsToLayout:)` runs.
+        /// - Important: Calling `tableView.reloadData()` directly does not update this list. Use `reloadTableView(needsToLayout:)` to draw the latest messages.
         public var fullMessageList: [BaseMessage] {
+            self.drawnMessageList ?? self.latestFullMessageList
+        }
+
+        // 화면이 쓰는 사본. table view가 아는 행 수와 어긋나지 않도록 reloadData와 같은 main 실행에서만 바꾼다.
+        @SBUAtomic private var drawnMessageList: [BaseMessage]?
+
+        var latestFullMessageList: [BaseMessage] {
             self.baseDataSource?.baseChannelModule(self, fullMessagesInTableView: self.tableView) ?? []
+        }
+
+        // 사본이 private이고 reloadData를 직접 부르는 곳이 다른 파일에 있어서 내부 메서드로 연다.
+        func refreshDrawnMessageList() {
+            self.drawnMessageList = self.latestFullMessageList
+        }
+
+        // reload 없이 들어온 같은 메시지의 새 내용(스트리밍 등)만 사본에 넣는다. 행 수와 순서는 그대로 둔다.
+        func refreshDrawnMessagePayloads() {
+            guard let drawnMessageList = self.drawnMessageList else { return }
+            let latestMessages = self.latestFullMessageList
+            let latestByMessageId = Dictionary(
+                latestMessages.filter { $0.messageId > 0 }.map { ($0.messageId, $0) },
+                uniquingKeysWith: { first, _ in first }
+            )
+            // 전송 전이나 실패한 메시지는 messageId가 0이라 requestId로 찾는다.
+            let latestByRequestId = Dictionary(
+                latestMessages.filter { !$0.requestId.isEmpty }.map { ($0.requestId, $0) },
+                uniquingKeysWith: { first, _ in first }
+            )
+            self.drawnMessageList = drawnMessageList.map { message in
+                if message.messageId > 0 { return latestByMessageId[message.messageId] ?? message }
+                guard !message.requestId.isEmpty else { return message }
+                return latestByRequestId[message.requestId] ?? message
+            }
         }
         
         // MARK: - Logic properties (Private)
@@ -533,6 +566,8 @@ extension SBUBaseChannelModule {
             }
             
             Thread.executeOnMain { [weak self] in
+                // 사본 교체와 reload는 같은 main 실행에서 한다.
+                self?.refreshDrawnMessageList()
                 self?.isTableViewReloading = true
                 self?.tableView.reloadData()
                 if needsToLayout {
@@ -975,6 +1010,8 @@ extension SBUBaseChannelModule {
         }
 
         open func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            // 처음 행 수를 물을 때 사본을 만든다. 그 뒤로는 reload할 때만 바뀐다.
+            if self.drawnMessageList == nil { self.refreshDrawnMessageList() }
             return self.fullMessageList.count
         }
         
@@ -1013,19 +1050,14 @@ extension SBUBaseChannelModule {
                       let type = fileInfo.mimeType, let fileData = fileInfo.file,
                       SBUUtils.getFileType(by: type) == .image else { return }
                 
-                let image = UIImage.createImage(from: fileData)
-                let isAnimatedImage = image?.isAnimatedImage() == true
-                
+                // 셀은 썸네일 크기로 그리므로 원본(GIF 는 모든 프레임)을 원본 크기로 넣지 않고, 첫 프레임을 셀을 덮는 크기로 디코드한다.
+                let scale = UIGraphicsImageRendererFormat.default().scale
                 if let cell = cell as? SBUFileMessageCell {
-                    cell.setImage(
-                        isAnimatedImage ? image?.images?.first : image,
-                        size: SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
-                    )
+                    let size = SBUGlobals.messageCellConfiguration.groupChannel.thumbnailSize
+                    cell.setImage(UIImage.firstFrame(data: fileData, filling: size, scale: scale), size: size)
                 } else if let cell = cell as? SBUOpenChannelFileMessageCell {
-                    cell.setImage(
-                        isAnimatedImage ? image?.images?.first : image,
-                        size: SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize
-                    )
+                    let size = SBUGlobals.messageCellConfiguration.openChannel.thumbnailSize
+                    cell.setImage(UIImage.firstFrame(data: fileData, filling: size, scale: scale), size: size)
                 }
             case .succeeded:
                 break

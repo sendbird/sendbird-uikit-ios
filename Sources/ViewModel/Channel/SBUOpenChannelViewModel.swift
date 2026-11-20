@@ -299,6 +299,9 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     /// Loads previous messages from given timestamp.
     /// - Parameter timestamp: Timestamp to load messages from to the `previous` direction, or `nil` to start from the latest (`Int64.max`).
     public func loadPrevMessages(timestamp: Int64?) {
+        // 잠금을 쥔 뒤에 채널이 없어 요청이 나가지 않으면 잠금이 풀리지 않아 이후 페이지를 불러오지 못한다.
+        // 요청 대상을 먼저 확인한다.
+        guard let channel = self.channel else { return }
         guard self.prevLock.try() else {
             Log.info("Prev message already loading")
             return
@@ -313,49 +316,57 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
             params.previousResultSize = self.defaultFetchLimit
         }
         
-        channel?.getMessagesByTimestamp(
+        channel.getMessagesByTimestamp(
             timestamp ?? .max,
             params: params
         ) { [weak self] (messages, error) in
-            guard let self = self else { return }
-            defer {
-                self.prevLock.unlock()
-            }
-            
+            // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다.
             if let error = error {
-                self.delegates.forEach {
+                self?.delegates.forEach {
                     $0.didReceiveError(error, isBlocker: false)
                 }
-                return
             }
+            // Chat 콜백 큐를 바꾼 앱에서는 이 응답이 백그라운드에서 온다. 스크롤 조회와 목록 반영은 main에서 처리한다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain { [weak self] in
+                guard let self else { return }
+                defer {
+                    self.prevLock.unlock()
+                }
             
-            guard self.isValidResponse(messages: messages, error: error),
-                  let messages = messages else {
-                Log.warning("Prev message list request is not valid")
-                return
+                guard error == nil else { return }
+            
+                guard self.isValidResponse(messages: messages, error: error),
+                      let messages = messages else {
+                    Log.warning("Prev message list request is not valid")
+                    return
+                }
+            
+                Log.info("[Prev message response] \(messages.count) messages")
+            
+                self.hasMorePrevious = messages.count >= params.previousResultSize
+            
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        shouldUpdateScrollInMessageList: messages,
+                        forContext: nil,
+                        keepsScroll: false
+                    )
+                }
+            
+                self.updateLastUpdatedTimestamp(messages: messages)
+            
+                self.upsertMessagesInList(messages: messages, needReload: true)
             }
-            
-            Log.info("[Prev message response] \(messages.count) messages")
-            
-            self.hasMorePrevious = messages.count >= params.previousResultSize
-            
-            self.delegates.forEach {
-                $0.baseChannelViewModel(
-                    self,
-                    shouldUpdateScrollInMessageList: messages,
-                    forContext: nil,
-                    keepsScroll: false
-                )
-            }
-            
-            self.updateLastUpdatedTimestamp(messages: messages)
-            
-            self.upsertMessagesInList(messages: messages, needReload: true)
         }
     }
     
     /// Loads next messages from `lastUpdatedTimestamp`.
     public override func loadNextMessages() {
+        // 잠금을 쥔 뒤에 채널이 없어 요청이 나가지 않으면 잠금이 풀리지 않아 이후 페이지를 불러오지 못한다.
+        // 요청 대상을 먼저 확인한다.
+        guard let channel = self.channel else { return }
         guard self.nextLock.try() else {
             Log.info("Next message already loading")
             return
@@ -371,43 +382,52 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
 
         self.isLoadingNext = true
 
-        self.channel?.getMessagesByTimestamp(
+        channel.getMessagesByTimestamp(
             self.lastUpdatedTimestamp,
             params: params
         ) { [weak self] messages, error in
-            guard let self = self else { return }
-            defer {
-                self.nextLock.unlock()
-                self.isLoadingNext = false
-            }
+            // Chat 콜백 큐를 바꾼 앱에서는 이 응답이 백그라운드에서 온다. 스크롤 조회와 목록 반영은 main에서 처리한다.
+            // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 main 작업 뒤에 Chat 콜백 큐에서 보낸다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            self?.executeOnMainThenNotifyErrorOnCallbackQueue({ [weak self] in
+                guard let self else { return false }
+                defer {
+                    self.nextLock.unlock()
+                    self.isLoadingNext = false
+                }
             
-            guard self.isValidResponse(messages: messages, error: error),
-                  let messages = messages else {
-                Log.warning("Next message list request is not valid")
-                return
-            }
+                guard self.isValidResponse(messages: messages, error: error),
+                      let messages = messages else {
+                    Log.warning("Next message list request is not valid")
+                    return error != nil
+                }
             
-            let prevHasNext = self.hasNext()
-            self.hasMoreNext = messages.count >= params.nextResultSize
+                let prevHasNext = self.hasNext()
+                self.hasMoreNext = messages.count >= params.nextResultSize
             
-            var mergedList: [BaseMessage]?
-            if !self.hasNext() && (self.hasNext() != prevHasNext) {
-                mergedList = self.flushCache(with: messages)
-            }
+                var mergedList: [BaseMessage]?
+                if !self.hasNext() && (self.hasNext() != prevHasNext) {
+                    mergedList = self.flushCache(with: messages)
+                }
             
-            self.updateLastUpdatedTimestamp(messages: mergedList ?? messages)
+                self.updateLastUpdatedTimestamp(messages: mergedList ?? messages)
             
-            Log.info("[Next message Response] \(messages.count) messages")
+                Log.info("[Next message Response] \(messages.count) messages")
             
-            self.delegates.forEach {
-                $0.baseChannelViewModel(
-                    self,
-                    shouldUpdateScrollInMessageList: mergedList ?? messages,
-                    forContext: nil,
-                    keepsScroll: true
-                )
-            }
-            self.upsertMessagesInList(messages: mergedList ?? messages, needReload: true)
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        shouldUpdateScrollInMessageList: mergedList ?? messages,
+                        forContext: nil,
+                        keepsScroll: true
+                    )
+                }
+                self.upsertMessagesInList(messages: mergedList ?? messages, needReload: true)
+                return false
+            }, notifyError: { [weak self] in
+                guard let error = error else { return }
+                self?.notifyListError(error)
+            })
         }
     }
     
@@ -460,22 +480,32 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
             startingTimestamp,
             params: params
         ) { [weak self] (messages, error) in
-            guard let self = self else { return }
-            defer { self.initialLock.unlock() }
+            // Chat 콜백 큐를 바꾼 앱에서는 이 응답이 백그라운드에서 온다. 첫 목록 반영은 main에서 처리한다.
+            // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 main 작업 뒤에 Chat 콜백 큐에서 보낸다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            self?.executeOnMainThenNotifyErrorOnCallbackQueue({ [weak self] in
+                guard let self else { return false }
+                defer { self.initialLock.unlock() }
             
-            if let error = error {
-                self.delegates.forEach {
-                    $0.shouldUpdateLoadingState(false)
+                if error != nil {
+                    self.delegates.forEach {
+                        $0.shouldUpdateLoadingState(false)
+                    }
+                    return true
+                }
+            
+                self.handleInitialResponse(
+                    usedParam: params,
+                    messages: messages,
+                    error: error
+                )
+                return false
+            }, notifyError: { [weak self] in
+                guard let error = error else { return }
+                self?.delegates.forEach {
                     $0.didReceiveError(error, isBlocker: false)
                 }
-                return
-            }
-            
-            self.handleInitialResponse(
-                usedParam: params,
-                messages: messages,
-                error: error
-            )
+            })
         }
     }
     
@@ -535,33 +565,40 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     }
     
     override func handlePendingResendableMessage<Message: BaseMessage>(_ message: Message?, _ error: SBError?) {
-        if let error = error {
-            self.pendingMessageManager.upsertPendingMessage(
-                channelURL: message?.channelURL,
-                message: message
-            )
+        // Chat 콜백 큐를 바꾼 앱에서는 재전송 결과가 백그라운드에서 온다. 대기 메시지 정리와 목록 반영은 main에서 처리한다.
+        // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 대기 메시지 반영 뒤에 Chat 콜백 큐에서 보낸다.
+        // main에서 불리면 지금처럼 바로 실행된다.
+        self.executeOnMainThenNotifyErrorOnCallbackQueue({ [weak self] in
+            guard let self else { return false }
+            if error != nil {
+                self.pendingMessageManager.upsertPendingMessage(
+                    channelURL: message?.channelURL,
+                    message: message
+                )
             
-            self.sortAllMessageList(needReload: true)
+                self.sortAllMessageList(needReload: true)
+                return true
             
-            self.baseDelegates.forEach {
+            } else {
+                guard let message = message else { return false }
+            
+                self.pendingMessageManager.removePendingMessage(
+                    channelURL: message.channelURL,
+                    requestId: message.requestId
+                )
+            
+                Log.info("[Succeed] Resend failed file message: \(message.description)")
+            
+                self.upsertMessagesInList(messages: [message], needReload: true)
+                return false
+            }
+        }, notifyError: { [weak self] in
+            guard let error = error else { return }
+            self?.baseDelegates.forEach {
                 $0.didReceiveError(error, isBlocker: false)
             }
-            
             Log.error("[Failed] Resend failed user message request: \(error.localizedDescription)")
-            return
-            
-        } else {
-            guard let message = message else { return }
-            
-            self.pendingMessageManager.removePendingMessage(
-                channelURL: message.channelURL,
-                requestId: message.requestId
-            )
-            
-            Log.info("[Succeed] Resend failed file message: \(message.description)")
-            
-            self.upsertMessagesInList(messages: [message], needReload: true)
-        }
+        })
     }
     
     // MARK: - Last Updated timestamp
@@ -610,21 +647,37 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         /// Prevent loadNext being called if changelog is called
         guard self.nextLock.try() else { return }
         
-        let changeLogsParams = MessageChangeLogsParams.create(with: self.messageListParams)
-        
         if self.hasNext() {
             self.messageCache?.loadNext()
         }
 
+        self.requestMessageChangeLogs()
+    }
+    
+    /// nextLock을 쥔 상태에서 changelog 한 쪽을 요청한다.
+    /// 응답이 has_more면 잠금을 쥔 채로 다음 쪽을 이어 요청하고, 마지막 쪽 처리가 끝나면 잠금을 푼다.
+    private func requestMessageChangeLogs() {
+        let changeLogsParams = MessageChangeLogsParams.create(with: self.messageListParams)
+        
         var completion: (([BaseMessage]?, [Int64]?, Bool, String?, SBError?) -> Void)!
         completion = { [weak self] updatedMessages, deletedMessageIds, hasMore, nextToken, error in
-            self?.handleChangelogResponse(
-                updatedMessages: updatedMessages,
-                deletedMessageIds: deletedMessageIds,
-                hasMore: hasMore,
-                nextToken: nextToken,
-                error: error
-            )
+            // Chat 콜백 큐를 바꾼 앱에서는 changelog 응답이 백그라운드에서 온다. 스크롤 조회와 목록 반영은 main에서 처리한다.
+            // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 main 작업 뒤에 Chat 콜백 큐에서 보낸다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            self?.executeOnMainThenNotifyErrorOnCallbackQueue({ [weak self] in
+                guard let self else { return false }
+                self.handleChangelogResponse(
+                    updatedMessages: updatedMessages,
+                    deletedMessageIds: deletedMessageIds,
+                    hasMore: hasMore,
+                    nextToken: nextToken,
+                    error: error
+                )
+                return error != nil
+            }, notifyError: { [weak self] in
+                guard let error = error else { return }
+                self?.notifyListError(error)
+            })
         }
         
         if let token = self.changelogToken {
@@ -654,17 +707,25 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         params.nextResultSize = self.changelogFetchLimit
         
         self.channel?.getMessagesByTimestamp(self.lastUpdatedTimestamp, params: params) { [weak self] messages, error in
-            guard let self = self else { return }
-            
-            guard self.isValidResponse(messages: messages, error: error),
-                  let messages = messages else {
-                Log.warning("Changelog added message list request is not valid")
-                self.nextLock.unlock()
-                return
-            }
-            
-            Log.info("[Changelog added response] \(messages.count) messages")
-            completion(messages)
+            // changelog 뒤 새 메시지 응답도 Chat 콜백 큐로 온다. 스크롤 조회와 목록 반영은 main에서 처리한다.
+            // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 main 작업 뒤에 Chat 콜백 큐에서 보낸다.
+            self?.executeOnMainThenNotifyErrorOnCallbackQueue({ [weak self] in
+                guard let self else { return false }
+
+                guard self.isValidResponse(messages: messages, error: error),
+                      let messages = messages else {
+                    Log.warning("Changelog added message list request is not valid")
+                    self.nextLock.unlock()
+                    return error != nil
+                }
+
+                Log.info("[Changelog added response] \(messages.count) messages")
+                completion(messages)
+                return false
+            }, notifyError: { [weak self] in
+                guard let error = error else { return }
+                self?.notifyListError(error)
+            })
         }
     }
     
@@ -682,9 +743,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                 """)
             
             self.nextLock.unlock()
-            self.delegates.forEach {
-                $0.didReceiveError(error, isBlocker: true)
-            }
+            // 오류 알림은 부른 쪽이 이 정리 뒤에 Chat 콜백 큐에서 보낸다.
             return
         }
         
@@ -702,7 +761,9 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
         )
         
         if hasMore {
-            self.loadMessageChangeLogs()
+            // 이미 nextLock을 쥐고 있다. loadMessageChangeLogs()는 잠금을 다시 try해 실패하고 돌아가므로,
+            // 다음 쪽 요청이 나가지 않고 잠금도 풀리지 않는다. 잠금을 쥔 채로 다음 쪽만 요청한다.
+            self.requestMessageChangeLogs()
         } else {
             isLoadingNext = true
             
@@ -782,52 +843,78 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     // MARK: - Message
     open func setupSendUserMessageCompletionHandlers() {
         self.sendUserMessageCompletionHandler = { [weak self] userMessage, error in
-            guard let self = self else { return }
-            guard self.channel is OpenChannel else { return }
+            // Chat 콜백 큐를 바꾼 앱에서는 전송 결과가 백그라운드에서 온다. 대기 메시지 정리와 목록 반영은 main에서 처리한다.
+            // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 대기 메시지 반영 뒤에 Chat 콜백 큐에서 보낸다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            self?.executeOnMainThenNotifyErrorOnCallbackQueue({ [weak self] in
+                guard let self else { return false }
+                guard self.channel is OpenChannel else { return false }
             
-            if let error = error {
-                self.pendingMessageManager.upsertPendingMessage(
-                    channelURL: userMessage?.channelURL,
-                    message: userMessage
+                if error != nil {
+                    self.pendingMessageManager.upsertPendingMessage(
+                        channelURL: userMessage?.channelURL,
+                        message: userMessage
+                    )
+                
+                    self.sortAllMessageList(needReload: true)
+                    return true
+                }
+
+                guard let userMessage = userMessage else { return false }
+            
+                self.pendingMessageManager.removePendingMessage(
+                    channelURL: userMessage.channelURL,
+                    requestId: userMessage.requestId
                 )
-                
-                self.sortAllMessageList(needReload: true)
-                
-                self.baseDelegates.forEach {
+            
+                Log.info("[Succeed] Send user message: \(userMessage.description)")
+                self.upsertMessagesInList(messages: [userMessage], needReload: true)
+                return false
+            }, notifyError: { [weak self] in
+                guard let error = error else { return }
+                self?.baseDelegates.forEach {
                     $0.didReceiveError(error)
                 }
                 Log.error("[Failed] Send user message request: \(error.localizedDescription)")
-                return
-            }
-
-            guard let userMessage = userMessage else { return }
-            
-            self.pendingMessageManager.removePendingMessage(
-                channelURL: userMessage.channelURL,
-                requestId: userMessage.requestId
-            )
-            
-            Log.info("[Succeed] Send user message: \(userMessage.description)")
-            self.upsertMessagesInList(messages: [userMessage], needReload: true)
+            })
         }
     }
 
     open func setupSendFileMessageCompletionHandlers() {
         self.sendFileMessageCompletionHandler = { [weak self] fileMessage, error in
-            guard let self = self else { return }
-            guard self.channel is OpenChannel else { return }
+            // Chat 콜백 큐를 바꾼 앱에서는 전송 결과가 백그라운드에서 온다. 대기 메시지 정리와 목록 반영은 main에서 처리한다.
+            // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 대기 메시지 반영 뒤에 Chat 콜백 큐에서 보낸다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            self?.executeOnMainThenNotifyErrorOnCallbackQueue({ [weak self] in
+                guard let self else { return false }
+                guard self.channel is OpenChannel else { return false }
             
-            if let error = error {
-                if let fileMessage = fileMessage, self.messageListParams.belongsTo(fileMessage) {
-                    self.pendingMessageManager.upsertPendingMessage(
-                        channelURL: fileMessage.channelURL,
-                        message: fileMessage
-                    )
-                }
+                if error != nil {
+                    if let fileMessage = fileMessage, self.messageListParams.belongsTo(fileMessage) {
+                        self.pendingMessageManager.upsertPendingMessage(
+                            channelURL: fileMessage.channelURL,
+                            message: fileMessage
+                        )
+                    }
                 
-                self.sortAllMessageList(needReload: true)
+                    self.sortAllMessageList(needReload: true)
+                    return true
+                }
 
-                self.baseDelegates.forEach {
+                guard let fileMessage = fileMessage else { return false }
+            
+                self.pendingMessageManager.removePendingMessage(
+                    channelURL: fileMessage.channelURL,
+                    requestId: fileMessage.requestId
+                )
+            
+                Log.info("[Succeed] Send file message: \(fileMessage.description)")
+            
+                self.upsertMessagesInList(messages: [fileMessage], needReload: true)
+                return false
+            }, notifyError: { [weak self] in
+                guard let error = error else { return }
+                self?.baseDelegates.forEach {
                     $0.didReceiveError(error)
                 }
                 Log.error(
@@ -836,19 +923,7 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
                     \(error.localizedDescription)
                     """
                 )
-                return
-            }
-
-            guard let fileMessage = fileMessage else { return }
-            
-            self.pendingMessageManager.removePendingMessage(
-                channelURL: fileMessage.channelURL,
-                requestId: fileMessage.requestId
-            )
-            
-            Log.info("[Succeed] Send file message: \(fileMessage.description)")
-            
-            self.upsertMessagesInList(messages: [fileMessage], needReload: true)
+            })
         }
     }
     
@@ -859,11 +934,16 @@ open class SBUOpenChannelViewModel: SBUBaseChannelViewModel {
     ///   - messages: Messages loaded.
     ///   - error: `SBError` from loading messages.
     /// - Returns: `true` if response is valid.
+    /// 목록 응답 오류를 알린다. 고객이 받는 지점(errorHandler)이라 Chat 콜백 큐에서 부른다.
+    private func notifyListError(_ error: SBError) {
+        self.delegates.forEach { $0.didReceiveError(error, isBlocker: true) }
+    }
+
     private func isValidResponse(messages: [BaseMessage]?, error: SBError?) -> Bool {
         if let error = error {
             Log.error("[Failed] Message list request: \(error)")
             self.isLoadingNext = false
-            self.delegates.forEach { $0.didReceiveError(error, isBlocker: true) }
+            // 오류 알림(`notifyListError`)은 부른 쪽이 이 정리 뒤에 Chat 콜백 큐에서 보낸다.
             return false
         }
         
@@ -909,46 +989,60 @@ extension SBUOpenChannelViewModel {
 extension SBUOpenChannelViewModel: OpenChannelDelegate {
     // Received message
     open override func channel(_ channel: BaseChannel, didReceive message: BaseMessage) {
-        guard self.channel?.channelURL == channel.channelURL else { return }
-        guard self.messageListParams.belongsTo(message) else { return }
+        // Chat 콜백 큐를 바꾼 앱에서는 이 콜백이 백그라운드에서 온다. 스크롤 위치 읽기, 새 메시지 안내와 목록 갱신은 main에서 한다.
+        // main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain {
+            guard self.channel?.channelURL == channel.channelURL else { return }
+            guard self.messageListParams.belongsTo(message) else { return }
 
-        super.channel(channel, didReceive: message)
+            super.channel(channel, didReceive: message)
         
-        let isScrollNearBottom = self.dataSource?.baseChannelViewModel(self, isScrollNearBottomInChannel: self.channel) ?? true
-        if self.hasNext() == true || isScrollNearBottom == false {
-            self.messageCache?.add(messages: [message])
+            let isScrollNearBottom = self.dataSource?.baseChannelViewModel(self, isScrollNearBottomInChannel: self.channel) ?? true
+            if self.hasNext() == true || isScrollNearBottom == false {
+                self.messageCache?.add(messages: [message])
 
-            guard message is UserMessage || message is FileMessage else { return }
+                guard message is UserMessage || message is FileMessage else { return }
             
-            if let channel = self.channel {
-                self.delegates.forEach { $0.baseChannelViewModel(self, didReceiveNewMessage: message, forChannel: channel) }
+                if let channel = self.channel {
+                    self.delegates.forEach { $0.baseChannelViewModel(self, didReceiveNewMessage: message, forChannel: channel) }
+                }
             }
-        }
         
-        if self.hasNext() == false {
-            self.delegates.forEach { $0.baseChannelViewModel(
-                self,
-                shouldUpdateScrollInMessageList: [message],
-                forContext: nil,
-                keepsScroll: !isScrollNearBottom
-            ) }
+            if self.hasNext() == false {
+                self.delegates.forEach { $0.baseChannelViewModel(
+                    self,
+                    shouldUpdateScrollInMessageList: [message],
+                    forContext: nil,
+                    keepsScroll: !isScrollNearBottom
+                ) }
             
-            self.upsertMessagesInList(messages: [message], needReload: true)
+                self.upsertMessagesInList(messages: [message], needReload: true)
+            }
         }
     }
     
     // Updated message
     open override func channel(_ channel: BaseChannel, didUpdate message: BaseMessage) {
-        guard self.channel?.channelURL == channel.channelURL else { return }
-        Log.info("Did update message: \(message)")
-        self.updateMessagesInList(messages: [message], needReload: true)
+        // Chat 콜백 큐를 바꾼 앱에서는 이 콜백이 백그라운드에서 온다. 전송 결과, 메시지 수신처럼 main에서 도착 순서대로 처리한다
+        // (전송 성공 뒤 수정이나 삭제가 이어 와도 목록 변경 순서가 뒤집히지 않게). main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self else { return }
+            guard self.channel?.channelURL == channel.channelURL else { return }
+            Log.info("Did update message: \(message)")
+            self.updateMessagesInList(messages: [message], needReload: true)
+        }
     }
     
     // Deleted message
     open override func channel(_ channel: BaseChannel, messageWasDeleted messageId: Int64) {
-        guard self.channel?.channelURL == channel.channelURL else { return }
-        Log.info("Message was deleted: \(messageId)")
-        self.deleteMessagesInList(messageIds: [messageId], needReload: true)
+        // Chat 콜백 큐를 바꾼 앱에서는 이 콜백이 백그라운드에서 온다. 전송 결과, 메시지 수신처럼 main에서 도착 순서대로 처리한다
+        // (전송 성공 뒤 수정이나 삭제가 이어 와도 목록 변경 순서가 뒤집히지 않게). main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self else { return }
+            guard self.channel?.channelURL == channel.channelURL else { return }
+            Log.info("Message was deleted: \(messageId)")
+            self.deleteMessagesInList(messageIds: [messageId], needReload: true)
+        }
     }
       
     open override func channelWasChanged(_ channel: BaseChannel) {

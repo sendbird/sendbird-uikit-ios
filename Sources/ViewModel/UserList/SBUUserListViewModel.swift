@@ -670,42 +670,55 @@ open class SBUUserListViewModel: NSObject {
 // MARK: - GroupChannelDelegate
 extension SBUUserListViewModel: BaseChannelDelegate {
     public func channel(_ channel: BaseChannel, userWasMuted user: RestrictedUser) {
-        guard self.userListType != .members,
+        guard self.isCurrentChannel(channel.channelURL),
+              self.userListType != .members,
               self.userListType != .participants else { return }
         self.resetUserList(channel: channel)
     }
     public func channel(_ channel: BaseChannel, userWasUnmuted user: User) {
-        guard self.userListType != .members,
+        guard self.isCurrentChannel(channel.channelURL),
+              self.userListType != .members,
               self.userListType != .participants else { return }
         self.resetUserList(channel: channel)
     }
     public func channelDidUpdateOperators(_ channel: BaseChannel) {
-        guard self.userListType != .members,
+        guard self.isCurrentChannel(channel.channelURL),
+              self.userListType != .members,
               self.userListType != .participants else { return }
         self.resetUserList(channel: channel)
     }
     public func channel(_ channel: BaseChannel, userWasBanned user: RestrictedUser) {
-        guard self.userListType != .members,
+        guard self.isCurrentChannel(channel.channelURL),
+              self.userListType != .members,
               self.userListType != .participants else { return }
         self.resetUserList(channel: channel)
     }
     public func channel(_ channel: BaseChannel, userWasUnbanned user: User) {
-        guard self.userListType != .members,
+        guard self.isCurrentChannel(channel.channelURL),
+              self.userListType != .members,
               self.userListType != .participants else { return }
         self.resetUserList(channel: channel)
     }
     
     public func channelWasDeleted(_ channelURL: String, channelType: ChannelType) {
+        guard self.isCurrentChannel(channelURL) else { return }
         self.delegates.forEach { $0.userListViewModel(self, shouldDismissForUserList: nil) }
+    }
+
+    // channel delegate는 모든 채널의 이벤트를 받는다. 다른 채널의 이벤트로 목록을 비우거나 채널을 바꾸지 않는다.
+    func isCurrentChannel(_ channelURL: String) -> Bool {
+        channelURL == (self.channel?.channelURL ?? self.channelURL)
     }
 }
 
 extension SBUUserListViewModel: GroupChannelDelegate {
     open func channel(_ channel: GroupChannel, userDidJoin user: User) {
+        guard self.isCurrentChannel(channel.channelURL) else { return }
         self.resetUserList(channel: channel)
     }
     
     open func channel(_ channel: GroupChannel, userDidLeave user: User) {
+        guard self.isCurrentChannel(channel.channelURL) else { return }
         self.resetUserList(channel: channel)
     }
 }

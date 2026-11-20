@@ -100,7 +100,7 @@ open class SBUOpenChannelListViewController: SBUBaseChannelListViewController, S
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
         self.viewModel?.initChannelList()
     }
     

@@ -79,6 +79,72 @@ extension SBUMarkdownTransfer.Markdown {
     struct Link: MarkdownItemable {
         var pattern: String = "\\[([^\\[]+)\\]\\(([^\\)]+)\\)"
         
+        /// `pattern` 정규식과 같은 위치와 묶음을 돌려준다.
+        ///
+        /// 정규식은 `)` 가 없으면 `[` 마다 주소 부분이 글 끝까지 훑어, `[a](` 가 반복되는 긴 글에서 시간이 글 길이의 제곱으로 늘었다.
+        /// 여기서는 다음 `)` 위치를 뒤에서부터 한 번 계산해 두고 앞에서부터 한 번 훑는다.
+        /// - 글자 부분 `[^\[]+` 는 다음 `[` 를 넘지 않는다. 그래서 `[` 마다 볼 `](` 후보가 서로 겹치지 않는다.
+        /// - 정규식은 글자 부분을 가장 길게 잡으므로, 후보 중 주소가 성립하는 가장 뒤의 `](` 를 고른다.
+        /// - 주소 부분 `[^\)]+` 는 `](` 바로 뒤부터 처음 나오는 `)` 앞까지이고 한 글자 이상이어야 한다. 줄바꿈도 넘는다.
+        func matches(with original: NSAttributedString) -> [NSTextCheckingResult]? {
+            guard let regex = try? NSRegularExpression(pattern: self.pattern, options: []) else { return nil }
+            let text = original.string as NSString
+            let count = text.length
+            let bracket = UInt16(UInt8(ascii: "[")), close = UInt16(UInt8(ascii: "]"))
+            let open = UInt16(UInt8(ascii: "(")), paren = UInt16(UInt8(ascii: ")"))
+            var units = [UInt16](repeating: 0, count: count)
+            if count > 0 { text.getCharacters(&units, range: NSRange(location: 0, length: count)) }
+
+            // nextParen[i]: i 부터 처음 나오는 ) 위치. 없으면 nil.
+            var nextParen = [Int?](repeating: nil, count: count + 1)
+            var position = count - 1
+            while position >= 0 {
+                nextParen[position] = units[position] == paren ? position : nextParen[position + 1]
+                position -= 1
+            }
+
+            var results: [NSTextCheckingResult] = []
+            var index = 0
+            while index < count {
+                guard units[index] == bracket else {
+                    index += 1
+                    continue
+                }
+                // 글자 부분은 index + 1 부터 다음 [ 앞까지. 그 안에서 한 글자 이상 뒤에 오는 ]( 가 후보다.
+                var segmentEnd = index + 1
+                var candidates: [Int] = []
+                while segmentEnd < count, units[segmentEnd] != bracket {
+                    if segmentEnd >= index + 2, units[segmentEnd] == close,
+                       segmentEnd + 1 < count, units[segmentEnd + 1] == open {
+                        candidates.append(segmentEnd)
+                    }
+                    segmentEnd += 1
+                }
+                let found = candidates.reversed().lazy.compactMap { textEnd -> (Int, Int)? in
+                    let urlStart = textEnd + 2
+                    guard urlStart < count, let urlEnd = nextParen[urlStart], urlEnd > urlStart else { return nil }
+                    return (textEnd, urlEnd)
+                }.first
+                guard let (textEnd, urlEnd) = found else {
+                    // 이 [ 에서는 링크가 안 된다. 정규식처럼 다음 글자부터 다시 찾는다(다음 후보는 다음 [ 다).
+                    index = segmentEnd
+                    continue
+                }
+                var ranges = [
+                    NSRange(location: index, length: urlEnd + 1 - index),
+                    NSRange(location: index + 1, length: textEnd - index - 1),
+                    NSRange(location: textEnd + 2, length: urlEnd - textEnd - 2),
+                ]
+                results.append(NSTextCheckingResult.regularExpressionCheckingResult(
+                    ranges: &ranges,
+                    count: ranges.count,
+                    regularExpression: regex
+                ))
+                index = urlEnd + 1
+            }
+            return results
+        }
+        
         func replace(
             result: NSMutableAttributedString,
             original: NSAttributedString,

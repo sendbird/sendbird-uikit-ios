@@ -185,7 +185,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
     }
     
     open override func viewWillDisappear(_ animated: Bool) {
@@ -326,6 +326,21 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
                     ).isActive = true
                 } else {
                     scrollBottomView.sbu_constraint(equalTo: listComponent, bottom: 8)
+                }
+            }
+
+            // For liquid glass mode: the list is laid under the input component,
+            // so position newMessageInfoView above the input component as well
+            if SendbirdUI.config.common.shouldApplyLiquidGlass,
+               let newMessageInfoView = listComponent.newMessageInfoView as? SBUNewMessageInfo {
+                if let inputComponent = self.inputComponent {
+                    newMessageInfoView.translatesAutoresizingMaskIntoConstraints = false
+                    newMessageInfoView.bottomAnchor.constraint(
+                        equalTo: inputComponent.topAnchor,
+                        constant: -8
+                    ).isActive = true
+                } else {
+                    newMessageInfoView.sbu_constraint(equalTo: listComponent, bottom: 8)
                 }
             }
         }
@@ -564,7 +579,7 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         // Picked multiple files
         if results.count > 1 {
-            checkAllFileSizes(results) { [weak self] isValid in
+            checkAllFileSizes(results.map { $0.itemProvider }) { [weak self] isValid in
                 if isValid {
                     self?.handleMultipleFiles(results)
                 } else {
@@ -700,39 +715,32 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         }
     }
 
+    // 테스트에서 NSItemProvider 로 부를 수 있게 internal 로 둔다. PHPickerResult 는 테스트에서 만들 수 없다.
     @available(iOS 14, *)
-    private func checkAllFileSizes(_ results: [PHPickerResult], completion: @escaping (Bool) -> Void) {
+    func checkAllFileSizes(_ itemProviders: [NSItemProvider], completion: @escaping (Bool) -> Void) {
         var areAllFileSizesValid = true
         
         let group = DispatchGroup()
-        for result in results {
-            if !areAllFileSizesValid {
+        // 크기 확인 콜백은 provider 스레드에서 온다. 결과는 main 에서 반영한 뒤 leave 한다.
+        // 루프 도중에 끝내지 않고 모든 확인이 끝난 뒤 notify 에서 completion 을 한 번만 부른다.
+        let collect: (Bool) -> Void = { isValid in
+            DispatchQueue.main.async {
+                if !isValid { areAllFileSizesValid = false }
                 group.leave()
-                completion(false)
-                return
             }
-            
+        }
+        
+        for itemProvider in itemProviders {
             group.enter()
             
-            let itemProvider = result.itemProvider
-            
             if itemProvider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) {
-                self.checkGifSize(itemProvider: itemProvider) { isValid in
-                    if !isValid { areAllFileSizesValid = false }
-                    group.leave()
-                }
+                self.checkGifSize(itemProvider: itemProvider, completion: collect)
                 
             } else if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
-                self.checkImageSize(itemProvider: itemProvider) { isValid in
-                    if !isValid { areAllFileSizesValid = false }
-                    group.leave()
-                }
+                self.checkImageSize(itemProvider: itemProvider, completion: collect)
                 
             } else {
-                self.checkVideoSize(itemProvider: itemProvider) { isValid in
-                    if !isValid { areAllFileSizesValid = false }
-                    group.leave()
-                }
+                self.checkVideoSize(itemProvider: itemProvider, completion: collect)
             }
         }
         
@@ -867,52 +875,58 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         didChangeChannel channel: BaseChannel?,
         withContext context: MessageContext
     ) {
-        guard channel != nil else {
-            // channel deleted
-            if self.isLastInNavigationStack() {
-                // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
-                self.onClickBack()
+        // Chat 콜백 큐를 바꾼 앱에서는 이 콜백이 백그라운드에서 온다. 헤더, 입력창, 목록 갱신과 화면 닫기는 main에서 한다.
+        // main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            
+            guard channel != nil else {
+                // channel deleted
+                if self.isLastInNavigationStack() {
+                    // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
+                    self.onClickBack()
+                }
+                return
             }
-            return
-        }
         
-        #if SWIFTUI
-        if self.listComponent?.viewConverter.tableView.entireContent != nil {
-            self.listComponent?.applyViewConverter(.entireContent)
-        }
-        #endif
+            #if SWIFTUI
+            if self.listComponent?.viewConverter.tableView.entireContent != nil {
+                self.listComponent?.applyViewConverter(.entireContent)
+            }
+            #endif
         
-        // channel changed
-        switch context.source {
-        case .eventReadStatusUpdated, .eventDeliveryStatusUpdated:
-            if context.source == .eventReadStatusUpdated {
+            // channel changed
+            switch context.source {
+            case .eventReadStatusUpdated, .eventDeliveryStatusUpdated:
+                if context.source == .eventReadStatusUpdated {
+                    self.updateChannelStatus()
+                }
+                self.listComponent?.reloadTableView()
+            
+            case .eventTypingStatusUpdated:
                 self.updateChannelStatus()
+                self.listComponent?.reloadTableView()
+            
+            case .channelChangelog:
+                self.updateChannelTitle()
+                self.inputComponent?.updateMessageInputModeState()
+                self.listComponent?.reloadTableView()
+                self.updateVoiceMessageInputMode()
+            
+            case .eventChannelChanged:
+                self.updateChannelTitle()
+                self.inputComponent?.updateMessageInputModeState()
+                self.updateVoiceMessageInputMode()
+            
+            case .eventChannelFrozen, .eventChannelUnfrozen,
+                    .eventUserMuted, .eventUserUnmuted,
+                    .eventOperatorUpdated,
+                    .eventUserBanned: // Other User Banned
+                self.inputComponent?.updateMessageInputModeState()
+                self.updateVoiceMessageInputMode()
+            
+            default: break
             }
-            self.listComponent?.reloadTableView()
-            
-        case .eventTypingStatusUpdated:
-            self.updateChannelStatus()
-            self.listComponent?.reloadTableView()
-            
-        case .channelChangelog:
-            self.updateChannelTitle()
-            self.inputComponent?.updateMessageInputModeState()
-            self.listComponent?.reloadTableView()
-            self.updateVoiceMessageInputMode()
-            
-        case .eventChannelChanged:
-            self.updateChannelTitle()
-            self.inputComponent?.updateMessageInputModeState()
-            self.updateVoiceMessageInputMode()
-            
-        case .eventChannelFrozen, .eventChannelUnfrozen,
-                .eventUserMuted, .eventUserUnmuted,
-                .eventOperatorUpdated,
-                .eventUserBanned: // Other User Banned
-            self.inputComponent?.updateMessageInputModeState()
-            self.updateVoiceMessageInputMode()
-            
-        default: break
         }
     }
     
@@ -1430,8 +1444,12 @@ open class SBUGroupChannelViewController: SBUBaseChannelViewController, SBUGroup
         
         self.viewModel?.markMessageAsUnread(message) { error in
             guard error == nil else { return }
-            // set allowsAutoMarkAsReadOnScroll to false only when the user explicitly called markAsUnread().
-            self.viewModel?.allowsAutoMarkAsReadOnScroll = false
+            // completion은 Chat 콜백 큐(백그라운드일 수 있음)에서 온다. 스크롤 처리가 main에서 읽는 값이라 main에서 바꾼다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain {
+                // set allowsAutoMarkAsReadOnScroll to false only when the user explicitly called markAsUnread().
+                self.viewModel?.allowsAutoMarkAsReadOnScroll = false
+            }
         }
     }
     

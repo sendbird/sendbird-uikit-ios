@@ -84,7 +84,7 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
     }
 
     open override func viewWillAppear(_ animated: Bool) {
@@ -257,7 +257,8 @@ open class SBUCreateChannelViewController: SBUBaseViewController, SBUCreateChann
     // MARK: - SBUCreateChannelModuleListDelegate
     open func createChannelModule(_ listComponent: SBUCreateChannelModule.List,
                                   didSelectRowAt indexPath: IndexPath) {
-        guard let user = self.viewModel?.userList[indexPath.row] else { return }
+        // 행 번호는 화면 기준이므로 화면이 쓰는 사본에서 읽는다.
+        guard let user = listComponent.userList?[safe: indexPath.row] else { return }
         self.viewModel?.selectUser(user: user)
         
         #if SWIFTUI
