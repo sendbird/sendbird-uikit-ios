@@ -1056,8 +1056,12 @@ open class SBUMessageInputView: SBUView, SBUActionSheetDelegate, UITextViewDeleg
         }
 
         self.updateTextViewHeight()
-        let bottom = NSRange(location: (self.textView?.text.count ?? 0) - 1, length: 1)
-        self.textView?.scrollRangeToVisible(bottom)
+        // NSRange는 UTF-16 기준이라 글자 수(count) 대신 UTF-16 길이를 쓰고, 빈 글자면 -1 위치를 요청하지 않도록 건너뜀
+        let textLength = (self.textView?.text as NSString?)?.length ?? 0
+        if textLength > 0 {
+            let bottom = NSRange(location: textLength - 1, length: 1)
+            self.textView?.scrollRangeToVisible(bottom)
+        }
         
         self.textView?.becomeFirstResponder()
         

@@ -144,7 +144,8 @@ extension SBUGroupChannelListModule {
         public func leaveContextualAction(with indexPath: IndexPath) -> UIContextualAction? {
             guard let channel = self.channelList?[safe: indexPath.row] else { return nil }
             
-            let size = tableView.visibleCells[0].frame.height
+            // 보이는 셀이 없으면(목록이 비는 중) 액션을 만들지 않는다.
+            guard let size = tableView.visibleCells.first?.frame.height else { return nil }
             let itemSize: CGFloat = 40.0
             
             let leaveAction = UIContextualAction(
@@ -183,7 +184,8 @@ extension SBUGroupChannelListModule {
         public func alarmContextualAction(with indexPath: IndexPath) -> UIContextualAction? {
             guard let channel = self.channelList?[safe: indexPath.row] else { return nil }
             
-            let size = tableView.visibleCells[0].frame.height
+            // 보이는 셀이 없으면(목록이 비는 중) 액션을 만들지 않는다.
+            guard let size = tableView.visibleCells.first?.frame.height else { return nil }
             let itemSize: CGFloat = 40.0
             
             let pushOption = channel.myPushTriggerOption
@@ -235,7 +237,8 @@ extension SBUGroupChannelListModule {
         func inspectContextualAction(with indexPath: IndexPath) -> UIContextualAction? {
             guard let channel = self.channelList?[safe: indexPath.row] else { return nil }
             
-            let size = tableView.visibleCells[0].frame.height
+            // 보이는 셀이 없으면(목록이 비는 중) 액션을 만들지 않는다.
+            guard let size = tableView.visibleCells.first?.frame.height else { return nil }
             let itemSize: CGFloat = 40.0
             
             let inspectAction = UIContextualAction(

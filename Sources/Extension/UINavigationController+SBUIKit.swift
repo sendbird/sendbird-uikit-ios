@@ -31,6 +31,21 @@ extension UINavigationController {
         self.navigationBar.scrollEdgeAppearance = appearance
     }
     
+    /// 뒤로 가기 제스처의 delegate를 nil 대신 `SBUInteractivePopGestureGuard`로 둔다.
+    /// nil이면 루트 화면에서도 제스처가 시작되어 다음 push가 끝나지 않고 화면이 멈춘다(iOS 17.5에서 확인, QU-234).
+    /// 루트 보호를 navigation delegate의 `didShow`에만 맡기면 고객 앱이 delegate를 가져갈 때 보호가 빠진다.
+    func sbu_setInteractivePopGestureGuard() {
+        let popGestureGuard: SBUInteractivePopGestureGuard
+        if let existing = objc_getAssociatedObject(self, &sbuInteractivePopGestureGuardKey) as? SBUInteractivePopGestureGuard {
+            popGestureGuard = existing
+        } else {
+            popGestureGuard = SBUInteractivePopGestureGuard(navigationController: self)
+            // 제스처의 delegate는 weak이라 navigation controller가 guard를 붙잡아 둔다.
+            objc_setAssociatedObject(self, &sbuInteractivePopGestureGuardKey, popGestureGuard, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+        self.interactivePopGestureRecognizer?.delegate = popGestureGuard
+    }
+
     #if SWIFTUI
     /// Push view controller with hiding navigation bar. Method to hide and show navigationBar in swiftui (ui timing issue)
     /// - Since: 3.28.0
@@ -43,6 +58,25 @@ extension UINavigationController {
         self.pushViewController(viewController, animated: animated)
     }
     #endif
+}
+
+private var sbuInteractivePopGestureGuardKey: UInt8 = 0
+
+/// 뒤로 가기 제스처 delegate. 화면이 둘 이상이고 전환 중이 아닐 때만 제스처를 시작한다.
+/// 나머지 delegate 메서드는 구현하지 않아 delegate가 nil일 때와 같게 동작한다.
+final class SBUInteractivePopGestureGuard: NSObject, UIGestureRecognizerDelegate {
+    private weak var navigationController: UINavigationController?
+
+    init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
+        super.init()
+    }
+
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let navigationController = self.navigationController else { return false }
+        return navigationController.viewControllers.count > 1
+            && navigationController.transitionCoordinator == nil
+    }
 }
 
 #if SWIFTUI

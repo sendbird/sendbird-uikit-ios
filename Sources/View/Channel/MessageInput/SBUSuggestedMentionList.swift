@@ -164,9 +164,10 @@ open class SBUSuggestedMentionList: SBUView, UITableViewDelegate, UITableViewDat
     
     /// If `isLimitGuideEnabled` is `false`, it set up `filteredUsers` as an *empty*, even if the `users` isn't an empty value.
     open func reloadData(with users: [SBUUser]) {
-        self.filteredUsers = isLimitGuideEnabled ? [] : users
-        DispatchQueue.main.async { [weak self] in
+        // 목록 교체와 reload를 같은 main 실행에서 해서, 그 사이의 셀 요청과 선택이 없는 행을 읽지 않게 한다.
+        Thread.executeOnMain { [weak self] in
             guard let self = self else { return }
+            self.filteredUsers = self.isLimitGuideEnabled ? [] : users
             self.tableView.reloadData()
         }
     }

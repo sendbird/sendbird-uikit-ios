@@ -545,10 +545,14 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
             messageId: message.messageId,
             params: messageParams
         ) { [weak self] _, _ in
-            guard let self = self else { return }
-            guard let channel = self.channel else { return }
-            self.baseDelegates.forEach {
-                $0.baseChannelViewModel(self, shouldFinishEditModeForChannel: channel)
+            // Chat 콜백 큐를 바꾼 앱에서는 수정 결과가 백그라운드에서 온다. 편집 모드를 끝내는 화면이 입력창을 바꾸므로 main에서 알린다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain { [weak self] in
+                guard let self else { return }
+                guard let channel = self.channel else { return }
+                self.baseDelegates.forEach {
+                    $0.baseChannelViewModel(self, shouldFinishEditModeForChannel: channel)
+                }
             }
         }
     }
@@ -815,6 +819,8 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
             for messageId in messageIds {
                 guard message.messageId == messageId,
                       message.isMessageIdValid else { continue }
+                // 같은 id 가 두 번 들어오면 같은 index 를 두 번 지우게 되므로 한 번만 담는다.
+                guard toBeDeleteIndexes.contains(index) == false else { continue }
                 toBeDeleteIndexes.append(index)
                 
                 guard message.isRequestIdValid else { continue }
@@ -898,61 +904,66 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
         shouldUpdateFirstUnreadMessage: Bool = false,
         isEventMessageReceived: Bool
     ) {
-        // Generate full list for draw
-        let pendingMessages = self.pendingMessageManager.getPendingMessages(
-            channelURL: self.channel?.channelURL,
-            forMessageThread: self.isThreadMessageMode
-        )
-        
-        let refinedPendingMessages = pendingMessages.filter { pendingMessage in
-            var isInMessageList = false
-            self.messageList.forEach { message in
-                if message.requestId == pendingMessage.requestId {
-                    isInMessageList = true
-                    return
-                }
-            }
-            return !isInMessageList
-        }
-        
-        let typingMessageArray = [typingMessageManager.getTypingMessage(for: self.channel)].compactMap { $0 }
-        
         if isTransformedList {
             self.messageList.sort { $0.createdAt > $1.createdAt }
-            
-            self.fullMessageList = typingMessageArray
-                                    + refinedPendingMessages.sorted { $0.createdAt > $1.createdAt }
-                                    + self.messageList
         } else {
             self.messageList.sort { $0.createdAt < $1.createdAt }
-            self.fullMessageList = self.messageList
-                                    + refinedPendingMessages.sorted { $0.createdAt < $1.createdAt }
-                                    + typingMessageArray
         }
+        let initialLoad = self.isInitialLoading
         
-        // Find first unread message.
-        if shouldUpdateFirstUnreadMessage {
-            self.updateFirstUnreadMessage()
-        }
-        
-        self.baseDelegates.forEach {
-            $0.shouldUpdateLoadingState(false)
-
-            // Call deprecated method for backward compatibility.
-            $0.baseChannelViewModel(
-                self,
-                didChangeMessageList: self.fullMessageList,
-                needsToReload: needReload,
-                initialLoad: self.isInitialLoading
+        // 화면이 읽는 목록은 main에서 그때의 상태로 만들고 바로 내보낸다. 백그라운드에서 만든 목록을 나중에 넣으면
+        // 그 사이 main이 내보낸 더 새 목록(전송 중 메시지 등)을 덮는다. Chat 콜백 큐가 main이면 지금 바로 돈다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            // Generate full list for draw
+            let pendingMessages = self.pendingMessageManager.getPendingMessages(
+                channelURL: self.channel?.channelURL,
+                forMessageThread: self.isThreadMessageMode
             )
+            
+            let messageList = self.messageList
+            let refinedPendingMessages = pendingMessages.filter { pendingMessage in
+                !messageList.contains { $0.requestId == pendingMessage.requestId }
+            }
+            
+            let typingMessageArray = [self.typingMessageManager.getTypingMessage(for: self.channel)].compactMap { $0 }
+            
+            let newFullMessageList: [BaseMessage]
+            if self.isTransformedList {
+                newFullMessageList = typingMessageArray
+                                        + refinedPendingMessages.sorted { $0.createdAt > $1.createdAt }
+                                        + messageList.sorted { $0.createdAt > $1.createdAt }
+            } else {
+                newFullMessageList = messageList.sorted { $0.createdAt < $1.createdAt }
+                                        + refinedPendingMessages.sorted { $0.createdAt < $1.createdAt }
+                                        + typingMessageArray
+            }
+            self.fullMessageList = newFullMessageList
 
-            $0.baseChannelViewModel(
-                self,
-                didChangeMessageList: self.fullMessageList,
-                needsToReload: needReload,
-                initialLoad: self.isInitialLoading,
-                isEventMessageReceived: isEventMessageReceived
-            )
+            // Find first unread message.
+            if shouldUpdateFirstUnreadMessage {
+                self.updateFirstUnreadMessage()
+            }
+
+            self.baseDelegates.forEach {
+                $0.shouldUpdateLoadingState(false)
+
+                // Call deprecated method for backward compatibility.
+                $0.baseChannelViewModel(
+                    self,
+                    didChangeMessageList: newFullMessageList,
+                    needsToReload: needReload,
+                    initialLoad: initialLoad
+                )
+
+                $0.baseChannelViewModel(
+                    self,
+                    didChangeMessageList: newFullMessageList,
+                    needsToReload: needReload,
+                    initialLoad: initialLoad,
+                    isEventMessageReceived: isEventMessageReceived
+                )
+            }
         }
     }
 
@@ -1004,43 +1015,70 @@ open class SBUBaseChannelViewModel: SBUBaseViewModel {
                 // In **super group channel limited mode**, current user can only addReaction and never deleteReaction.
                 // If currentUser reacts to an already reacted emoji, the request succeeds, but Chat SDK returns a decoding error (80000).
                 // (the response doesn't contain "updated_at" field, but Chat SDK tries to decode this as a non-optional property)
+                // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다.
                 if let error = error {
                     self.baseDelegates.forEach {
                         $0.didReceiveError(error, isBlocker: false)
                     }
                 }
-                
-                Log.info("[Response] \(reactionEvent?.key ?? "") reaction")
-                guard let reactionEvent = reactionEvent else { return }
-                if reactionEvent.messageId == message.messageId {
-                    message.apply(reactionEvent)
-                }
-                self.baseDelegates.forEach {
-                    $0.baseChannelViewModel(self, didUpdateReaction: reactionEvent, forMessage: message)
+                // Chat 콜백 큐를 바꾼 앱에서는 반응 결과가 백그라운드에서 온다. 메시지에 반응을 반영하고 화면에 알리는 일은 main에서 한다.
+                // main에서 불리면 지금처럼 바로 실행된다.
+                Thread.executeOnMain { [weak self] in
+                    guard let self else { return }
+                    Log.info("[Response] \(reactionEvent?.key ?? "") reaction")
+                    guard let reactionEvent = reactionEvent else { return }
+                    if reactionEvent.messageId == message.messageId {
+                        message.apply(reactionEvent)
+                    }
+                    self.baseDelegates.forEach {
+                        $0.baseChannelViewModel(self, didUpdateReaction: reactionEvent, forMessage: message)
+                    }
                 }
             }
         } else {
             Log.info("[Request] Delete Reaction")
             self.channel?.deleteReaction(with: message, key: emojiKey) { reactionEvent, error in
+                // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다.
                 if let error = error {
                     self.baseDelegates.forEach {
                         $0.didReceiveError(error, isBlocker: false)
                     }
                 }
-
-                Log.info("[Response] \(reactionEvent?.key ?? "") reaction")
-                guard let reactionEvent = reactionEvent else { return }
-                if reactionEvent.messageId == message.messageId {
-                    message.apply(reactionEvent)
-                }
-                self.baseDelegates.forEach {
-                    $0.baseChannelViewModel(self, didUpdateReaction: reactionEvent, forMessage: message)
+                // Chat 콜백 큐를 바꾼 앱에서는 반응 결과가 백그라운드에서 온다. 메시지에 반응을 반영하고 화면에 알리는 일은 main에서 한다.
+                // main에서 불리면 지금처럼 바로 실행된다.
+                Thread.executeOnMain { [weak self] in
+                    guard let self else { return }
+                    Log.info("[Response] \(reactionEvent?.key ?? "") reaction")
+                    guard let reactionEvent = reactionEvent else { return }
+                    if reactionEvent.messageId == message.messageId {
+                        message.apply(reactionEvent)
+                    }
+                    self.baseDelegates.forEach {
+                        $0.baseChannelViewModel(self, didUpdateReaction: reactionEvent, forMessage: message)
+                    }
                 }
             }
         }
     }
     
     // MARK: - Common
+
+    /// 화면과 목록 작업(`work`)을 main에서 하고, `work`가 true를 돌려주면 이어서 오류 알림(`notifyError`)을 Chat 콜백 큐에서 보낸다.
+    /// 오류 알림은 고객이 받는 지점(`didReceiveError` override, VC의 `errorHandler`)이라 develop과 같은 큐에서 보낸다.
+    /// develop에서 목록 반영이나 로딩 상태 정리 뒤에 오류를 알리던 곳에서 쓴다. main에서 불리면(기본 설정) 둘 다 지금처럼 바로 실행된다.
+    func executeOnMainThenNotifyErrorOnCallbackQueue(
+        _ work: @escaping () -> Bool,
+        notifyError: @escaping () -> Void
+    ) {
+        guard !Thread.isMainThread else {
+            if work() { notifyError() }
+            return
+        }
+        DispatchQueue.main.async {
+            guard work() else { return }
+            SendbirdChat.performCompletionHandlerDelegateQueue(notifyError)
+        }
+    }
     
     /// This function checks that have the following list.
     /// - Returns: This function returns `true` if there is the following list.

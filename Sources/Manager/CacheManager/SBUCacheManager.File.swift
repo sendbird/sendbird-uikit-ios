@@ -19,6 +19,7 @@ import SendbirdChatSDK
 extension SBUCacheManager {
     class File {
         static let diskCache = DiskCache(cacheType: "file")
+        static let session = URLSession(configuration: .default)
         
         @discardableResult 
         static func loadFile(
@@ -36,9 +37,9 @@ extension SBUCacheManager {
             // Load cached file
             if self.cacheExists(fileName: fileName) {
                 let filePath = URL(fileURLWithPath: diskCache.pathForKey(fileName))
-                let data = diskCache.get(key: fileName)
+                // 큰 영상, 문서를 통째로 읽으면 메모리 부족으로 종료될 수 있어 경로만 넘긴다. 부르는 쪽은 모두 경로만 쓴다.
                 DispatchQueue.main.async {
-                    completionHandler?(filePath, data)
+                    completionHandler?(filePath, nil)
                 }
                 return nil
             }
@@ -51,15 +52,20 @@ extension SBUCacheManager {
                 return nil
             }
             
-            let task = URLSession(configuration: .default).dataTask(with: url) { data, _, error in
-                guard let data = data, error == nil else {
+            // 파일 전체를 메모리에 받지 않고 임시 파일로 받아 캐시 경로로 옮긴다.
+            let task = self.session.downloadTask(with: url) { location, _, error in
+                // 임시 파일은 이 클로저가 끝나면 지워지므로 여기서 바로 옮긴다.
+                guard let location = location, error == nil,
+                      let filePath = self.diskCache.moveItem(at: location, key: fileName) else {
                     DispatchQueue.main.async {
                         completionHandler?(nil, nil)
                     }
                     return
                 }
                 
-                SBUCacheManager.File.save(data: data, fileName: fileName, completionHandler: completionHandler)
+                DispatchQueue.main.async {
+                    completionHandler?(filePath, nil)
+                }
             }
             task.resume()
             return task

@@ -26,7 +26,7 @@ extension SBUCacheManager.Image {
             
             switch SBUUtils.getFileType(by: fileMessage) {
             case .image:
-                self.save(
+                self.preSaveImage(
                     data: messageParams.file,
                     fileName: fileName,
                     subPath: fileMessage.channelURL,
@@ -66,11 +66,29 @@ extension SBUCacheManager.Image {
         )
         if isQuotedImage == true { fileName = "quoted_\(fileName)" }
 
-        self.save(
+        self.preSaveImage(
             data: uploadableFileInfo.file,
             fileName: fileName,
             subPath: multipleFilesMessage.channelURL,
             completionHandler: completionHandler
         )
+    }
+    
+    /// 보내기 직전(main)에 보낼 이미지를 캐시에 넣는다.
+    /// 프레임 비트맵 합이 상한을 넘는 GIF 는 이미지를 만들면 모든 프레임을 디코드해 main 이 그만큼 멈추므로, 인코딩된 데이터만
+    /// 디스크에 저장한다. 프레임은 원본을 요청할 때 디스크 적중 경로가 main 밖에서 만든다(`loadCachedImage`). 메모리 캐시는 미리 채우지 않는다.
+    /// 그 밖의 이미지는 develop 처럼 만들어 메모리 캐시도 채운다(lazy 라 만들기가 짧다).
+    private static func preSaveImage(
+        data: Data?,
+        fileName: String,
+        subPath: String,
+        completionHandler: SBUImageCacheCompletionHandler?
+    ) {
+        if let data = data, UIImage.decodesAllFramesOnCreate(data: data) {
+            let key = self.key(fileName: fileName, subPath: subPath)
+            self.diskCache.set(key: key, data: data as NSData, completionHandler: completionHandler)
+            return
+        }
+        self.save(data: data, fileName: fileName, subPath: subPath, completionHandler: completionHandler)
     }
 }

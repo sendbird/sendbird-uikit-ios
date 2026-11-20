@@ -1,5 +1,57 @@
 # Changelog
 
+### v3.36.5 (Nov 20, 2026)
+
+### Improvements
+- Raised the minimum Chat SDK version to 4.39.15.
+- Fixed crashes in the message list, mention suggestion list, and user selection lists when the list changed before the table reloaded. These lists now draw from the list taken at reload time.
+- Fixed a crash when reloading a message cell while the row count had changed.
+- Fixed a crash when swiping a group channel list row while no cell was visible.
+- Fixed a crash when pending messages were changed from several threads at the same time.
+- Fixed a crash when opening a channel from the group channel list while the Chat SDK callback queue is not the main queue.
+- Fixed a crash when message list updates and screen callbacks ran on a background thread while the Chat SDK callback queue is not the main queue.
+- Fixed a crash when the channel header, message input, or list was updated from a background thread after a channel change event in group, open, and thread channel screens.
+- Fixed a crash when a received message, an updated message, or a channel change event read the scroll position or updated the unread message info view from a background thread in group, open, and thread channel screens.
+- Fixed a crash when message list changes, scroll position reads, and screen updates ran on a background thread after message history, changelog, send, edit, reaction, mark-as-unread, or file upload results arrived while the Chat SDK callback queue is not the main queue.
+- Fixed a possible crash when moving to a newly created channel touched view controllers off the main thread while the Chat SDK callback queue is not the main queue.
+- Fixed a possible crash when notification channel and channel settings screens closed off the main thread while the Chat SDK callback queue is not the main queue.
+- Fixed a possible crash when notification channel screens updated the title, category filter, error view, and notification list off the main thread while the Chat SDK callback queue is not the main queue.
+- Fixed a possible crash when `SBUGlobals.currentUser` was replaced during connect, user-info update or disconnect while another thread read it.
+- Fixed a crash when picking multiple files where one file exceeded the upload size limit.
+- Fixed a crash in the reaction user list when another user's reaction was removed while a row was being drawn.
+- Fixed a crash in the open channel message cache when change logs and a cache clear ran at the same time on a concurrent callback queue.
+- Fixed a crash when drawing a message whose mention template had a combining mark right after a mention.
+- Fixed a crash when picking a suggested user after the input was cleared while members were loading.
+- Fixed a crash in `SBUMentionManager.generateTemplate(with:mentions:)` when `mentions` is longer than the mentions the manager holds.
+- Fixed a crash or a wrong row removal when the same message ID or channel URL is passed twice to `deleteMessagesInList(messageIds:needReload:)` or `deleteChannels(channelURLs:needReload:)`.
+- Fixed a crash when a carousel or cascade child template had a body without items.
+- Fixed a crash when a label returned by a custom message template data source from `templateView(_:viewForPartialItem:with:)` was laid out again.
+- Fixed member lists resetting, switching to another channel, or closing when an event arrived from a different channel.
+- Fixed an issue where attachments picked after a video stopped being sent when iOS could not provide the video file.
+- Fixed an issue where picking multiple files that included an item that is neither an image nor a GIF stopped later attachments from being sent.
+- Fixed a data race when multiple picked images or GIFs finished loading at the same time.
+- Fixed an issue where an attachment that finished loading at the same moment the attachment queue started it could stop later attachments from being sent.
+- Fixed an issue where a file message whose upload was canceled stayed in the message list as sending.
+- Fixed `SBUMessageThreadViewModel.loadChannel` calling its completion handler twice when the connection was closed, which loaded the parent message and the thread message list twice.
+- Fixed an issue where the parent message in the thread screen went back to the text before the edit when the thread has no replies.
+- Fixed an issue where the open channel and message thread screens stopped loading next messages after a message changelog spanning multiple pages.
+- Fixed a memory leak where message template views, carousel views, and notification cells stayed in memory after leaving the screen.
+- Fixed message template images being redrawn on every layout.
+- Fixed the screen freezing on iOS 17 and earlier when the user swiped back on the root screen after leaving a UIKit screen, in apps that set their own navigation controller delegate. The interactive pop gesture no longer begins on the root screen or during a transition.
+- Fixed an issue where the new message button was covered by the message input in liquid glass mode.
+- Fixed the voice message progress bar when the message has no duration.
+- Fixed high memory use when opening, saving, or attaching large videos and documents.
+- `SBUMessageInputView.startEditMode(text:)` no longer requests an out-of-range scroll when the text is empty, and scrolls to the last UTF-16 unit of the text.
+- Image and file downloads now reuse one URLSession instead of creating a new one per request.
+- Reduced memory use of large animated GIFs and of image previews in pending and failed messages.
+- Reduced main thread time when showing or sending large animated GIFs from the cache.
+- Improved message template layout performance: text in a row box or a fixed-height column box no longer adds a new constraint on every layout pass.
+- Improved the performance of markdown link parsing for long messages that contain many unclosed links.
+- Improved the performance of the vertical suggested reply view by showing up to 20 options.
+
+### Changed
+- `SBUBaseChannelModule.List.fullMessageList` and `SBUBaseSelectUserModule.List.userList` now return the list drawn on screen, which is updated when the table reloads. If your code calls `tableView.reloadData()` directly on these lists, call `reloadTableView()` instead so new data is shown.
+
 ### v3.36.4 (Nov 09, 2026)
 
 ### Improvements

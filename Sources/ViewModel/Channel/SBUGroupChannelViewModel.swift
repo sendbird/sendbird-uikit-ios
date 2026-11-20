@@ -414,12 +414,17 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
     ///    - index: the index of the cell of a multiple files message to update.
     /// - Since: 3.10.0
     open func updateMultipleFilesMessageCell(requestId: String, index: Int) {
-        self.delegates.forEach {
-            $0.groupChannelViewModel(
-                self,
-                didFinishUploadingFileAt: index,
-                multipleFilesMessageRequestId: requestId
-            )
+        // 파일 업로드 진행 콜백은 Chat 콜백 큐에서 온다. 알림을 받은 화면이 보이는 셀을 찾아 다시 그리므로 main에서 알린다.
+        // main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self else { return }
+            self.delegates.forEach {
+                $0.groupChannelViewModel(
+                    self,
+                    didFinishUploadingFileAt: index,
+                    multipleFilesMessageRequestId: requestId
+                )
+            }
         }
     }
     
@@ -453,61 +458,72 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         self.messageCollection?.startCollection(
             initPolicy: initPolicy,
             cacheResultHandler: { [weak self] cacheResult, error in
-                guard let self = self else { return }
-                
-                defer { self.displaysLocalCachedListFirst = false }
-                
+                // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다.
                 if let error = error {
-                    self.delegates.forEach {
+                    self?.delegates.forEach {
                         $0.didReceiveError(error, isBlocker: false)
                     }
-                    return
                 }
+                // Chat 콜백 큐를 바꾼 앱에서는 이 응답이 백그라운드에서 온다. 첫 목록 반영은 main에서 처리한다.
+                // main에서 불리면 지금처럼 바로 실행된다.
+                Thread.executeOnMain { [weak self] in
+                    guard let self else { return }
                 
-                // prevent empty view showing
-                if cacheResult == nil || cacheResult?.isEmpty == true { return }
+                    defer { self.displaysLocalCachedListFirst = false }
                 
-                self.isInitialLoading = true
+                    guard error == nil else { return }
                 
-                self.upsertMessagesInList(
-                    messages: cacheResult,
-                    needReload: self.displaysLocalCachedListFirst,
-                    shouldUpdateFirstUnreadMessage: true
-                )
+                    // prevent empty view showing
+                    if cacheResult == nil || cacheResult?.isEmpty == true { return }
+                
+                    self.isInitialLoading = true
+                
+                    self.upsertMessagesInList(
+                        messages: cacheResult,
+                        needReload: self.displaysLocalCachedListFirst,
+                        shouldUpdateFirstUnreadMessage: true
+                    )
+                }
             },
             apiResultHandler: { [weak self] apiResult, error in
-                guard let self = self else { return }
-                
-                self.loadInitialPendingMessages()
-                
-                if let error = error {
-                    self.delegates.forEach {
-                        $0.shouldUpdateLoadingState(false)
-                    }
-                    
-                    // ignore error if using local caching
-                    if !SendbirdChat.isLocalCachingEnabled {
+                // Chat 콜백 큐를 바꾼 앱에서는 이 응답이 백그라운드에서 온다. 첫 목록 반영은 main에서 처리한다.
+                // 오류 알림은 develop처럼 대기 메시지와 로딩 상태 정리 뒤에 Chat 콜백 큐에서 보낸다. main에서 불리면 지금처럼 바로 실행된다.
+                self?.executeOnMainThenNotifyErrorOnCallbackQueue({ [weak self] in
+                    guard let self else { return false }
+
+                    self.loadInitialPendingMessages()
+
+                    if error != nil {
                         self.delegates.forEach {
-                            $0.didReceiveError(error, isBlocker: false)
+                            $0.shouldUpdateLoadingState(false)
                         }
-                    } else {
+                
+                        // ignore error if using local caching
+                        if !SendbirdChat.isLocalCachingEnabled {
+                            return true
+                        }
                         self.isInitialLoading = false
                         self.upsertMessagesInList(messages: nil, needReload: true)
+                        return false
                     }
-                    
-                    return
-                }
-                
-                if self.initPolicy == .cacheAndReplaceByApi {
-                    self.clearMessageList()
-                }
-                
-                self.isInitialLoading = false
-                self.upsertMessagesInList(
-                    messages: apiResult,
-                    needReload: true,
-                    shouldUpdateFirstUnreadMessage: true
-                )
+
+                    if self.initPolicy == .cacheAndReplaceByApi {
+                        self.clearMessageList()
+                    }
+
+                    self.isInitialLoading = false
+                    self.upsertMessagesInList(
+                        messages: apiResult,
+                        needReload: true,
+                        shouldUpdateFirstUnreadMessage: true
+                    )
+                    return false
+                }, notifyError: { [weak self] in
+                    guard let error = error else { return }
+                    self?.delegates.forEach {
+                        $0.didReceiveError(error, isBlocker: false)
+                    }
+                })
             })
     }
     
@@ -540,78 +556,90 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
         Log.info("[Request] Prev message list")
         
         messageCollection.loadPrevious { [weak self] messages, error in
-            guard let self = self else { return }
-            defer {
-                self.prevLock.unlock()
-            }
-            
+            // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다.
             if let error = error {
-                self.delegates.forEach {
+                self?.delegates.forEach {
                     $0.didReceiveError(error, isBlocker: false)
                 }
-                return
             }
-            
-            guard let messages = messages,
-                  !messages.isEmpty else { return }
-            Log.info("[Prev message response] \(messages.count) messages")
-            
-            self.delegates.forEach {
-                $0.baseChannelViewModel(
-                    self,
-                    shouldUpdateScrollInMessageList: messages,
-                    forContext: nil,
-                    keepsScroll: false
+            // Chat 콜백 큐를 바꾼 앱에서는 페이지 응답이 백그라운드에서 온다. 스크롤 조회와 목록 반영은 main에서 처리한다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain { [weak self] in
+                guard let self else { return }
+                defer {
+                    self.prevLock.unlock()
+                }
+
+                guard error == nil else { return }
+
+                guard let messages = messages,
+                      !messages.isEmpty else { return }
+                Log.info("[Prev message response] \(messages.count) messages")
+
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        shouldUpdateScrollInMessageList: messages,
+                        forContext: nil,
+                        keepsScroll: false
+                    )
+                }
+                self.upsertMessagesInList(
+                    messages: messages,
+                    needReload: true,
+                    shouldUpdateFirstUnreadMessage: true
                 )
             }
-            self.upsertMessagesInList(
-                messages: messages,
-                needReload: true,
-                shouldUpdateFirstUnreadMessage: true
-            )
         }
     }
     
     /// Loads next messages from `lastUpdatedTimestamp`.
     public override func loadNextMessages() {
+        // 잠금을 쥔 뒤에 collection이 없어 돌아가면 잠금이 풀리지 않아 다음 페이지를 다시 불러오지 못한다.
+        // loadPrevMessages처럼 collection을 먼저 확인한다.
+        guard let messageCollection = self.messageCollection else { return }
         guard self.nextLock.try() else {
             Log.info("Next message already loading")
             return
         }
 
-        guard let messageCollection = self.messageCollection else { return }
         self.isLoadingNext = true
         
         messageCollection.loadNext { [weak self] messages, error in
-            guard let self = self else { return }
-            defer {
-                self.nextLock.unlock()
-                self.isLoadingNext = false
-            }
-            
+            // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다.
             if let error = error {
-                self.delegates.forEach {
+                self?.delegates.forEach {
                     $0.didReceiveError(error, isBlocker: false)
                 }
-                return
             }
-            guard let messages = messages else { return }
-            
-            Log.info("[Next message Response] \(messages.count) messages")
-            
-            self.delegates.forEach {
-                $0.baseChannelViewModel(
-                    self,
-                    shouldUpdateScrollInMessageList: messages,
-                    forContext: nil,
-                    keepsScroll: true
+            // Chat 콜백 큐를 바꾼 앱에서는 페이지 응답이 백그라운드에서 온다. 스크롤 조회와 목록 반영은 main에서 처리한다.
+            // main에서 불리면 지금처럼 바로 실행된다.
+            Thread.executeOnMain { [weak self] in
+                guard let self else { return }
+                defer {
+                    self.nextLock.unlock()
+                    self.isLoadingNext = false
+                }
+
+                guard error == nil else { return }
+                guard let messages = messages else { return }
+
+                Log.info("[Next message Response] \(messages.count) messages")
+
+                self.delegates.forEach {
+                    $0.baseChannelViewModel(
+                        self,
+                        shouldUpdateScrollInMessageList: messages,
+                        forContext: nil,
+                        keepsScroll: true
+                    )
+                }
+                self.upsertMessagesInList(
+                    messages: messages,
+                    needReload: true,
+                    shouldUpdateFirstUnreadMessage: true
                 )
             }
-            self.upsertMessagesInList(
-                messages: messages,
-                needReload: true,
-                shouldUpdateFirstUnreadMessage: true
-            )
         }
     }
 
@@ -672,12 +700,18 @@ open class SBUGroupChannelViewModel: SBUBaseChannelViewModel {
                 guard let self = self else { return }
                 if let error = error {
                     Log.error("Failed to mark message as unread. \(error)")
+                    // 오류 알림은 고객이 받는 지점(errorHandler)이라 develop처럼 Chat 콜백 큐에서 먼저 보낸다.
                     self.delegates.forEach {
                         $0.didReceiveError(error)
                     }
                 }
-                
-                self.sortAllMessageList(needReload: true)
+                // Chat 콜백 큐를 바꾼 앱에서는 이 결과가 백그라운드에서 온다. 목록 반영만 main에서 한다.
+                // main에서 불리면 지금처럼 바로 실행된다.
+                Thread.executeOnMain { [weak self] in
+                    guard let self else { return }
+                    self.sortAllMessageList(needReload: true)
+                }
+                // 공개 completion은 부른 큐(Chat 콜백 큐)에서 그대로 부른다.
                 completionHandler?(error)
             }
         }
@@ -913,50 +947,55 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
                                 context: MessageContext,
                                 channel: GroupChannel,
                                 addedMessages messages: [BaseMessage]) {
-        // -> pending, -> receive new message
+        // Chat 콜백 큐를 바꾼 앱에서는 collection 콜백이 백그라운드에서 온다. collection 콜백은 모두 main에서 도착 순서대로 처리한다
+        // (수정 뒤 삭제처럼 이어 온 콜백의 목록 변경 순서가 뒤집히지 않게). main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self else { return }
+            // -> pending, -> receive new message
 
-        // message thread case exception
-        var existInPendingMessage = false
-        for addedMessage in messages {
-            if addedMessage.sendingStatus == .succeeded { continue }
-            let filteredMessages = self.pendingMessageManager
-                .getPendingMessages(
-                    channelURL: self.channelURL,
-                    forMessageThread: true
-                )
-                .filter { $0.requestId == addedMessage.requestId }
-                .filter { $0.isRequestIdValid }
-            if !filteredMessages.isEmpty {
-                existInPendingMessage = true
+            // message thread case exception
+            var existInPendingMessage = false
+            for addedMessage in messages {
+                if addedMessage.sendingStatus == .succeeded { continue }
+                let filteredMessages = self.pendingMessageManager
+                    .getPendingMessages(
+                        channelURL: self.channelURL,
+                        forMessageThread: true
+                    )
+                    .filter { $0.requestId == addedMessage.requestId }
+                    .filter { $0.isRequestIdValid }
+                if !filteredMessages.isEmpty {
+                    existInPendingMessage = true
+                }
             }
-        }
-        if existInPendingMessage { return }
+            if existInPendingMessage { return }
 
-        Log.info("messageCollection addedMessages : \(messages.count)")
+            Log.info("messageCollection addedMessages : \(messages.count)")
         
-        var isEventMessageReceived = false
+            var isEventMessageReceived = false
         
-        switch context.source {
-        case .eventMessageReceived:
-            isEventMessageReceived = true
-            self.markAsReadIfAppropriate()
-        default: break
-        }
+            switch context.source {
+            case .eventMessageReceived:
+                isEventMessageReceived = true
+                self.markAsReadIfAppropriate()
+            default: break
+            }
         
-        self.delegates.forEach {
-            $0.baseChannelViewModel(
-                self,
-                shouldUpdateScrollInMessageList: messages,
-                forContext: context,
-                keepsScroll: true
+            self.delegates.forEach {
+                $0.baseChannelViewModel(
+                    self,
+                    shouldUpdateScrollInMessageList: messages,
+                    forContext: context,
+                    keepsScroll: true
+                )
+            }
+
+            self.upsertMessagesInList(
+                messages: messages,
+                needReload: true,
+                isEventMessageReceived: isEventMessageReceived
             )
         }
-        
-        self.upsertMessagesInList(
-            messages: messages,
-            needReload: true,
-            isEventMessageReceived: isEventMessageReceived
-        )
     }
     
     open func messageCollection(
@@ -965,71 +1004,81 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         channel: GroupChannel,
         updatedMessages messages: [BaseMessage]
     ) {
-        // pending -> failed, pending -> succeded, failed -> Pending
+        // Chat 콜백 큐를 바꾼 앱에서는 collection 콜백이 백그라운드에서 온다. collection 콜백은 모두 main에서 도착 순서대로 처리한다
+        // (수정 뒤 삭제처럼 이어 온 콜백의 목록 변경 순서가 뒤집히지 않게). main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self else { return }
+            // 업로드가 취소된 메시지는 보내는 중 상태로 온다. 그대로 넣으면 「전송 중」으로 남으므로 대기 메시지에서 뺀다.
+            if context.source == .localMessageCanceled {
+                self.deleteResendableMessages(requestIds: messages.map(\.requestId), needReload: true)
+                return
+            }
+            // pending -> failed, pending -> succeded, failed -> Pending
 
-        let hasAnyBots = channel.hasBot || channel.hasAIBot
-        let latestMessage = self.lastestStreamingMessage ?? self.latestSucceededMessage
+            let hasAnyBots = channel.hasBot || channel.hasAIBot
+            let latestMessage = self.lastestStreamingMessage ?? self.latestSucceededMessage
         
-        // NOTE: stream message for gen-ai bot.
-        if hasAnyBots == true, let streamMessage = messages.hasStreamMessageOnly(with: latestMessage) {
-            self.lastestStreamingMessage = streamMessage
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self.delegates.forEach {
-                    $0.groupChannelViewModel(
-                        self,
-                        didReceiveStreamMessage: streamMessage,
-                        forChannel: channel
+            // NOTE: stream message for gen-ai bot.
+            if hasAnyBots == true, let streamMessage = messages.hasStreamMessageOnly(with: latestMessage) {
+                self.lastestStreamingMessage = streamMessage
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    self.delegates.forEach {
+                        $0.groupChannelViewModel(
+                            self,
+                            didReceiveStreamMessage: streamMessage,
+                            forChannel: channel
+                        )
+                    }
+                    channel.markAsRead(completionHandler: nil)
+                    self.delegates.forEach {
+                        $0.baseChannelViewModel(
+                            self,
+                            shouldUpdateScrollInMessageList: [streamMessage],
+                            forContext: context,
+                            keepsScroll: false
+                        )
+                    }
+                    self.upsertMessagesInList(
+                        messages: [streamMessage],
+                        needReload: false
                     )
+                    self.lastestStreamingMessage = nil
                 }
-                channel.markAsRead(completionHandler: nil)
-                self.delegates.forEach {
-                    $0.baseChannelViewModel(
-                        self,
-                        shouldUpdateScrollInMessageList: [streamMessage],
-                        forContext: context,
-                        keepsScroll: false
+                return
+            }
+        
+            // message thread case exception
+            var existInPendingMessage = false
+            for addedMessage in messages {
+                if addedMessage.sendingStatus == .succeeded { continue }
+                let filteredMessages = self.pendingMessageManager
+                    .getPendingMessages(
+                        channelURL: self.channelURL,
+                        forMessageThread: true
                     )
+                    .filter { $0.requestId == addedMessage.requestId }
+                    .filter { $0.isRequestIdValid }
+                if !filteredMessages.isEmpty {
+                    existInPendingMessage = true
                 }
-                self.upsertMessagesInList(
-                    messages: [streamMessage],
-                    needReload: false
-                )
-                self.lastestStreamingMessage = nil
             }
-            return
-        }
+            if existInPendingMessage { return }
         
-        // message thread case exception
-        var existInPendingMessage = false
-        for addedMessage in messages {
-            if addedMessage.sendingStatus == .succeeded { continue }
-            let filteredMessages = self.pendingMessageManager
-                .getPendingMessages(
-                    channelURL: self.channelURL,
-                    forMessageThread: true
+            Log.info("messageCollection updatedMessages : \(messages.count)")
+            self.delegates.forEach {
+                $0.baseChannelViewModel(
+                    self,
+                    shouldUpdateScrollInMessageList: messages,
+                    forContext: context,
+                    keepsScroll: false
                 )
-                .filter { $0.requestId == addedMessage.requestId }
-                .filter { $0.isRequestIdValid }
-            if !filteredMessages.isEmpty {
-                existInPendingMessage = true
             }
-        }
-        if existInPendingMessage { return }
-        
-        Log.info("messageCollection updatedMessages : \(messages.count)")
-        self.delegates.forEach {
-            $0.baseChannelViewModel(
-                self,
-                shouldUpdateScrollInMessageList: messages,
-                forContext: context,
-                keepsScroll: false
+            self.upsertMessagesInList(
+                messages: messages,
+                needUpdateNewMessage: false,
+                needReload: true
             )
         }
-        self.upsertMessagesInList(
-            messages: messages,
-            needUpdateNewMessage: false,
-            needReload: true
-        )
     }
     
     open func messageCollection(
@@ -1038,11 +1087,16 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         channel: GroupChannel,
         deletedMessages messages: [BaseMessage]
     ) {
-        Log.info("messageCollection deletedMessages : \(messages.count)")
-        self.delegates.forEach {
-            $0.baseChannelViewModel(self, deletedMessages: messages)
+        // Chat 콜백 큐를 바꾼 앱에서는 collection 콜백이 백그라운드에서 온다. collection 콜백은 모두 main에서 도착 순서대로 처리한다
+        // (수정 뒤 삭제처럼 이어 온 콜백의 목록 변경 순서가 뒤집히지 않게). main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self else { return }
+            Log.info("messageCollection deletedMessages : \(messages.count)")
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, deletedMessages: messages)
+            }
+            self.deleteMessagesInList(messageIds: messages.compactMap({ $0.messageId }), needReload: true)
         }
-        self.deleteMessagesInList(messageIds: messages.compactMap({ $0.messageId }), needReload: true)
     }
     
     open func messageCollection(
@@ -1050,17 +1104,22 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         context: MessageContext,
         updatedChannel channel: GroupChannel
     ) {
-        Log.info("messageCollection changedChannel")
+        // Chat 콜백 큐를 바꾼 앱에서는 collection 콜백이 백그라운드에서 온다. collection 콜백은 모두 main에서 도착 순서대로 처리한다
+        // (수정 뒤 삭제처럼 이어 온 콜백의 목록 변경 순서가 뒤집히지 않게). main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self else { return }
+            Log.info("messageCollection changedChannel")
         
-        // Update typingMessageBubble.
-        if context.source == .eventTypingStatusUpdated,
-           SendbirdUI.config.groupChannel.channel.isTypingIndicatorEnabled,
-           SendbirdUI.config.groupChannel.channel.typingIndicatorTypes.contains(.bubble) {
-            updateTypingIndicatorMessage()
-        }
+            // Update typingMessageBubble.
+            if context.source == .eventTypingStatusUpdated,
+               SendbirdUI.config.groupChannel.channel.isTypingIndicatorEnabled,
+               SendbirdUI.config.groupChannel.channel.typingIndicatorTypes.contains(.bubble) {
+                updateTypingIndicatorMessage()
+            }
         
-        self.delegates.forEach {
-            $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, didChangeChannel: channel, withContext: context)
+            }
         }
     }
     
@@ -1069,47 +1128,52 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         channelContext: ChannelContext,
         updatedChannel: GroupChannel
     ) {
-        switch channelContext.source {
-        case .eventUserDidMarkAsRead:
-            Log.info("channelContext.source == .eventDidMarkAsRead")
-            guard let readEventDetail = channelContext.eventDetail as? EventDetail.UserDidMarkAsRead else {
-                return
-            }
+        // Chat 콜백 큐를 바꾼 앱에서는 collection 콜백이 백그라운드에서 온다. collection 콜백은 모두 main에서 도착 순서대로 처리한다
+        // (수정 뒤 삭제처럼 이어 온 콜백의 목록 변경 순서가 뒤집히지 않게). main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self else { return }
+            switch channelContext.source {
+            case .eventUserDidMarkAsRead:
+                Log.info("channelContext.source == .eventDidMarkAsRead")
+                guard let readEventDetail = channelContext.eventDetail as? EventDetail.UserDidMarkAsRead else {
+                    return
+                }
             
-            Log.info("reader=\(readEventDetail.userIds[0])")
-            if let currentUserId = SBUGlobals.currentUser?.userId,
-               readEventDetail.userIds[0] == currentUserId {
-                Log.info(".eventDidMarkAsRead by CurrentUser")
-            }
+                Log.info("reader=\(readEventDetail.userIds[0])")
+                if let currentUserId = SBUGlobals.currentUser?.userId,
+                   readEventDetail.userIds[0] == currentUserId {
+                    Log.info(".eventDidMarkAsRead by CurrentUser")
+                }
         
-        case .eventUserDidMarkAsUnread:
-            Log.info("channelContext.source == .eventDidMarkAsUnread")
-            guard let unreadEventDetail = channelContext.eventDetail as? EventDetail.UserDidMarkAsUnread else {
-                return
+            case .eventUserDidMarkAsUnread:
+                Log.info("channelContext.source == .eventDidMarkAsUnread")
+                guard let unreadEventDetail = channelContext.eventDetail as? EventDetail.UserDidMarkAsUnread else {
+                    return
+                }
+            
+                Log.info("reader=\(unreadEventDetail.userIds[0])")
+                guard let currentUserId = SBUGlobals.currentUser?.userId,
+                      unreadEventDetail.userIds[0] == currentUserId else {
+                    return
+                }
+            
+                Log.info(".eventDidMarkAsUnread by CurrentUser")
+                self.updateFirstUnreadMessage()
+            case .eventChannelChanged:
+                Log.info("channelContext.source == .eventChannelChanged")
+            
+                // Update unreadMessageInfoView's visibility based on
+                // the updated channel data (myLastRead, lastMessage.createdAt).
+                self.delegates.forEach {
+                    $0.groupChannelViewModel(
+                        self,
+                        updateUnreadMessageInfoViewVisibility: self.firstUnreadMessage
+                    )
+                }
+            
+            default:
+                break
             }
-            
-            Log.info("reader=\(unreadEventDetail.userIds[0])")
-            guard let currentUserId = SBUGlobals.currentUser?.userId,
-                  unreadEventDetail.userIds[0] == currentUserId else {
-                return
-            }
-            
-            Log.info(".eventDidMarkAsUnread by CurrentUser")
-            self.updateFirstUnreadMessage()
-        case .eventChannelChanged:
-            Log.info("channelContext.source == .eventChannelChanged")
-            
-            // Update unreadMessageInfoView's visibility based on
-            // the updated channel data (myLastRead, lastMessage.createdAt).
-            self.delegates.forEach {
-                $0.groupChannelViewModel(
-                    self,
-                    updateUnreadMessageInfoViewVisibility: self.firstUnreadMessage
-                )
-            }
-            
-        default:
-            break
         }
     }
     
@@ -1118,30 +1182,40 @@ extension SBUGroupChannelViewModel: MessageCollectionDelegate {
         context: MessageContext,
         deletedChannel channelURL: String
     ) {
-        Log.info("messageCollection deletedChannel")
-        self.delegates.forEach {
-            $0.baseChannelViewModel(self, didChangeChannel: nil, withContext: context)
+        // Chat 콜백 큐를 바꾼 앱에서는 collection 콜백이 백그라운드에서 온다. collection 콜백은 모두 main에서 도착 순서대로 처리한다
+        // (수정 뒤 삭제처럼 이어 온 콜백의 목록 변경 순서가 뒤집히지 않게). main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self else { return }
+            Log.info("messageCollection deletedChannel")
+            self.delegates.forEach {
+                $0.baseChannelViewModel(self, didChangeChannel: nil, withContext: context)
+            }
         }
     }
     
     open func didDetectHugeGap(_ collection: MessageCollection) {
-        Log.info("messageCollection didDetectHugeGap")
-        collection.dispose()
+        // Chat 콜백 큐를 바꾼 앱에서는 collection 콜백이 백그라운드에서 온다. collection 콜백은 모두 main에서 도착 순서대로 처리한다
+        // (수정 뒤 삭제처럼 이어 온 콜백의 목록 변경 순서가 뒤집히지 않게). main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self else { return }
+            Log.info("messageCollection didDetectHugeGap")
+            collection.dispose()
         
-        var startingPoint: Int64?
-        let indexPathsForStartingPoint = self.dataSource?.groupChannelViewModel(self, startingPointIndexPathsForChannel: self.channel as? GroupChannel)
-        let visibleRowCount = indexPathsForStartingPoint?.count ?? 0
-        // 보이는 행이 없으면(빈 배열) [0] 접근이 크래시하므로 nil 일 때처럼 0번을 쓴다.
-        let visibleCenterIdx = indexPathsForStartingPoint?[safe: visibleRowCount / 2]?.row ?? 0
-        if visibleCenterIdx < self.fullMessageList.count {
-            startingPoint = self.fullMessageList[visibleCenterIdx].createdAt
+            var startingPoint: Int64?
+            let indexPathsForStartingPoint = self.dataSource?.groupChannelViewModel(self, startingPointIndexPathsForChannel: self.channel as? GroupChannel)
+            let visibleRowCount = indexPathsForStartingPoint?.count ?? 0
+            // 보이는 행이 없으면(빈 배열) [0] 접근이 크래시하므로 nil 일 때처럼 0번을 쓴다.
+            let visibleCenterIdx = indexPathsForStartingPoint?[safe: visibleRowCount / 2]?.row ?? 0
+            if visibleCenterIdx < self.fullMessageList.count {
+                startingPoint = self.fullMessageList[visibleCenterIdx].createdAt
+            }
+        
+            self.loadInitialMessages(
+                startingPoint: startingPoint,
+                showIndicator: false,
+                initialMessages: nil
+            )
         }
-        
-        self.loadInitialMessages(
-            startingPoint: startingPoint,
-            showIndicator: false,
-            initialMessages: nil
-        )
     }
     
     // MARK: - Submit Form.
@@ -1314,19 +1388,23 @@ extension SBUGroupChannelViewModel {
 extension SBUGroupChannelViewModel: GroupChannelDelegate {
     // Received message
     open override func channel(_ channel: BaseChannel, didReceive message: BaseMessage) {
-        guard self.channel?.channelURL == channel.channelURL else { return }
-        guard self.messageListParams.belongsTo(message) else { return }
+        // Chat 콜백 큐를 바꾼 앱에서는 이 콜백이 백그라운드에서 온다. 스크롤 위치 읽기와 새 메시지 안내는 main에서 한다.
+        // main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain {
+            guard self.channel?.channelURL == channel.channelURL else { return }
+            guard self.messageListParams.belongsTo(message) else { return }
 
-        super.channel(channel, didReceive: message)
+            super.channel(channel, didReceive: message)
         
-        let isScrollBottom = self.dataSource?.baseChannelViewModel(self, isScrollNearBottomInChannel: self.channel)
-        if (self.hasNext() == true || isScrollBottom == false) &&
-            (message is UserMessage || message is FileMessage || message is MultipleFilesMessage || message is AdminMessage) {
-//            let context = MessageContext(source: .eventMessageReceived, sendingStatus: .succeeded)
+            let isScrollBottom = self.dataSource?.baseChannelViewModel(self, isScrollNearBottomInChannel: self.channel)
+            if (self.hasNext() == true || isScrollBottom == false) &&
+                (message is UserMessage || message is FileMessage || message is MultipleFilesMessage || message is AdminMessage) {
+    //            let context = MessageContext(source: .eventMessageReceived, sendingStatus: .succeeded)
             
-            if let channel = self.channel {
-                self.delegates.forEach {
-                    $0.baseChannelViewModel(self, didReceiveNewMessage: message, forChannel: channel)
+                if let channel = self.channel {
+                    self.delegates.forEach {
+                        $0.baseChannelViewModel(self, didReceiveNewMessage: message, forChannel: channel)
+                    }
                 }
             }
         }

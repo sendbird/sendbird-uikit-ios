@@ -189,7 +189,7 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     open override func loadView() {
         super.loadView()
         
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
         
         self.navigationController?.isModalInPresentation = true
     }
@@ -681,11 +681,16 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         _ viewModel: SBUBaseChannelViewModel,
         shouldDismissForChannel channel: BaseChannel?
     ) {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            navigationController.popToRootViewController(animated: true)
-        } else {
-            self.dismiss(animated: true, completion: nil)
+        // 현재 사용자 차단과 퇴장, 채널 오류는 Chat 콜백 큐(백그라운드일 수 있음)에서 온다.
+        // navigation 상태 읽기와 pop, dismiss는 main에서 한다. main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            if let navigationController = self.navigationController,
+                navigationController.viewControllers.count > 1 {
+                navigationController.popToRootViewController(animated: true)
+            } else {
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
     
@@ -711,7 +716,11 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
             hasNext: self.baseViewModel?.hasNext()
         )
             
-        guard needsToReload else { return }
+        guard needsToReload else {
+            // reload 없이 바뀐 메시지 내용(스트리밍 등)은 다시 그리는 셀이 보도록 사본에 넣는다.
+            Thread.executeOnMain { baseListComponent.refreshDrawnMessagePayloads() }
+            return
+        }
         
         // Verify that the UIViewController is currently visible on the screen
         let needsToLayout = self.isViewLoaded && (self.view.window != nil)
@@ -1234,7 +1243,12 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
         let gallery = inputConfig.gallery
         
         var mediaType: PHAssetMediaType? // nil is all type support
-        
+
+        // 갤러리 사진과 영상이 둘 다 꺼져 있으면 아래 분기를 모두 지나쳐 mediaType 이 nil(모든 종류)로 남는다.
+        // 기본 입력창은 둘 다 꺼지면 사진 메뉴를 보여 주지 않아(SBUMessageInputView 의 libraryItem 조건) 여기에 닿지 않는다.
+        // 고객 앱이 이 함수를 직접 부르거나 메뉴를 재정의할 때만 닿고, 그때도 앱이 죽지 않고 모든 종류를 보여 준다.
+        // AI Agent 의 같은 화면은 빈 종류 목록에서 앱이 죽어 막았다(sendbird/ai-agent-ios#981 v1, #982 v2).
+        // UIKit 은 크래시가 아니고 기본 흐름에서 닿지 않아 동작을 바꾸지 않는다(uikit-ios#1506).
         if gallery.isPhotoEnabled && gallery.isVideoEnabled {
             mediaType = nil
         } else if gallery.isPhotoEnabled {
@@ -1551,8 +1565,14 @@ open class SBUBaseChannelViewController: SBUBaseViewController, SBUBaseChannelVi
     
     open override func didReceiveError(_ error: SBError?, isBlocker: Bool) {
         self.showLoading(false)
-        if self.baseViewModel?.fullMessageList.isEmpty == true, isBlocker {
+        // Chat 콜백 큐를 바꾼 앱에서는 백그라운드에서 불린다. 목록 확인, 사본 교체, reload를 한 main 실행에서 한다.
+        // main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            guard self.baseViewModel?.fullMessageList.isEmpty == true, isBlocker else { return }
             self.baseListComponent?.updateEmptyView(type: .error)
+            // reloadData를 직접 부르므로 화면이 쓰는 사본도 같이 바꾼다.
+            self.baseListComponent?.refreshDrawnMessageList()
             self.baseListComponent?.tableView.reloadData()
         }
         

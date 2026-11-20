@@ -18,12 +18,14 @@ extension String {
     func regexMatchingList(regex: String) -> [String] {
         do {
             let regex = try NSRegularExpression(pattern: regex)
+            // INFO: 매치 범위가 글자 경계가 아닐 수 있어(뒤에 결합 문자가 붙은 경우 등) Range 강제 변환 대신 UTF-16 범위로 자른다.
+            let nsString = self as NSString
             let results = regex.matches(
                 in: self,
-                range: NSRange(self.startIndex..., in: self)
+                range: NSRange(location: 0, length: nsString.length)
             )
             return results.map {
-                String(self[Range($0.range, in: self)!])
+                nsString.substring(with: $0.range)
             }
         } catch let error {
             Log.error("invalid regex: \(error.localizedDescription)")

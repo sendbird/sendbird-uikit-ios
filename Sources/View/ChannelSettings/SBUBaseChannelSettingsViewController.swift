@@ -42,7 +42,7 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -397,23 +397,28 @@ open class SBUBaseChannelSettingsViewController: SBUBaseViewController, SBUActio
     ) { }
     
     open func baseChannelSettingsViewModel(_ viewModel: SBUBaseChannelSettingsViewModel, shouldDismissForChannelSettings channel: BaseChannel?) {
-        if channel != nil {
-            guard let channelVC = SendbirdUI.findChannelViewController(
-                rootViewController: self.navigationController
-            ) else { return }
-            
-            self.navigationController?.popToViewController(channelVC, animated: false)
-        } else {
-            guard let channelListVC = SendbirdUI.findChannelListViewController(
-                rootViewController: self.navigationController,
-                channelType: (self.channel is OpenChannel) ? .open : .group
-            ) else { return }
-            
-            if let openChannelListVC = channelListVC as? SBUOpenChannelListViewController {
-                openChannelListVC.reloadChannelList()
+        // 운영자 해제, 현재 사용자 차단, 채널 삭제는 Chat 채널 delegate(백그라운드 콜백 큐일 수 있음)에서 온다.
+        // navigation 상태 읽기와 목록 다시 불러오기, pop은 main에서 한다. main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            if channel != nil {
+                guard let channelVC = SendbirdUI.findChannelViewController(
+                    rootViewController: self.navigationController
+                ) else { return }
+
+                self.navigationController?.popToViewController(channelVC, animated: false)
+            } else {
+                guard let channelListVC = SendbirdUI.findChannelListViewController(
+                    rootViewController: self.navigationController,
+                    channelType: (self.channel is OpenChannel) ? .open : .group
+                ) else { return }
+
+                if let openChannelListVC = channelListVC as? SBUOpenChannelListViewController {
+                    openChannelListVC.reloadChannelList()
+                }
+
+                self.navigationController?.popToViewController(channelListVC, animated: false)
             }
-            
-            self.navigationController?.popToViewController(channelListVC, animated: false)
         }
     }
 }

@@ -107,6 +107,8 @@ public class SBUMentionManager: NSObject {
     @discardableResult
     public func addMention(at textView: UITextView, user: SBUUser) -> Bool {
         guard currentMentionRange.location != NSNotFound else { return false }
+        // INFO: 멘션 범위가 지금 본문 밖이면(입력을 지운 뒤 고른 경우 등) 바꾸지 않는다. 그대로 바꾸면 NSRangeException 으로 앱이 죽는다.
+        guard NSMaxRange(currentMentionRange) <= textView.attributedText.length else { return false }
 
         // [Mention List]
         
@@ -324,6 +326,17 @@ public class SBUMentionManager: NSObject {
     // MARK: - Mentionable
     
     public func handlePendingMentionSuggestion() {
+        // INFO: 조회 응답이 오기 전에 입력에서 멘션이 사라졌으면 목록을 띄우지 않는다.
+        guard currentMentionRange.location != NSNotFound else {
+            self.delegate?.mentionManager(
+                self,
+                didChangeSuggestedMention: [],
+                filteredText: nil,
+                isTriggered: false
+            )
+            return
+        }
+
         self.prevFilterText = filterText
         
         if self.suggestedMentionUsers.count > 0 {
@@ -368,6 +381,8 @@ public class SBUMentionManager: NSObject {
             ? self.isMentionEnabledAt(with: textView.text, location: location)
             : false
 
+        var isMentionInProgress = false
+
         if isMentionEnabled {
             var mentionString: String = ""
             let startIndex = textView.text.utf16.index(textView.text.startIndex, offsetBy: location)
@@ -382,6 +397,7 @@ public class SBUMentionManager: NSObject {
             filterText = ""
 
             if !mentionString.isEmpty {
+                isMentionInProgress = true
                 currentMentionRange = (textView.text as NSString).range(
                     of: mentionString,
                     options: .backwards,
@@ -410,6 +426,15 @@ public class SBUMentionManager: NSObject {
                     return
                 }
             }
+        }
+
+        if !isMentionInProgress {
+            // INFO: 입력에 쓰는 중인 멘션이 없으면 범위와 filterText 를 비운다.
+            // 남겨 두면 늦게 온 멤버 조회 응답이 목록을 다시 띄우고, 고른 사용자를 옛 범위에 넣다 앱이 죽는다.
+            currentMentionRange = NSRange(location: NSNotFound, length: 0)
+            filterText = ""
+            // INFO: 직전 검색어도 비운다. 남겨 두면 같은 검색어를 다시 넣었을 때(붙여넣기 등) 멤버 조회를 건너뛰어 목록이 뜨지 않는다.
+            prevFilterText = ""
         }
 
         self.delegate?.mentionManager(
@@ -463,6 +488,8 @@ public class SBUMentionManager: NSObject {
         let regex = "[@][{](.*?)([}])"
         let mentionedIds = mentionedMessageTemplate.regexMatchingList(regex: regex)
         var replacedMessage = mentionedMessageTemplate
+        // INFO: 직전에 바꾼 멘션 바로 뒤부터 찾는다. 앞에서부터 차례로 바꿔야 이미 저장한 멘션 범위가 옮겨지지 않는다.
+        var searchLocation = 0
         
         for mentionedId in mentionedIds {
             guard let userId = mentionedId.unwrappingRegex(regex) else { continue }
@@ -471,10 +498,17 @@ public class SBUMentionManager: NSObject {
             guard let user = matchedUsers.first else { continue }
             
             let mentionedNickname = user.mentionedNickname()
-            let range = (replacedMessage as NSString).range(
+            let replacedNSString = replacedMessage as NSString
+            guard searchLocation <= replacedNSString.length else { break }
+            // INFO: 글자 그대로 비교한다. "@{userId}" 바로 뒤에 결합 문자가 붙으면 정준 동등 비교로는 "}" 를 찾지 못해,
+            // 뒤에 있는 같은 멘션을 먼저 바꾸게 된다.
+            let range = replacedNSString.range(
                 of: mentionedId,
-                options: .caseInsensitive
+                options: [.caseInsensitive, .literal],
+                range: NSRange(location: searchLocation, length: replacedNSString.length - searchLocation)
             )
+            // INFO: 못 찾으면 이 멘션은 바꾸지 않는다. NSNotFound 를 범위로 쓰면 앱이 죽는다.
+            guard range.location != NSNotFound else { continue }
 
             // INFO: range에 있는 문자열을 mentionText 로 변경한 attributedText 와 교체된 range 정보를 생성.
             let textToReplace = mentionedNickname
@@ -500,6 +534,7 @@ public class SBUMentionManager: NSObject {
             
             let mention = SBUMention(range: adjustedRange, user: user)
             mentionedList += [mention]
+            searchLocation = NSMaxRange(adjustedRange)
             
             replacedMessage = appliedAttributedText.string
             attributedText = NSMutableAttributedString(attributedString: appliedAttributedText)
@@ -529,7 +564,8 @@ public class SBUMentionManager: NSObject {
         var attributedText = attributedText
         var tempMentionedList = mentionedList
         
-        for idx in 0..<mentions.count {
+        // 넘겨받은 mentions 가 내부 목록보다 길면 범위를 넘으므로 짧은 쪽 길이까지만 돈다.
+        for idx in 0..<min(mentions.count, tempMentionedList.count) {
             let mention = tempMentionedList[idx]
             let textToReplace = "@{" + mention.user.userId + "}"
             

@@ -29,10 +29,16 @@ open class SBUVerticalSuggestedReplyView: SBUSuggestedReplyView {
 
     // MARK: - Sendbird UIKit Life Cycle
     
+    /// 기본 세로형 뷰가 그리는 옵션 수의 상한.
+    static let maxOptionCount = 20
+
     open override func setupViews() {
         super.setupViews()
 
-        let optionViews = self.createSuggestedReplyOptionViews(options: self.options)
+        // 옵션마다 버튼 뷰를 main에서 한꺼번에 만들고 레이아웃 시간이 개수보다 빠르게 늘어
+        // (iOS 26.4 시뮬레이터에서 300개 2.4초) 앞의 20개만 그린다. 나머지는 안내 없이 그리지 않는다.
+        // `options`는 그대로 두어, 직접 만든 추천 답장 뷰는 모든 옵션을 읽는다.
+        let optionViews = self.createSuggestedReplyOptionViews(options: Array(self.options.prefix(Self.maxOptionCount)))
         self.stackView.setVStack(optionViews)
         self.optionViews = optionViews
         

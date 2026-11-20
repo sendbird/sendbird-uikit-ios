@@ -34,6 +34,16 @@ extension SBUCacheManager {
             }
         }
         
+        /// 메모리 큐에서 `make` 로 만든 이미지를 넣는다. `skipIfCached` 키에 이미 이미지가 있으면 만들지도 넣지도 않는다.
+        /// 확인과 저장이 같은 직렬 큐에서 일어나므로, 그 키의 저장이 먼저 예약됐으면 반드시 본다.
+        func set(key: String, skipIfCached otherKey: String? = nil, make: @escaping () -> UIImage?) {
+            memoryQueue.async {
+                if let otherKey = otherKey, self.memoryCache.object(forKey: otherKey as NSString) != nil { return }
+                guard let image = make() else { return }
+                self.memoryCache.setObject(image, forKey: key as NSString)
+            }
+        }
+        
         func get(key: String) -> UIImage? {
             memoryQueue.sync {
                 self.memoryCache.object(forKey: key as NSString)

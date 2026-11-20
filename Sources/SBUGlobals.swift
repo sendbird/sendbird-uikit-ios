@@ -21,9 +21,10 @@ public class SBUGlobals {
     /// - Since: 3.0.0
     public static var accessToken: String?
     
+    // 로그인/로그아웃 완료가 Chat 콜백 큐에서 바꾸는 사이 main 과 채널 delegate 가 읽어 잠금으로 보호함
     /// The current user that is type of `SBUUser`
     /// - Since: 3.0.0
-    public static var currentUser: SBUUser?
+    @SBUAtomic public static var currentUser: SBUUser?
     
     // MARK: - Channel List
     /// If this value is enabled, the channel list shows the typing indicator. The defaut value is `false`.

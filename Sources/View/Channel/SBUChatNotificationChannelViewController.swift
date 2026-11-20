@@ -120,7 +120,7 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
     open override func loadView() {
         super.loadView()
         
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
         
         self.navigationController?.isModalInPresentation = true
         
@@ -131,7 +131,7 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
     open override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
         self.view.endEditing(true)
     }
     
@@ -395,27 +395,34 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
         didChangeChannel channel: GroupChannel?,
         withContext context: MessageContext
     ) {
-        guard channel != nil else {
-            // channel deleted
-            if self.isLastInNavigationStack() {
-                // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
-                self.onClickBack()
+        // 채널 조회와 새로 고침 completion, collection 콜백은 Chat 콜백 큐(백그라운드일 수 있음)에서 이 콜백을 부른다.
+        // 화면 닫기, 제목 갱신, 목록 reload는 main에서 한다. main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            guard channel != nil else {
+                // channel deleted
+                if self.isLastInNavigationStack() {
+                    // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
+                    self.onClickBack()
+                }
+                return
             }
-            return
+
+            // channel changed
+            switch context.source {
+            case .eventReadStatusUpdated, .eventDeliveryStatusUpdated:
+                self.listComponent?.reloadTableView()
+            case .channelChangelog:
+                self.updateChannelTitle()
+                self.listComponent?.reloadTableView()
+            case .eventChannelChanged:
+                self.updateChannelTitle()
+            default: break
+            }
         }
-        
-        // channel changed
-        switch context.source {
-        case .eventReadStatusUpdated, .eventDeliveryStatusUpdated:
-            self.listComponent?.reloadTableView()
-        case .channelChangelog:
-            self.updateChannelTitle()
-            self.listComponent?.reloadTableView()
-        case .eventChannelChanged:
-            self.updateChannelTitle()
-        default: break
-        }
-        
+
+        guard channel != nil else { return }
+        // 공개 override 지점이라 develop처럼 부른 큐(Chat 콜백 큐)에서 그대로 부른다.
         self.didUpdateUnreadMessageCount(channel?.unreadMessageCount ?? 0)
     }
     
@@ -424,7 +431,12 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
         didReceiveNewNotification notification: BaseMessage,
         forChannel channel: GroupChannel
     ) {
-        self.increaseNewNotificationCount()
+        // 새 알림 알림은 Chat 콜백 큐에서 온다. 새 알림 표시(목록의 스크롤 위치 읽기 포함)는 main에서 한다.
+        // main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            self?.increaseNewNotificationCount()
+        }
+        // 공개 override 지점이라 develop처럼 부른 큐(Chat 콜백 큐)에서 그대로 부른다.
         self.didUpdateUnreadMessageCount(channel.unreadMessageCount)
     }
     
@@ -432,11 +444,16 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
         _ viewModel: SBUChatNotificationChannelViewModel,
         shouldDismissForChannel channel: GroupChannel?
     ) {
-        if let navigationController = self.navigationController,
-            navigationController.viewControllers.count > 1 {
-            navigationController.popToRootViewController(animated: true)
-        } else {
-            self.dismiss(animated: true, completion: nil)
+        // 채널 조회와 새로 고침의 권한 오류는 Chat 콜백 큐(백그라운드일 수 있음)에서 온다.
+        // navigation 상태 읽기와 pop, dismiss는 main에서 한다. main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            if let navigationController = self.navigationController,
+                navigationController.viewControllers.count > 1 {
+                navigationController.popToRootViewController(animated: true)
+            } else {
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
     
@@ -732,11 +749,15 @@ open class SBUChatNotificationChannelViewController: SBUBaseViewController,
     }
     
     open override func didReceiveError(_ error: SendbirdChatSDK.SBError?, isBlocker: Bool) {
-        if self.viewModel?.notifications.isEmpty == true, isBlocker {
+        // 채널 조회와 새로 고침의 차단 오류는 Chat 콜백 큐(백그라운드일 수 있음)에서 온다. 목록 확인, 빈 화면, reload는 main에서 한다.
+        // main에서 불리면 지금처럼 바로 실행된다. errorHandler는 공개 override 지점이라 부른 큐에서 그대로 부른다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            guard self.viewModel?.notifications.isEmpty == true, isBlocker else { return }
             self.listComponent?.updateEmptyView(type: .error)
             self.listComponent?.reloadTableView()
         }
-        
+
         self.errorHandler(error?.localizedDescription)
     }
     

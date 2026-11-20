@@ -200,8 +200,33 @@ internal extension UIImageView {
             urlString: urlString,
             cacheKey: cacheKey
         )
-        
-        if let image = SBUCacheManager.Image.get(fileName: fileName, subPath: subPath) {
+        // autoset 이 false 면 결과를 넣을 뷰를 부른 쪽이 정하므로 첫 프레임을 넘긴 뒤 바꿀 수 없고, completion 을 디코드 뒤로 미루면
+        // 같은 loader 로 연달아 부를 때 순서가 바뀐다. develop 처럼 부른 자리에서 GIF 를 만들어 completion 을 지금 부른다
+        // (상한을 넘는 GIF 는 원본 크기 lazy 프레임. 셀과 겹치지 않는 다른 키로 메모리 캐시에 넣어, 같은 키를 다시 부르면 디스크를 읽지 않는다).
+        guard autoset else {
+            if let image = SBUCacheManager.Image.getKeepingLazyFrames(fileName: fileName, subPath: subPath) {
+                self.setImage(
+                    image,
+                    urlString: urlString,
+                    tintColor: tintColor,
+                    status: .successFromCache,
+                    autoset: autoset,
+                    completion: completion
+                )
+                return nil
+            }
+            return self.downloadOriginalImage(
+                urlString: urlString,
+                errorImage: errorImage,
+                tintColor: tintColor,
+                cacheKey: cacheKey,
+                subPath: subPath,
+                autoset: autoset,
+                completion: completion
+            )
+        }
+        switch SBUCacheManager.Image.loadCachedImage(fileName: fileName, subPath: subPath) {
+        case .image(let image):
             self.setImage(
                 image,
                 urlString: urlString,
@@ -211,8 +236,44 @@ internal extension UIImageView {
                 completion: completion
             )
             return nil
+        case .firstFrame(let firstFrame):
+            // 상한을 넘는 GIF 는 모든 프레임을 main 밖에서 만든다.
+            // develop 처럼 부른 자리에서 GIF 와 같은 크기의 첫 프레임을 넣고 completion 도 지금 부른다(횟수, 순서, 스레드가 develop 과 같다).
+            let shown = self.setImage(
+                firstFrame,
+                urlString: urlString,
+                tintColor: tintColor,
+                status: .successFromCache,
+                autoset: autoset,
+                completion: completion
+            )
+            // 다 만든 뒤 뷰가 아직 그 첫 프레임을 보여 줄 때만 GIF 로 바꾼다. 그 사이 다른 요청(셀 재사용), 직접 넣은 이미지,
+            // 나중에 넣은 placeholder 가 있으면 그 값이 남는다.
+            SBUCacheManager.Image.whenAllFramesDecoded(for: firstFrame) { [weak self] image in
+                guard let self = self, let image = image, let shown = shown, self.image === shown else { return }
+                self.image = tintColor.map { image.sbu_with(tintColor: $0) } ?? image
+            }
+            return nil
+        case .miss:
+            return self.downloadOriginalImage(
+                urlString: urlString,
+                errorImage: errorImage,
+                tintColor: tintColor,
+                cacheKey: cacheKey,
+                subPath: subPath,
+                autoset: autoset,
+                completion: completion
+            )
         }
-        
+    }
+    
+    private func downloadOriginalImage(urlString: String,
+                                       errorImage: UIImage? = nil,
+                                       tintColor: UIColor? = nil,
+                                       cacheKey: String? = nil,
+                                       subPath: String,
+                                       autoset: Bool = true,
+                                       completion: LoadCompletion? = nil) -> URLSessionTask? {
         return Self.getOriginalImage(
             urlString: urlString,
             cacheKey: cacheKey,
@@ -415,20 +476,22 @@ internal extension UIImageView {
         return task
     }
     
+    /// - Returns: 넣는(autoset 이 false 면 completion 으로 넘기는) 이미지. tint 를 적용하면 새 인스턴스다.
+    @discardableResult
     private func setImage(_ image: UIImage?,
                           urlString: String,
                           tintColor: UIColor? = nil,
                           contentMode: ContentMode = .scaleAspectFill,
                           status: LoadStatus = .success,
                           autoset: Bool,
-                          completion: LoadCompletion? = nil) {
+                          completion: LoadCompletion? = nil) -> UIImage? {
         guard let image = image else {
             if status != .placeholder {
                 Thread.executeOnMain {
                     completion?(.init(status: .failure, urlString: urlString))
                 }
             }
-            return
+            return nil
         }
         
         let resultImage = tintColor != nil ? image.sbu_with(tintColor: tintColor!) : image
@@ -440,6 +503,7 @@ internal extension UIImageView {
             }
             completion?(.init(status: status, urlString: urlString, image: resultImage))
         }
+        return resultImage
     }
 }
 

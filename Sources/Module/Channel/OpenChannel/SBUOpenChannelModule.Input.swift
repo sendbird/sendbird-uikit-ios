@@ -167,7 +167,8 @@ extension SBUOpenChannelModule {
         open override func pickVideoFile(info: [UIImagePickerController.InfoKey: Any]) {
             do {
                 guard let videoURL = info[.mediaURL] as? URL else { return }
-                let videoFileData = try Data(contentsOf: videoURL)
+                // 큰 영상, 문서를 main 에서 통째로 메모리에 올리지 않도록 매핑해 읽는다. 넘겨받은 파일은 다시 쓰일 수 있어 SDK 사본을 매핑한다.
+                let videoFileData = try SBUUtils.mappedData(ofPickedFile: videoURL)
                 let videoName = videoURL.lastPathComponent
                 guard let mimeType = SBUUtils.getMimeType(url: videoURL) else { return }
                 
@@ -241,7 +242,8 @@ extension SBUOpenChannelModule {
                 guard let videoURL = url else { return }
                 guard let self = self else { return }
                 do {
-                    let videoFileData = try Data(contentsOf: videoURL)
+                    // 큰 영상을 통째로 메모리에 올리지 않도록 매핑해 읽는다. 이 파일은 시스템이 만든 임시 사본이라 다시 쓰이지 않고 지워지기만 한다.
+                    let videoFileData = try Data(contentsOf: videoURL, options: .mappedIfSafe)
                     let videoName = videoURL.lastPathComponent
                     guard let mimeType = SBUUtils.getMimeType(url: videoURL) else { return }
                     
@@ -262,7 +264,8 @@ extension SBUOpenChannelModule {
         open override func pickDocumentFile(documentURLs: [URL]) {
             do {
                 guard let documentURL = documentURLs.first else { return }
-                let documentData = try Data(contentsOf: documentURL)
+                // 큰 영상, 문서를 main 에서 통째로 메모리에 올리지 않도록 매핑해 읽는다. 넘겨받은 파일은 다시 쓰일 수 있어 SDK 사본을 매핑한다.
+                let documentData = try SBUUtils.mappedData(ofPickedFile: documentURL)
                 let documentName = documentURL.lastPathComponent
                 guard let mimeType = SBUUtils.getMimeType(url: documentURL) else { return }
                 
@@ -292,7 +295,8 @@ extension SBUOpenChannelModule {
         
         open override func pickVideoURL(_ url: URL) {
             do {
-                let videoFileData = try Data(contentsOf: url)
+                // 큰 영상, 문서를 main 에서 통째로 메모리에 올리지 않도록 매핑해 읽는다. 넘겨받은 파일은 다시 쓰일 수 있어 SDK 사본을 매핑한다.
+                let videoFileData = try SBUUtils.mappedData(ofPickedFile: url)
                 let videoName = url.lastPathComponent
                 guard let mimeType = SBUUtils.getMimeType(url: url) else { return }
                 

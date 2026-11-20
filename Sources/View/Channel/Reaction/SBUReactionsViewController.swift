@@ -242,9 +242,11 @@ open class SBUReactionsViewController: SBUBaseViewController, UITableViewDelegat
     /// This function retrieves the user for the specified index path.
     /// - Since: 3.28.0
     public func getUser(with indexPath: IndexPath) -> SBUUser? {
-        guard let selectedReaction = self.selectedReaction,
-              indexPath.row < selectedReaction.sampledUserIds.count else { return nil }
-        let userId = selectedReaction.sampledUserIds[indexPath.row]
+        guard let selectedReaction = self.selectedReaction else { return nil }
+        // Chat 이 리액션 이벤트를 같은 Reaction 객체에 다른 스레드에서 반영하므로, 사용자 목록은 한 번만 읽고 그 사본으로 범위를 확인한다.
+        let sampledUserIds = selectedReaction.sampledUserIds
+        guard indexPath.row < sampledUserIds.count else { return nil }
+        let userId = sampledUserIds[indexPath.row]
         let user = memberList
             .first { $0.userId == userId }
             .map { SBUUser(user: $0) } ?? SBUUser(

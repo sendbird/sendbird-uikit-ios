@@ -57,7 +57,16 @@ class BlockingOperation: Operation, @unchecked Sendable {
     private var synchronous: Bool
     
     var userInfo: [String: Any]
-    var didAttemptRun = false
+
+    // main() 과 markReady() 가 누가 task 를 실행할지 정하는 값. 아래 세 값은 stateQueue 의 barrier 블록 안에서만 읽고 쓴다.
+    // markReady() 가 이미 불렸는지. 두 번째 호출을 무시하는 데 쓴다.
+    private var didRequestReady: Bool
+    // ready 표시를 마쳤는지. main() 은 이 값으로 바로 실행할지 정한다.
+    private var isMarkedReady: Bool
+    // main() 이 실행을 미뤄 두었는지. markReady() 는 이 값으로 대신 실행할지 정한다.
+    private var didAttemptRun = false
+    /// 테스트 전용. `main()` 이 실행 여부를 확정하기 직전에 불린다. production 에서는 nil 이다.
+    var willCommitRunDecision: (() -> Void)?
     
     /**
      Initializes `BlockingOperation`.
@@ -72,6 +81,8 @@ class BlockingOperation: Operation, @unchecked Sendable {
         self.identifier = UUID().uuidString
         self.userInfo = [:]
         self.internalState = requireExplicity ? .waiting : .ready
+        self.didRequestReady = !requireExplicity
+        self.isMarkedReady = !requireExplicity
     }
     
     convenience init(
@@ -109,8 +120,22 @@ class BlockingOperation: Operation, @unchecked Sendable {
      If this task was already ready to be run by the parent `OperationQueue` but did not run because it was not mark as ready, calling this method will run the task immediately.
      */
     func markReady() {
+        // 두 번째 호출은 무시한다. 실행 중이거나 끝난 상태를 ready 로 되돌리거나 task 를 다시 돌리지 않는다.
+        let isFirstRequest = stateQueue.sync(flags: .barrier) { () -> Bool in
+            defer { didRequestReady = true }
+            return !didRequestReady
+        }
+        guard isFirstRequest else { return }
+
+        // KVO 를 barrier 블록 밖에서 보내려고 상태는 먼저 바꾼다. isMarkedReady 가 아직 false 라 main() 은 이 사이에 실행하지 않는다.
         state = .ready
-        if didAttemptRun {
+
+        // main() 과 같은 barrier 블록 안에서 ready 표시와 실행 여부를 함께 정한다. main() 이 먼저 실행을 미뤄 두었으면 여기서 실행한다.
+        let shouldRun = stateQueue.sync(flags: .barrier) { () -> Bool in
+            isMarkedReady = true
+            return didAttemptRun
+        }
+        if shouldRun {
             execute()
         }
     }
@@ -120,11 +145,15 @@ class BlockingOperation: Operation, @unchecked Sendable {
             provisionalComplete()
             return
         }
-        
-        if state == .ready {
-            execute()
-        } else {
+
+        willCommitRunDecision?()
+        // markReady() 와 같은 barrier 블록 안에서 정한다. ready 표시가 먼저 끝났으면 바로 실행하고, 아니면 markReady() 가 실행하게 남긴다.
+        let shouldRun = stateQueue.sync(flags: .barrier) { () -> Bool in
             didAttemptRun = true
+            return isMarkedReady
+        }
+        if shouldRun {
+            execute()
         }
     }
     

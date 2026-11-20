@@ -151,7 +151,7 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
     }
     open override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -852,41 +852,47 @@ open class SBUMessageThreadViewController: SBUBaseChannelViewController, SBUMess
         didChangeChannel channel: BaseChannel?,
         withContext context: MessageContext
     ) {
-        guard channel != nil else {
-            // channel deleted
-            if self.isLastInNavigationStack() {
-                // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
-                self.onClickBack()
+        // Chat 콜백 큐를 바꾼 앱에서는 이 콜백이 백그라운드에서 온다. 헤더, 입력창, 목록 갱신과 화면 닫기는 main에서 한다.
+        // main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain { [weak self] in
+            guard let self = self else { return }
+            
+            guard channel != nil else {
+                // channel deleted
+                if self.isLastInNavigationStack() {
+                    // If leave is called in the ChannelSettingsViewController, this logic needs to be prevented.
+                    self.onClickBack()
+                }
+                return
             }
-            return
-        }
         
-        // channel changed
-        switch context.source {
-        case .channelChangelog:
-            self.updateChannelTitle()
-            self.updateChannelStatus()
-            self.inputComponent?.updateMessageInputModeState()
-            self.listComponent?.reloadTableView()
-            self.updateVoiceMessageInputMode()
+            // channel changed
+            switch context.source {
+            case .channelChangelog:
+                self.updateChannelTitle()
+                self.updateChannelStatus()
+                self.inputComponent?.updateMessageInputModeState()
+                self.listComponent?.reloadTableView()
+                self.updateVoiceMessageInputMode()
             
-        case .eventChannelChanged:
-            self.updateChannelTitle()
-            self.updateChannelStatus()
-            self.inputComponent?.updateMessageInputModeState()
-            self.updateVoiceMessageInputMode()
+            case .eventChannelChanged:
+                self.updateChannelTitle()
+                self.updateChannelStatus()
+                self.inputComponent?.updateMessageInputModeState()
+                self.updateVoiceMessageInputMode()
             
-        case .eventUserLeft, .eventUserJoined:
-            self.updateChannelTitle()
+            case .eventUserLeft, .eventUserJoined:
+                self.updateChannelTitle()
             
-        case .eventChannelFrozen, .eventChannelUnfrozen,
-                .eventUserMuted, .eventUserUnmuted,
-                .eventOperatorUpdated,
-                .eventUserBanned: // Other User Banned
-            self.inputComponent?.updateMessageInputModeState()
-            self.updateVoiceMessageInputMode()
+            case .eventChannelFrozen, .eventChannelUnfrozen,
+                    .eventUserMuted, .eventUserUnmuted,
+                    .eventOperatorUpdated,
+                    .eventUserBanned: // Other User Banned
+                self.inputComponent?.updateMessageInputModeState()
+                self.updateVoiceMessageInputMode()
             
-        default: break
+            default: break
+            }
         }
     }
     

@@ -765,51 +765,55 @@ public class SendbirdUI {
                                      messageListParams: MessageListParams? = nil,
                                      channelType: ChannelType = .group,
                                      rootViewController: UIViewController? = nil) {
-        guard SBUGlobals.currentUser != nil else { return }
+        // Chat 콜백 큐를 바꾼 앱에서는 채널을 만든 completion(createAndMoveToChannel, startChatWithAIBot)이 백그라운드에서 이 함수를 부른다.
+        // 화면 찾기와 이동은 main에서 한다. main에서 불리면 지금처럼 바로 실행된다.
+        Thread.executeOnMain {
+            guard SBUGlobals.currentUser != nil else { return }
         
-        var rootViewController = rootViewController ?? UIApplication.shared.currentWindow?.rootViewController
-        if let tabbarController: UITabBarController = rootViewController?.presentedViewController as? UITabBarController {
-            rootViewController = tabbarController.selectedViewController
-        } else if let tabbarController: UITabBarController = rootViewController as? UITabBarController {
-            rootViewController = tabbarController.selectedViewController
-        }
+            var rootViewController = rootViewController ?? UIApplication.shared.currentWindow?.rootViewController
+            if let tabbarController: UITabBarController = rootViewController?.presentedViewController as? UITabBarController {
+                rootViewController = tabbarController.selectedViewController
+            } else if let tabbarController: UITabBarController = rootViewController as? UITabBarController {
+                rootViewController = tabbarController.selectedViewController
+            }
         
-        // If search view controller is found, dismiss it first (it'll be in different navigation controller)
-        if let searchViewController = findSearchViewController(rootViewController: rootViewController) {
-            // Dismiss any presented view controllers before pushing other vc on top
-            searchViewController.presentedViewController?.dismiss(animated: false, completion: nil)
+            // If search view controller is found, dismiss it first (it'll be in different navigation controller)
+            if let searchViewController = findSearchViewController(rootViewController: rootViewController) {
+                // Dismiss any presented view controllers before pushing other vc on top
+                searchViewController.presentedViewController?.dismiss(animated: false, completion: nil)
+
+                searchViewController.dismiss(animated: false) {
+                    let viewController: UIViewController? = findChannelListViewController(
+                        rootViewController: rootViewController,
+                        channelType: channelType
+                    )
+                    showChannelViewController(with: viewController ?? rootViewController,
+                                              channelURL: channelURL,
+                                              basedOnChannelList: basedOnChannelList,
+                                              messageListParams: messageListParams,
+                                              channelType: channelType)
+                }
+            } else {
+                let viewController: UIViewController? = {
+                #if SWIFTUI
+                    findChannelListViewControllerFromSwiftUI(
+                        rootViewController: rootViewController,
+                        channelType: channelType
+                    )
+                #else
+                    findChannelListViewController(
+                        rootViewController: rootViewController,
+                        channelType: channelType
+                    )
+                #endif
+                }()
             
-            searchViewController.dismiss(animated: false) {
-                let viewController: UIViewController? = findChannelListViewController(
-                    rootViewController: rootViewController,
-                    channelType: channelType
-                )
                 showChannelViewController(with: viewController ?? rootViewController,
                                           channelURL: channelURL,
                                           basedOnChannelList: basedOnChannelList,
                                           messageListParams: messageListParams,
                                           channelType: channelType)
             }
-        } else {
-            let viewController: UIViewController? = {
-            #if SWIFTUI
-                findChannelListViewControllerFromSwiftUI(
-                    rootViewController: rootViewController,
-                    channelType: channelType
-                )
-            #else
-                findChannelListViewController(
-                    rootViewController: rootViewController,
-                    channelType: channelType
-                )
-            #endif
-            }()
-            
-            showChannelViewController(with: viewController ?? rootViewController,
-                                      channelURL: channelURL,
-                                      basedOnChannelList: basedOnChannelList,
-                                      messageListParams: messageListParams,
-                                      channelType: channelType)
         }
     }
     

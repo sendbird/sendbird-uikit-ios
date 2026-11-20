@@ -201,7 +201,9 @@ open class SBUOpenChannelListViewModel: SBUBaseChannelListViewModel {
         var toBeDeleteIndexes: [Int] = []
         
         for channelURL in channelURLs {
-            if let index = self.channelList.firstIndex(where: { $0.channelURL == channelURL }) {
+            // 같은 URL 이 두 번 들어오면 같은 index 를 두 번 지우게 되므로 한 번만 담는다.
+            if let index = self.channelList.firstIndex(where: { $0.channelURL == channelURL }),
+               toBeDeleteIndexes.contains(index) == false {
                 toBeDeleteIndexes.append(index)
             }
         }

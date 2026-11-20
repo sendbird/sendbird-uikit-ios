@@ -60,8 +60,18 @@ extension SBUBaseSelectUserModule {
         /// The object that acts as the base data source of the list component. The base data source must adopt the `SBUBaseSelectUserModuleListDataSource`.
         public weak var baseDataSource: SBUBaseSelectUserModuleListDataSource?
         
-        /// The list of all users shown
+        /// The list of all users shown. It takes the latest value of `baseSelectUserModule(_:usersInTableView:)` when `reloadTableView()` runs.
+        /// - Important: Calling `tableView.reloadData()` directly does not update this list. Use `reloadTableView()` to draw the latest users.
         public var userList: [SBUUser]? {
+            if let drawnUserList = self.drawnUserList { return drawnUserList }
+            self.drawnUserList = self.latestUserList
+            return self.drawnUserList
+        }
+
+        // 화면이 쓰는 사본. table view가 아는 행 수와 어긋나지 않도록 reload할 때만 바꾼다.
+        @SBUAtomic private var drawnUserList: [SBUUser]?
+
+        var latestUserList: [SBUUser]? {
             self.baseDataSource?.baseSelectUserModule(self, usersInTableView: self.tableView)
         }
         
@@ -168,6 +178,8 @@ extension SBUBaseSelectUserModule {
         /// Reloads table view. This method corresponds to `UITableView reloadData()`.
         public func reloadTableView() {
             DispatchQueue.main.async { [weak self] in
+                // 사본 교체와 reload는 같은 main 실행에서 한다.
+                self?.drawnUserList = self?.latestUserList
                 self?.tableView.reloadData()
             }
         }

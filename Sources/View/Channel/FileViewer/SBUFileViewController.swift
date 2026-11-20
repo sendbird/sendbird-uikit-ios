@@ -200,7 +200,7 @@ open class SBUFileViewController: SBUBaseViewController, UIScrollViewDelegate, S
     open override func viewDidLoad() {
         super.viewDidLoad()
          
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = nil
+        self.navigationController?.sbu_setInteractivePopGestureGuard()
         
         let gesture = UITapGestureRecognizer(
             target: self,

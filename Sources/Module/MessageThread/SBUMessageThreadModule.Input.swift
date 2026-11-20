@@ -288,7 +288,8 @@ extension SBUMessageThreadModule {
         open override func pickVideoFile(info: [UIImagePickerController.InfoKey: Any]) {
             do {
                 guard let videoURL = info[.mediaURL] as? URL else { return }
-                let videoFileData = try Data(contentsOf: videoURL)
+                // 큰 영상, 문서를 main 에서 통째로 메모리에 올리지 않도록 매핑해 읽는다. 넘겨받은 파일은 다시 쓰일 수 있어 SDK 사본을 매핑한다.
+                let videoFileData = try SBUUtils.mappedData(ofPickedFile: videoURL)
                 let videoName = videoURL.lastPathComponent
                 guard let mimeType = SBUUtils.getMimeType(url: videoURL) else { return }
                 
@@ -370,7 +371,8 @@ extension SBUMessageThreadModule {
                 guard let videoURL = url else { return }
                 guard let self = self else { return }
                 do {
-                    let videoFileData = try Data(contentsOf: videoURL)
+                    // 큰 영상을 통째로 메모리에 올리지 않도록 매핑해 읽는다. 이 파일은 시스템이 만든 임시 사본이라 다시 쓰이지 않고 지워지기만 한다.
+                    let videoFileData = try Data(contentsOf: videoURL, options: .mappedIfSafe)
                     let videoName = videoURL.lastPathComponent
                     guard let mimeType = SBUUtils.getMimeType(url: videoURL) else { return }
                     
@@ -392,7 +394,8 @@ extension SBUMessageThreadModule {
         open override func pickDocumentFile(documentURLs: [URL]) {
             do {
                 guard let documentURL = documentURLs.first else { return }
-                let documentData = try Data(contentsOf: documentURL)
+                // 큰 영상, 문서를 main 에서 통째로 메모리에 올리지 않도록 매핑해 읽는다. 넘겨받은 파일은 다시 쓰일 수 있어 SDK 사본을 매핑한다.
+                let documentData = try SBUUtils.mappedData(ofPickedFile: documentURL)
                 let documentName = documentURL.lastPathComponent
                 guard let mimeType = SBUUtils.getMimeType(url: documentURL) else { return }
                 
@@ -424,7 +427,8 @@ extension SBUMessageThreadModule {
         
         open override func pickVideoURL(_ url: URL) {
             do {
-                let videoFileData = try Data(contentsOf: url)
+                // 큰 영상, 문서를 main 에서 통째로 메모리에 올리지 않도록 매핑해 읽는다. 넘겨받은 파일은 다시 쓰일 수 있어 SDK 사본을 매핑한다.
+                let videoFileData = try SBUUtils.mappedData(ofPickedFile: url)
                 let videoName = url.lastPathComponent
                 guard let mimeType = SBUUtils.getMimeType(url: url) else { return }
                 
@@ -478,16 +482,22 @@ extension SBUMessageThreadModule {
             var fileInfoList: [UploadableFileInfo?] = Array(repeating: nil, count: itemProviders.count)
             let group = DispatchGroup()
             
+            // 이미지와 GIF 결과는 provider 스레드에서 온다. 같은 배열을 여러 스레드가 고치지 않도록
+            // 결과는 main 에서 배열에 넣은 뒤 leave 한다. 작업마다 한 번만 부른다.
+            let collect: (Int, UploadableFileInfo?) -> Void = { index, fileInfo in
+                DispatchQueue.main.async {
+                    fileInfoList[index] = fileInfo
+                    group.leave()
+                }
+            }
+            
             for (index, itemProvider) in itemProviders.enumerated() {
                 group.enter()
                     // Image
                     if itemProvider.hasItemConformingToTypeIdentifier(UTType.image.identifier) {
                         self.loadImageFile(itemProvider: itemProvider, index: index) { imageData, fileName, mimeType in
-                            defer {
-                                group.leave()
-                            }
-                            
                             guard let imageData = imageData, let fileName = fileName, let mimeType = mimeType else {
+                                collect(index, nil)
                                 return
                             }
 
@@ -501,18 +511,15 @@ extension SBUMessageThreadModule {
                                 fileInfo.thumbnailSizes = [thumbnailSize]
                             }
 
-                            fileInfoList[index] = fileInfo
+                            collect(index, fileInfo)
                         }
                     }
 
                     // GIF
                     else if itemProvider.hasItemConformingToTypeIdentifier(UTType.gif.identifier) {
                         self.loadGIFfile(itemProvider: itemProvider, index: index) { gifData, fileName, mimeType in
-                            defer {
-                                group.leave()
-                            }
-                            
                             guard let gifData = gifData, let fileName = fileName, let mimeType = mimeType else {
+                                collect(index, nil)
                                 return
                             }
                             
@@ -526,8 +533,14 @@ extension SBUMessageThreadModule {
                                 fileInfo.thumbnailSizes = [thumbnailSize]
                             }
                             
-                            fileInfoList[index] = fileInfo
+                            collect(index, fileInfo)
                         }
+                    }
+                
+                    // 이미지도 GIF 도 아니면 불러올 것이 없다. leave 하지 않으면 notify 가 오지 않아
+                    // 이 작업과 뒤에 고른 첨부가 모두 멈춘다.
+                    else {
+                        group.leave()
                     }
             }
             

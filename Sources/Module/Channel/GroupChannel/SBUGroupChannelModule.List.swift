@@ -462,7 +462,7 @@ extension SBUGroupChannelModule {
             self.unreadMessageInfoView?.sbu_constraint(height: 38)
             
             (self.newMessageInfoView as? SBUNewMessageInfo)?
-                .sbu_constraint(equalTo: self, bottom: 8, centerX: 0)
+                .sbu_constraint(equalTo: self, centerX: 0)
             
             self.scrollBottomView?
                 .sbu_constraint(
@@ -475,6 +475,7 @@ extension SBUGroupChannelModule {
             // relative to the input component
             if !SendbirdUI.config.common.shouldApplyLiquidGlass {
                 self.scrollBottomView?.sbu_constraint(equalTo: self, bottom: 8)
+                (self.newMessageInfoView as? SBUNewMessageInfo)?.sbu_constraint(equalTo: self, bottom: 8)
             }
         }
         
